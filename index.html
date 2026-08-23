@@ -533,7 +533,7 @@ html[data-theme="lightning"] .level-bar div{background-image:linear-gradient(90d
 (function(){
 "use strict";
 const KEY="STACK_ZERO_FINAL_39_0";
-const APP_VERSION="39.0 FINAL";
+const APP_VERSION="39.1 FINAL";
 const LEVELS=[
 {min:0,max:100,name:"입문자",gem:"🪨",g1:"#65584c",g2:"#b9a58f",label:"STONE"},
 {min:100,max:200,name:"수련자",gem:"🪵",g1:"#5c3420",g2:"#c9925c",label:"WOOD"},
@@ -904,26 +904,59 @@ function queueAICoach(reason){clearTimeout(coachTimer);coachTimer=setTimeout(()=
 function coachContext(reason){const now=new Date(),r=levelFor(Number(state.total.study||0));return {stack:{study:Number(state.total.study||0),exercise:Number(state.total.exercise||0),sleep:Number(state.total.sleep||0)},today:{study:Number(state.today.study||0),exercise:Number(state.today.exercise||0),sleep:Number(state.today.sleep||0)},active,rank:r.name,rankIndex:levelIndex(Number(state.total.study||0)),reason:reason||"refresh",affinity:dailyAffinity(),recentAction:state.recentAction||null,nowLocal:`${todayKey()} ${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")}`,timezone:"Asia/Seoul"}}
 function setCoachVisual({text,model,mood,reason,statusText,statusClass="ok"}){const avatar=document.getElementById("aiAvatar"),msg=document.getElementById("aiMessage"),rankEl=document.getElementById("aiRank"),status=document.getElementById("aiStatus");if(!avatar||!msg)return;const r=levelFor(Number(state.total.study||0));if(rankEl)rankEl.textContent=`${r.gem} ${r.name}`;msg.classList.remove("pop");void msg.offsetWidth;msg.classList.add("pop");msg.textContent=text||"…";avatar.classList.remove("kaguya-thinking");setKaguyaAvatar(avatar);showTransientKaguyaMood(avatar,{mood,text,reason});avatar.classList.remove("kaguya-react");void avatar.offsetWidth;avatar.classList.add("kaguya-react");setTimeout(()=>avatar.classList.remove("kaguya-react"),720);if(status){status.textContent=statusText||"LIVE";status.className="ai-status "+statusClass}}
 function setCoachThinking(){const avatar=document.getElementById("aiAvatar"),msg=document.getElementById("aiMessage"),status=document.getElementById("aiStatus");if(avatar){clearTimeout(kaguyaMoodTimer);setKaguyaAvatar(avatar);avatar.classList.add("kaguya-thinking")}if(msg)msg.textContent="카구야님이 입력중 •••";if(status){status.textContent="생각 중…";status.className="ai-status ai-loading"}}
-function setServiceConnection(service,stateValue,label=""){
+function setServiceConnection(service,stateValue,label="",detail=""){
   const id=service==="tts"?"ttsConnection":"geminiConnection",el=document.getElementById(id);if(!el)return;
   const stateName=stateValue===true?"ok":stateValue===false?"err":"checking";el.className="conn "+stateName;
-  const base=service==="tts"?"TTS":"Gemini";el.textContent=label||base;el.title=`${base} ${stateName==="ok"?"연결됨":stateName==="err"?"연결 안됨":"확인 중"}`;
+  const base=service==="tts"?"TTS":"Gemini";el.textContent=label||base;el.title=detail||`${base} ${stateName==="ok"?"연결됨":stateName==="err"?"연결 안됨":"확인 중"}`;
 }
-async function requestCoach(payload,timeoutMs=COACH_TIMEOUT_MS){const isTts=payload?.mode==="tts",controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeoutMs);try{const response=await fetch("/api/coach",{method:"POST",headers:{"Content-Type":"application/json"},signal:controller.signal,body:JSON.stringify(payload)});const data=await response.json().catch(()=>({}));if(!response.ok||!data.ok){const e=new Error(data.error||`HTTP ${response.status}`);e.status=response.status;e.details=data;throw e}setServiceConnection(isTts?"tts":"gemini",true);if(!isTts&&typeof data.ttsConfigured==="boolean")setServiceConnection("tts",data.ttsConfigured);return data}catch(e){setServiceConnection(isTts?"tts":"gemini",false);throw e}finally{clearTimeout(timer)}}
+async function requestCoach(payload,timeoutMs=COACH_TIMEOUT_MS){
+  const isTts=payload?.mode==="tts",controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeoutMs);
+  try{
+    const response=await fetch("/api/coach",{method:"POST",headers:{"Content-Type":"application/json"},signal:controller.signal,body:JSON.stringify(payload)});
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok||!data.ok){const e=new Error(data.error||`HTTP ${response.status}`);e.status=response.status;e.details=data;e.retryAfterMs=Number(data.retryAfterMs||data?.details?.retryAfterMs||0)||0;throw e}
+    if(isTts){clearTtsCooldown();setServiceConnection("tts",true)}
+    else{setServiceConnection("gemini",true);if(data.ttsConfigured===false)setServiceConnection("tts",false,"TTS 설정없음")}
+    return data;
+  }catch(e){
+    if(isTts){if(Number(e?.status||0)!==429)setServiceConnection("tts",false,"TTS 오류",String(e?.message||e))}
+    else setServiceConnection("gemini",false);
+    throw e;
+  }finally{clearTimeout(timer)}
+}
 async function renderAICoach(reason){
   const requestId=++coachRequestId,x=aiCoachMessage(reason||"refresh");if(coachAbortController)coachAbortController.abort();setCoachThinking();
   try{const [chat,memories]=await Promise.all([recentChat(36),relevantMemories(String(state.recentAction?.title||reason||""),18)]);const data=await requestCoach({mode:"event",...coachContext(reason),recentChat:chat,memories});if(requestId!==coachRequestId)return;const aiText=String(data.message||data.replyKo||"").trim();if(!aiText)throw new Error("empty reply");state.aiRecentMessages=[aiText,...(state.aiRecentMessages||[]).filter(v=>v!==aiText)].slice(0,30);state.aiLastMessage=aiText;save();await addChatMessage("assistant",aiText,{kind:"event",reason});await revealReplySynced(data,aiText,reason)}
   catch(err){if(requestId!==coachRequestId)return;setCoachVisual({text:x.msg,mood:"",reason,statusText:err?.name==="AbortError"?"응답이 늦어 로컬 반응으로 전환":"연결이 잠깐 끊겨 로컬 반응으로 전환",statusClass:"err"})}
 }
 
-const VOICE_ENABLED_KEY="STACK_ZERO_FINAL_39_0_VOICE_ENABLED";let voiceEnabled=localStorage.getItem(VOICE_ENABLED_KEY)!=="0",currentAudio=null,voiceRunId=0,streamNextAt=0,streamSources=[],lastTtsError=null;
+const VOICE_ENABLED_KEY="STACK_ZERO_FINAL_39_0_VOICE_ENABLED";
+const TTS_COOLDOWN_KEY="STACK_ZERO_FINAL_39_1_TTS_COOLDOWN_UNTIL";
+let voiceEnabled=localStorage.getItem(VOICE_ENABLED_KEY)!=="0",currentAudio=null,voiceRunId=0,streamNextAt=0,streamSources=[],lastTtsError=null;
+let ttsCooldownUntil=Math.max(0,Number(localStorage.getItem(TTS_COOLDOWN_KEY)||0)||0),ttsCooldownTimer=null;
 function updateVoiceButton(){const b=document.getElementById("kaguyaVoiceToggle");if(!b)return;b.classList.toggle("off",!voiceEnabled);b.textContent=voiceEnabled?"🔊":"🔇";b.title=voiceEnabled?"일본어 음성 켜짐":"일본어 음성 꺼짐"}
+function getTtsCooldownRemaining(){return Math.max(0,ttsCooldownUntil-Date.now())}
+function scheduleTtsCooldownRefresh(){clearTimeout(ttsCooldownTimer);const left=getTtsCooldownRemaining();if(left>0)ttsCooldownTimer=setTimeout(refreshTtsCooldownStatus,Math.min(left+80,2147483000))}
+function refreshTtsCooldownStatus(){
+  const left=getTtsCooldownRemaining();
+  if(left>0){const mins=Math.max(1,Math.ceil(left/60000));setServiceConnection("tts",false,"TTS 한도대기",`Gemini TTS 429 · 약 ${mins}분 뒤 다시 시도`);scheduleTtsCooldownRefresh();return true}
+  if(ttsCooldownUntil){ttsCooldownUntil=0;localStorage.removeItem(TTS_COOLDOWN_KEY);const el=document.getElementById("ttsConnection");if(el&&/한도대기/.test(el.textContent||""))setServiceConnection("tts",null,"TTS")}
+  return false;
+}
+function setTtsCooldown(ms,message=""){
+  const requested=Number(ms||0),safe=Math.max(60000,Math.min(30*60*1000,requested||10*60*1000));
+  ttsCooldownUntil=Date.now()+safe;localStorage.setItem(TTS_COOLDOWN_KEY,String(ttsCooldownUntil));
+  const mins=Math.max(1,Math.ceil(safe/60000));setServiceConnection("tts",false,"TTS 한도대기",message||`Gemini TTS 한도 초과 · 약 ${mins}분 뒤 다시 시도`);scheduleTtsCooldownRefresh();
+}
+function clearTtsCooldown(){clearTimeout(ttsCooldownTimer);ttsCooldownTimer=null;ttsCooldownUntil=0;localStorage.removeItem(TTS_COOLDOWN_KEY)}
 function getVoiceAudioContext(){return getAppAudioContext()}
 function primeKaguyaAudio(){if(!voiceEnabled)return null;try{const ctx=getAppAudioContext();if(ctx&&ctx.state==="suspended")ctx.resume().catch(()=>{});return ctx}catch(e){return null}}
 function stopKaguyaVoicePlayback(){voiceRunId++;if(currentAudio){try{currentAudio.pause()}catch(e){}currentAudio=null}for(const s of streamSources.splice(0)){try{s.stop()}catch(e){}}streamNextAt=0;if("speechSynthesis" in window)try{window.speechSynthesis.cancel()}catch(e){}}
 function pcm16Base64ToWavUrl(base64,sampleRate=24000){const raw=atob(base64),pcm=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)pcm[i]=raw.charCodeAt(i);const buf=new ArrayBuffer(44+pcm.length),v=new DataView(buf),write=(o,t)=>{for(let i=0;i<t.length;i++)v.setUint8(o+i,t.charCodeAt(i))};write(0,"RIFF");v.setUint32(4,36+pcm.length,true);write(8,"WAVE");write(12,"fmt ");v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,sampleRate,true);v.setUint32(28,sampleRate*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);write(36,"data");v.setUint32(40,pcm.length,true);new Uint8Array(buf,44).set(pcm);return URL.createObjectURL(new Blob([buf],{type:"audio/wav"}))}
 async function playKaguyaVoice(text,mood="normal",voiceStyle="",onFirstAudio){
   if(!voiceEnabled||!text)return false;
+  const cooldownLeft=getTtsCooldownRemaining();
+  if(cooldownLeft>0){lastTtsError={message:"Gemini TTS cooldown active",status:429,retryAfterMs:cooldownLeft};refreshTtsCooldownStatus();return false}
   stopKaguyaVoicePlayback();primeKaguyaAudio();const myRun=voiceRunId;
   try{
     const data=await requestCoach({mode:"tts",text:String(text).slice(0,420),mood,voiceStyle},22000);
@@ -932,7 +965,12 @@ async function playKaguyaVoice(text,mood="normal",voiceStyle="",onFirstAudio){
     const ok=schedulePcmChunk(data.audioBase64,myRun,announce,Number(data.sampleRate||24000));
     if(!ok)throw new Error("WebAudio playback unavailable");
     return true;
-  }catch(e){lastTtsError={message:String(e?.message||e),status:e?.status||e?.details?.status||null,details:e?.details||null};setServiceConnection("tts",false);console.warn("[STACK ZERO TTS unary]",lastTtsError);return false}
+  }catch(e){
+    const status=Number(e?.status||e?.details?.status||0)||null,retryAfterMs=Number(e?.retryAfterMs||e?.details?.retryAfterMs||e?.details?.details?.retryAfterMs||0)||0;
+    lastTtsError={message:String(e?.message||e),status,retryAfterMs,details:e?.details||null};
+    if(status===429)setTtsCooldown(retryAfterMs,lastTtsError.message);else setServiceConnection("tts",false,"TTS 오류",lastTtsError.message);
+    console.warn("[STACK ZERO TTS unary]",lastTtsError);return false;
+  }
 }
 function base64PcmToFloat32(base64){const raw=atob(base64),n=Math.floor(raw.length/2),out=new Float32Array(n);for(let i=0;i<n;i++){let v=raw.charCodeAt(i*2)|(raw.charCodeAt(i*2+1)<<8);if(v&0x8000)v-=0x10000;out[i]=Math.max(-1,Math.min(1,v/32768))}return out}
 function schedulePcmChunk(base64,myRun,onFirst,sampleRate=24000){if(myRun!==voiceRunId||!base64)return false;const ctx=getVoiceAudioContext();if(!ctx)return false;if(ctx.state==="suspended")ctx.resume().catch(()=>{});const samples=base64PcmToFloat32(base64);if(!samples.length)return false;const b=ctx.createBuffer(1,samples.length,Number(sampleRate||24000));b.copyToChannel(samples,0);const src=ctx.createBufferSource();src.buffer=b;src.playbackRate.value=1.008;if("detune" in src)src.detune.value=38;const gain=ctx.createGain();gain.gain.value=1.22;src.connect(gain);gain.connect(ctx.destination);const start=Math.max(ctx.currentTime+.045,streamNextAt||0);src.start(start);streamNextAt=start+(b.duration/1.008);streamSources.push(src);src.onended=()=>{const i=streamSources.indexOf(src);if(i>=0)streamSources.splice(i,1)};if(onFirst)onFirst();return true}
@@ -991,7 +1029,7 @@ function revealReplySynced(data,reply,reason="chat"){
   return new Promise(resolve=>{
     let revealed=false;const reveal=()=>{if(revealed)return;revealed=true;setCoachVisual({text:reply,model:data.model,mood:data.mood,reason,statusText});resolve()};
     if(!voiceEnabled||!data.voiceJa||reason==="refresh"){reveal();return}
-    lastTtsError=null;playKaguyaVoiceReliable(data.voiceJa,data.mood,data.voiceStyle,reveal).then(ok=>{if(!ok){reveal();const st=document.getElementById("aiStatus");if(st){const code=lastTtsError?.status||lastTtsError?.details?.status||"ERR";st.textContent=`LIVE · TTS ${code}`;st.title=lastTtsError?.message||"TTS error";st.className="ai-status err"}}}).catch(err=>{lastTtsError={message:String(err?.message||err),status:err?.status||null,details:err?.details||null};console.warn("[STACK ZERO TTS]",lastTtsError);reveal();const st=document.getElementById("aiStatus");if(st){st.textContent=`LIVE · TTS ${lastTtsError.status||"ERR"}`;st.title=lastTtsError.message;st.className="ai-status err"}});
+    lastTtsError=null;playKaguyaVoiceReliable(data.voiceJa,data.mood,data.voiceStyle,reveal).then(ok=>{if(!ok)reveal()}).catch(err=>{const status=Number(err?.status||err?.details?.status||0)||null,retryAfterMs=Number(err?.retryAfterMs||err?.details?.retryAfterMs||0)||0;lastTtsError={message:String(err?.message||err),status,retryAfterMs,details:err?.details||null};if(status===429)setTtsCooldown(retryAfterMs,lastTtsError.message);else setServiceConnection("tts",false,"TTS 오류",lastTtsError.message);console.warn("[STACK ZERO TTS]",lastTtsError);reveal()});
   });
 }
 function revealChatReplySynced(data,reply){return revealReplySynced(data,reply,"chat")}
@@ -1269,7 +1307,7 @@ document.getElementById("kaguyaChatSend").onclick=()=>{playUiSfx("send");sendKag
 document.getElementById("kaguyaChatInput").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();playUiSfx("send");sendKaguyaChat()}})
 document.getElementById("kaguyaVoiceToggle").onclick=()=>{playUiSfx();voiceEnabled=!voiceEnabled;localStorage.setItem(VOICE_ENABLED_KEY,voiceEnabled?"1":"0");if(!voiceEnabled)stopKaguyaVoicePlayback();else primeKaguyaAudio();updateVoiceButton();toast(voiceEnabled?"일본어 음성 ON":"일본어 음성 OFF")}
 document.addEventListener("click",e=>{const t=e.target&&e.target.closest?e.target.closest("button"):null;if(!t)return;const id=t.id||"";if(["plus","kaguyaChatSend","kaguyaVoiceToggle","manageBtn","addBtn","saveQuest","historyBtn","closeHistory","closeManager","cancelEditor","celebrateClose"].includes(id))return;if(t.matches(".quest-tab,[data-achieve],[data-receive],.quest-empty-action,.tool-btn,.mini,.reward-use,.form-actions button")){playUiSfx(t.classList.contains("danger")?"danger":t.matches("[data-receive],.reward-use")?"reward":t.matches(".quest-tab,[data-achieve],.quest-empty-action")?"quest":"tap")}});
-updateVoiceButton();openKaguyaDB().catch(()=>{});
+updateVoiceButton();refreshTtsCooldownStatus();openKaguyaDB().catch(()=>{});
 render()
 setInterval(()=>{if(rollover())render()},10000)
 })();

@@ -1,19 +1,30 @@
-STACK ZERO 39.0 FINAL
+STACK ZERO 39.1 FINAL
 
-Release status: production candidate / final package
+Release status: production final
 
-Finalization changes from 38.3:
-1. New localStorage namespace STACK_ZERO_FINAL_39_0 -> clean 0-start.
-2. New IndexedDB namespace STACK_ZERO_KAGUYA_DB_FINAL_39_0 -> clean Kaguya chat/memory start.
-3. APP_VERSION set to 39.0 FINAL and package version 39.0.0.
-4. Removed accumulated RC/test reports from the distributable ZIP.
-5. No behavior changes to the working 38.3 TTS path, sound system, Kaguya images, mood timing, connection UI, daily attitude model, or cumulative relationship model.
+TTS quota hardening from 39.0:
+1. Primary TTS model: gemini-3.1-flash-tts-preview.
+2. One fallback only: gemini-2.5-flash-preview-tts.
+3. Removed same-model immediate retries. A TTS reply can make at most one request per model.
+4. If both models return HTTP 429, server returns TTS_RATE_LIMITED and a suggested retryAfterMs.
+5. Browser persists a TTS cooldown and skips new TTS requests during that window instead of repeatedly consuming quota.
+6. LIVE remains the conversation status; the compact TTS indicator becomes red and reads "TTS 한도대기" during cooldown.
+7. Successful TTS automatically clears cooldown and returns the compact TTS indicator to green.
+8. Normal Gemini text chat remains available while TTS is rate-limited.
+9. Existing STACK ZERO 39.0 progress and Kaguya memory namespaces are preserved; this update does not reset user data.
 
-Static verification performed before packaging:
+Preserved final behavior:
+- Study starts from the existing 39.0 production save and only has +1.
+- No study -1 or ±50 developer controls.
+- 9 stack images + 10 mood images only.
+- Daily STACK attitude + cumulative LEVEL relationship model.
+- 7 / 10 milestone sounds and 10+ heart/expanded Kaguya presentation.
+- Gemini/TTS compact status indicators beside LIVE.
+
+Verification performed:
 - inline browser JS syntax check
-- Node syntax checks for coach/API functions
-- required 19 Kaguya image assets present
-- no study minus button
-- no ±50 developer buttons
-- fresh production storage keys present
-- Gemini/TTS compact connection indicators present next to LIVE
+- Node syntax checks for coach/API/Netlify functions
+- mocked TTS fallback test: 3.1=429 -> 2.5=success (2 calls total)
+- mocked double-429 test -> TTS_RATE_LIMITED + retryAfterMs
+- mocked 403 test -> no fallback request
+- 19 Kaguya image assets present

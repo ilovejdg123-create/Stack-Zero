@@ -19,3 +19,9 @@ Production build.
   1. cumulative STUDY rank = long-term baseline closeness;
   2. today's study hours = temporary daily warmth / excitement.
 - High daily study changes both text tone and TTS acting, while cumulative rank permanently softens Kaguya's baseline relationship.
+
+## 39.1 FINAL — TTS quota hardening
+- Gemini 3.1 Flash TTS Preview first, Gemini 2.5 Flash TTS Preview one-time fallback.
+- No immediate same-model retry on 429/5xx.
+- Double-429 starts a persistent client cooldown; text chat continues and TTS is retried only after cooldown expires.
+- Existing 39.0 app progress and Kaguya memory are preserved.
