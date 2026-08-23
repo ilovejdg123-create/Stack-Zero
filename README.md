@@ -86,3 +86,11 @@ V37.6 RC
 - TTS request timeout enlarged so server retry can actually finish.
 - Shared WebAudio playback with 1.22 gain and 0.96 playback rate for a slightly calmer/lower presentation.
 - Visible LIVE · TTS 오류 status if server-side TTS still fails, so remaining deployment/config errors are diagnosable.
+
+
+V37.7 RC
+- TTS primary switched to gemini-2.5-flash-preview-tts for reliability
+- gemini-3.1-flash-tts-preview automatic fallback
+- official x-goog-api-key GenerateContent path
+- compact TTS prompt
+- RC status now exposes exact TTS HTTP code
