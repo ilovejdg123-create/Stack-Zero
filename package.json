@@ -1,0 +1,11 @@
+{
+  "name": "stack-zero",
+  "version": "37.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "check": "node --check lib/coach-core.js && node --check api/coach.js && node --check api/tts-stream.js && node --check netlify/functions/coach.js && node --check netlify/functions/tts-stream.mjs"
+  }
+}
