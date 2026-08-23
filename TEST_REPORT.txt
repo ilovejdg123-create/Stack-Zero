@@ -1,0 +1,39 @@
+STACK ZERO V36.4 TEST REPORT
+Date: 2026-08-23
+
+Static checks
+PASS - api/coach.js node syntax
+PASS - inline index.html JavaScript syntax
+PASS - Vercel API route preserved
+
+Chromium mobile simulation: 390x844
+45 / 45 PASS
+
+Verified
+- Kaguya coach card is above study +/- card
+- default Kaguya image area enlarged
+- all 10 new rank thresholds, names and emojis
+- all 10 rank theme mappings
+- daily study 4/5/6/7/8/9/10 progressive aura layers
+- daily study 11+ love-mode card expansion
+- 12 heart particles at daily study 11+
+- daily high STACK raises same-day relationship/address even at low total rank
+- monthly recurring schedule UI
+- weekday + time + title save
+- monthlySchedule localStorage persistence
+- schedule survives app reopen simulation
+- today's recurring schedule completion state
+- Gemini payload includes relationship context
+- Gemini payload includes today's schedule + monthly schedule
+- level-up celebration uses new rank name
+- simulated never-resolving Gemini request exits typing state after timeout
+- timeout falls back to local Kaguya message
+
+Server API unit simulation
+PASS - gemini-3.6-flash temporary failure -> gemini-3.5-flash-lite fallback
+PASS - `정동근님` is normalized to allowed relationship address
+PASS - book emoji is stripped if model emits it despite prompt
+
+Testing note
+- Live Gemini credential was not available in the sandbox
+- API behavior was verified with deterministic fetch stubs; live deployment requires Vercel `GEMINI_API_KEY`

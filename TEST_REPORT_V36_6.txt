@@ -1,0 +1,34 @@
+STACK ZERO V36.6 STATIC/STRUCTURE TEST REPORT
+================================================
+[PASS] 등급 테마 10단계
+[PASS] diamond 프리미엄 CSS
+[PASS] wave 프리미엄 CSS
+[PASS] fire 프리미엄 CSS
+[PASS] crown 프리미엄 CSS
+[PASS] cosmic 프리미엄 CSS
+[PASS] 공부 STACK 이미지 고정
+[PASS] 레벨업 이미지 고정
+[PASS] mood 자동복귀
+[PASS] mood 지속 3~4초
+[PASS] 11~14 하트 12개 · 12
+[PASS] asset stack_0_1.jpg
+[PASS] asset stack_1_2.jpg
+[PASS] asset stack_2_3.jpg
+[PASS] asset stack_3_4.jpg
+[PASS] asset stack_4_5.jpg
+[PASS] asset stack_5_7.jpg
+[PASS] asset stack_7_9.jpg
+[PASS] asset stack_9_11.jpg
+[PASS] asset stack_11_14.png
+[PASS] asset mood_angry.jpg
+[PASS] asset mood_sulk.jpg
+[PASS] asset mood_question.jpg
+[PASS] asset mood_cry.jpg
+[PASS] 서버도 공부 mood 억제
+[PASS] Netlify 함수 존재
+[PASS] Netlify /api/coach redirect
+
+TOTAL: 27/27 PASS
+
+Note: 이 환경에서는 localhost/임의 URL 브라우저 navigation이 관리자 정책으로 차단되어 실제 네트워크 브라우저 E2E는 수행하지 못함
+대신 front-end/server JavaScript 문법 검사, 자산 존재, 이미지 우선순위 로직, theme selector, Netlify redirect 구조를 검증함
