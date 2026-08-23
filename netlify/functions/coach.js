@@ -3,11 +3,12 @@ exports.handler=async(event)=>{
   const headers={"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store"};
   if(event.httpMethod==="OPTIONS")return {statusCode:204,headers,body:""};
   const params=event.queryStringParameters||{};
-  if(event.httpMethod!=="POST"&&!(event.httpMethod==="GET"&&params.probe==="1"))return {statusCode:405,headers,body:JSON.stringify({ok:false,error:"Method not allowed"})};
+  if(event.httpMethod!=="POST"&&!(event.httpMethod==="GET"&&["1","tts"].includes(params.probe)))return {statusCode:405,headers,body:JSON.stringify({ok:false,error:"Method not allowed"})};
   const keyConfigured=Boolean(process.env.GEMINI_API_KEY);
   if(!keyConfigured)return {statusCode:500,headers,body:JSON.stringify({ok:false,provider:"gemini",model:PRIMARY_MODEL,keyConfigured:false,error:"GEMINI_API_KEY is not configured"})};
   try{
     if(event.httpMethod==="GET"&&params.probe==="1"){const r=await callGeminiRaw("Respond with exactly: STACK ZERO 연결 확인 완료",FAST_MODEL,3500,false);return {statusCode:200,headers,body:JSON.stringify({ok:true,provider:"gemini",model:r.model,keyConfigured:true,message:r.raw.trim()})}}
+    if(event.httpMethod==="GET"&&params.probe==="tts"){const r=await generateTTS("はい。","normal","brief calm connection check");return {statusCode:200,headers,body:JSON.stringify({ok:true,provider:"gemini-tts",model:r.model,voice:r.voice,keyConfigured:true})}}
     const body=event.body?JSON.parse(event.body):{};
     if(body.mode==="tts"){const r=await generateTTS(body.text,body.mood,body.voiceStyle);return {statusCode:200,headers,body:JSON.stringify({ok:true,provider:"gemini-tts",keyConfigured:true,...r})}}
     const r=await generateAssistant(body);return {statusCode:200,headers,body:JSON.stringify({ok:true,provider:"gemini",keyConfigured:true,...r})};

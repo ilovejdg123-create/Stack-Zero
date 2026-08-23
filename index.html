@@ -18,8 +18,7 @@ h1{margin:0;font-size:32px;letter-spacing:-1.5px}
 .head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
 .title{font-size:19px;font-weight:900}.desc{font-size:11px;color:#777f8c;margin-top:5px}
 .total{text-align:right;color:#737b88;font-size:10px;letter-spacing:.5px}.total b{display:block;color:var(--accent2);font-size:21px;margin-top:2px}
-.study-row{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:21px}
-.study-test-row{display:flex;justify-content:center;gap:8px;margin-top:12px}.study-test-btn{padding:7px 12px;border-radius:10px;background:#20242d;color:#8f98a5;border:1px solid #303642;font-size:11px;font-weight:850;letter-spacing:.2px}.study-test-btn:active{transform:scale(.96)}
+.study-row{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:21px}.study-row.add-only{gap:22px}.study-row.add-only .round{width:58px;height:58px;border-radius:18px;font-size:31px}
 .round{width:52px;height:52px;border-radius:15px;background:#292e38;color:#fff;font-size:28px;font-weight:800}.round:active{transform:scale(.94)}
 .today{text-align:center;min-width:70px}.today b{font-size:39px;line-height:1}.today small{display:block;color:#777f8c;font-size:10px;margin-top:5px}
 .check-row{display:flex;justify-content:space-between;align-items:center;margin-top:20px}.status{font-size:14px;font-weight:800;color:#8c94a0}.status.done{color:#fff}
@@ -253,6 +252,13 @@ body{overscroll-behavior-y:contain}
 .kaguya-chatbar input{min-width:0;flex:1;border:0;outline:0;background:transparent;color:#eef2f7;padding:8px 8px;font-size:12px;font-weight:700}.kaguya-chatbar input::placeholder{color:#68717e;font-weight:650}
 .kaguya-chat-send,.kaguya-voice-toggle{flex:none;height:34px;border-radius:10px;font-weight:950}.kaguya-chat-send{padding:0 12px;background:var(--accent);color:#111}.kaguya-voice-toggle{width:36px;background:#20252e;color:#b9c1cd;border:1px solid rgba(255,255,255,.06)}
 .kaguya-chat-send:disabled,.kaguya-chatbar input:disabled{opacity:.5}.kaguya-voice-toggle.off{opacity:.48;filter:saturate(.4)}
+.connection-health{display:flex;align-items:center;gap:10px;margin:6px 3px 0;font-size:9px;font-weight:800;letter-spacing:.01em;color:#747d89}
+.connection-health .conn{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.connection-health .conn:before{content:"";width:6px;height:6px;border-radius:50%;background:#68717d;box-shadow:0 0 0 2px rgba(104,113,125,.10)}
+.connection-health .conn.ok{color:#88d6a5}.connection-health .conn.ok:before{background:#55d487;box-shadow:0 0 8px rgba(85,212,135,.48)}
+.connection-health .conn.err{color:#e98691}.connection-health .conn.err:before{background:#ef5969;box-shadow:0 0 8px rgba(239,89,105,.42)}
+.connection-health .conn.checking{color:#7d8692}.connection-health .conn.checking:before{background:#7d8692;animation:connPulse 1.1s ease-in-out infinite}
+@keyframes connPulse{50%{opacity:.35;transform:scale(.8)}}
 .kaguya-chat-meta{margin:-8px 4px 14px;color:#596371;font-size:9px;line-height:1.45}.kaguya-chat-meta strong{color:#8b96a4}
 .switch input:disabled+.slider{opacity:.72;cursor:not-allowed}.switch input:checked:disabled+.slider{filter:saturate(.8) brightness(.95)}
 @media(max-width:420px){.kaguya-chatbar{gap:5px;padding:6px}.kaguya-chatbar input{font-size:11px;padding:8px 6px}.kaguya-chat-send{padding:0 10px}.kaguya-voice-toggle{width:34px}}
@@ -463,7 +469,7 @@ html[data-theme="lightning"] .level-bar div{background-image:linear-gradient(90d
 <div class="app">
 <h1>STACK ZERO</h1><div class="date" id="date"></div><div id="level"></div>
 <div id="aiCoach" class="ai-coach">
-  <div id="aiAvatar" class="ai-avatar"><img class="kaguya-img" src="assets/kaguya/stack_0_1.jpg" alt="카구야" draggable="false"></div>
+  <div id="aiAvatar" class="ai-avatar"><img class="kaguya-img" src="assets/kaguya/stack_0_1.png" alt="카구야" draggable="false"></div>
   <div class="ai-copy">
     <div class="ai-label">KAGUYA · LIVE</div>
     <div id="aiMessage" class="ai-message">카구야님이 입력중 •••</div>
@@ -474,6 +480,10 @@ html[data-theme="lightning"] .level-bar div{background-image:linear-gradient(90d
   <input id="kaguyaChatInput" maxlength="280" autocomplete="off" placeholder="카구야에게 말하기…">
   <button class="kaguya-voice-toggle" id="kaguyaVoiceToggle" type="button" title="일본어 음성">🔊</button>
   <button class="kaguya-chat-send" id="kaguyaChatSend" type="button">전송</button>
+</div>
+<div class="connection-health" id="connectionHealth" aria-live="polite">
+  <span id="geminiConnection" class="conn checking">Gemini 확인 중</span>
+  <span id="ttsConnection" class="conn checking">TTS 확인 중</span>
 </div>
 <div class="kaguya-chat-meta">최근 대화는 기기에 계속 저장 · <strong>중요한 내용은 MEMORY로 따로 기억</strong></div>
 <div id="daily"></div>
@@ -526,8 +536,8 @@ html[data-theme="lightning"] .level-bar div{background-image:linear-gradient(90d
 <script>
 (function(){
 "use strict";
-const KEY="STACK_ZERO_V37_7_RC";
-const APP_VERSION="37.7 RC";
+const KEY="STACK_ZERO_FINAL_V1";
+const APP_VERSION="38.0 FINAL";
 const LEVELS=[
 {min:0,max:100,name:"입문자",gem:"🪨",g1:"#65584c",g2:"#b9a58f",label:"STONE"},
 {min:100,max:200,name:"수련자",gem:"🪵",g1:"#5c3420",g2:"#c9925c",label:"WOOD"},
@@ -629,7 +639,6 @@ function setToday(type,value){
   if(diff>0)detectQuestClears(beforeTotal);if(type==="study"&&diff>0)checkLevelUp(beforeStudy,state.total.study);render();
 }
 function study(d){setToday("study",Number(state.today.study||0)+d)}
-function testStudyTotal(delta){const before=Number(state.total.study||0);state.total.study=Math.max(0,before+delta);if(delta<0){const idx=levelIndex(state.total.study);state.celebratedLevels=(state.celebratedLevels||[]).filter(x=>x<=idx);playUiSfx("minus")}else{const oldIdx=levelIndex(before),newIdx=levelIndex(state.total.study);if(newIdx>oldIdx)checkLevelUp(before,state.total.study);else playRankStackSfx(soundThemeName())}state.recentAction={type:delta>0?"test_plus50":"test_minus50",delta,at:new Date().toISOString()};save();render();toast(`STUDY TOTAL ${delta>0?"+50":"-50"}`)}
 function check(t,on){if(!on&&state.today[t]){toast("오늘 기록은 이미 확정됐습니다");render();return}if(on)playUiSfx(t==="exercise"?"exercise":"sleep");setToday(t,on?1:0)}
 function render(){
   rollover();const d=new Date(),days=["일","월","화","수","목","금","토"];
@@ -637,13 +646,12 @@ function render(){
   renderLevel();
   document.getElementById("daily").innerHTML=`
 <section class="card"><div class="head"><div><div class="title">📚 공부</div><div class="desc">하루 0~14 STACK · 1시간 = 1 STACK</div></div><div class="total">TOTAL<b>${state.total.study}</b></div></div>
-<div class="study-row"><button class="round" id="minus" type="button">−</button><div class="today"><b>${state.today.study}</b><small>TODAY / 14</small></div><button class="round" id="plus" type="button">＋</button></div><div class="study-test-row"><button class="study-test-btn" id="studyTestMinus" type="button">STUDY −50</button><button class="study-test-btn" id="studyTestPlus" type="button">STUDY +50</button></div></section>
+<div class="study-row add-only"><div class="today"><b>${state.today.study}</b><small>TODAY / 14</small></div><button class="round" id="plus" type="button" aria-label="공부 1시간 추가">＋</button></div></section>
 <section class="card"><div class="head"><div><div class="title">🏃 운동</div><div class="desc">오늘 목표 달성 → 1 STACK · 체크 후 확정</div></div><div class="total">TOTAL<b>${state.total.exercise}</b></div></div>
 <div class="check-row"><span class="status ${state.today.exercise?'done':''}">오늘 ${state.today.exercise} STACK</span><label class="switch"><input id="exercise" type="checkbox" ${state.today.exercise?'checked disabled':''}><span class="slider"></span></label></div></section>
 <section class="card"><div class="head"><div><div class="title">😴 잠</div><div class="desc">수면 조건 달성 → 1 STACK · 체크 후 확정</div></div><div class="total">TOTAL<b>${state.total.sleep}</b></div></div>
 <div class="check-row"><span class="status ${state.today.sleep?'done':''}">오늘 ${state.today.sleep} STACK</span><label class="switch"><input id="sleep" type="checkbox" ${state.today.sleep?'checked disabled':''}><span class="slider"></span></label></div></section>`;
-  document.getElementById("minus").onclick=()=>study(-1);document.getElementById("plus").onclick=()=>study(1);
-  document.getElementById("studyTestMinus").onclick=()=>testStudyTotal(-50);document.getElementById("studyTestPlus").onclick=()=>testStudyTotal(50);
+  document.getElementById("plus").onclick=()=>study(1);
   const ex=document.getElementById("exercise"),sl=document.getElementById("sleep");if(!ex.disabled)ex.onchange=e=>check("exercise",e.target.checked);if(!sl.disabled)sl.onchange=e=>check("sleep",e.target.checked);
   document.querySelectorAll(".quest-tab").forEach(b=>b.onclick=()=>{playUiSfx("quest");active=b.dataset.type;renderQuest()});
   renderQuest();renderRewards();
@@ -700,7 +708,7 @@ function receiveReward(id){
 }function updateTabs(){document.querySelectorAll(".quest-tab").forEach(x=>x.classList.toggle("active",x.dataset.type===active))}
 
 
-const SFX_PREF_KEY="STACK_ZERO_SFX_ENABLED";
+const SFX_PREF_KEY="STACK_ZERO_FINAL_SFX_ENABLED";
 let sfxEnabled=localStorage.getItem(SFX_PREF_KEY)!=="0",appAudioContext=null;
 function getAppAudioContext(){if(!appAudioContext){const AC=window.AudioContext||window.webkitAudioContext;if(AC)appAudioContext=new AC()}return appAudioContext}
 function getSfxContext(){return getAppAudioContext()}
@@ -864,10 +872,10 @@ function showTransientKaguyaMood(avatar,{mood="",text="",reason=""}={}){
   const resolved=normalizeKaguyaMood(mood)||inferKaguyaMood(text);
   if(!resolved||!KAGUYA_MOOD_ASSETS[resolved]){setKaguyaAvatar(avatar);return;}
   avatar.classList.remove("mood-return");avatar.classList.add("mood-flash");setKaguyaAvatar(avatar,{mood:resolved});
-  const ms=resolved==="angry"||resolved==="cry"?3900:3000;
+  const ms=reason==="chat"?9000:(resolved==="angry"||resolved==="cry"?4300:3400);
   kaguyaMoodTimer=setTimeout(()=>restoreKaguyaStackFace(avatar),ms);
 }
-const KAGUYA_DB_NAME="STACK_ZERO_KAGUYA_DB";
+const KAGUYA_DB_NAME="STACK_ZERO_KAGUYA_DB_FINAL_V1";
 const KAGUYA_DB_VERSION=1;
 let kaguyaDBPromise=null;
 function openKaguyaDB(){
@@ -889,14 +897,24 @@ function queueAICoach(reason){clearTimeout(coachTimer);coachTimer=setTimeout(()=
 function coachContext(reason){const now=new Date(),r=levelFor(Number(state.total.study||0));return {stack:{study:Number(state.total.study||0),exercise:Number(state.total.exercise||0),sleep:Number(state.total.sleep||0)},today:{study:Number(state.today.study||0),exercise:Number(state.today.exercise||0),sleep:Number(state.today.sleep||0)},active,rank:r.name,rankIndex:levelIndex(Number(state.total.study||0)),reason:reason||"refresh",affinity:dailyAffinity(),recentAction:state.recentAction||null,nowLocal:`${todayKey()} ${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")}`,timezone:"Asia/Seoul"}}
 function setCoachVisual({text,model,mood,reason,statusText,statusClass="ok"}){const avatar=document.getElementById("aiAvatar"),msg=document.getElementById("aiMessage"),rankEl=document.getElementById("aiRank"),status=document.getElementById("aiStatus");if(!avatar||!msg)return;const r=levelFor(Number(state.total.study||0));if(rankEl)rankEl.textContent=`${r.gem} ${r.name}`;msg.classList.remove("pop");void msg.offsetWidth;msg.classList.add("pop");msg.textContent=text||"…";avatar.classList.remove("kaguya-thinking");setKaguyaAvatar(avatar);showTransientKaguyaMood(avatar,{mood,text,reason});avatar.classList.remove("kaguya-react");void avatar.offsetWidth;avatar.classList.add("kaguya-react");setTimeout(()=>avatar.classList.remove("kaguya-react"),720);if(status){status.textContent=statusText||"LIVE";status.className="ai-status "+statusClass}}
 function setCoachThinking(){const avatar=document.getElementById("aiAvatar"),msg=document.getElementById("aiMessage"),status=document.getElementById("aiStatus");if(avatar){clearTimeout(kaguyaMoodTimer);setKaguyaAvatar(avatar);avatar.classList.add("kaguya-thinking")}if(msg)msg.textContent="카구야님이 입력중 •••";if(status){status.textContent="생각 중…";status.className="ai-status ai-loading"}}
-async function requestCoach(payload,timeoutMs=COACH_TIMEOUT_MS){const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeoutMs);try{const response=await fetch("/api/coach",{method:"POST",headers:{"Content-Type":"application/json"},signal:controller.signal,body:JSON.stringify(payload)});const data=await response.json().catch(()=>({}));if(!response.ok||!data.ok){const e=new Error(data.error||`HTTP ${response.status}`);e.status=response.status;e.details=data;throw e}return data}finally{clearTimeout(timer)}}
+function setServiceConnection(service,stateValue,label=""){
+  const id=service==="tts"?"ttsConnection":"geminiConnection",el=document.getElementById(id);if(!el)return;
+  const stateName=stateValue===true?"ok":stateValue===false?"err":"checking";el.className="conn "+stateName;
+  const base=service==="tts"?"TTS":"Gemini";el.textContent=label||`${base} ${stateName==="ok"?"연결됨":stateName==="err"?"연결 안됨":"확인 중"}`;
+}
+async function requestCoach(payload,timeoutMs=COACH_TIMEOUT_MS){const isTts=payload?.mode==="tts",controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeoutMs);try{const response=await fetch("/api/coach",{method:"POST",headers:{"Content-Type":"application/json"},signal:controller.signal,body:JSON.stringify(payload)});const data=await response.json().catch(()=>({}));if(!response.ok||!data.ok){const e=new Error(data.error||`HTTP ${response.status}`);e.status=response.status;e.details=data;throw e}setServiceConnection(isTts?"tts":"gemini",true);return data}catch(e){setServiceConnection(isTts?"tts":"gemini",false);throw e}finally{clearTimeout(timer)}}
+async function probeTtsConnection(){
+  setServiceConnection("tts",null);const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),22000);
+  try{const r=await fetch("/api/coach?probe=tts",{method:"GET",cache:"no-store",signal:controller.signal});const d=await r.json().catch(()=>({}));setServiceConnection("tts",Boolean(r.ok&&d.ok));}
+  catch(e){setServiceConnection("tts",false)}finally{clearTimeout(timer)}
+}
 async function renderAICoach(reason){
   const requestId=++coachRequestId,x=aiCoachMessage(reason||"refresh");if(coachAbortController)coachAbortController.abort();setCoachThinking();
   try{const [chat,memories]=await Promise.all([recentChat(36),relevantMemories(String(state.recentAction?.title||reason||""),18)]);const data=await requestCoach({mode:"event",...coachContext(reason),recentChat:chat,memories});if(requestId!==coachRequestId)return;const aiText=String(data.message||data.replyKo||"").trim();if(!aiText)throw new Error("empty reply");state.aiRecentMessages=[aiText,...(state.aiRecentMessages||[]).filter(v=>v!==aiText)].slice(0,30);state.aiLastMessage=aiText;save();await addChatMessage("assistant",aiText,{kind:"event",reason});await revealReplySynced(data,aiText,reason)}
   catch(err){if(requestId!==coachRequestId)return;setCoachVisual({text:x.msg,mood:"",reason,statusText:err?.name==="AbortError"?"응답이 늦어 로컬 반응으로 전환":"연결이 잠깐 끊겨 로컬 반응으로 전환",statusClass:"err"})}
 }
 
-const VOICE_ENABLED_KEY="STACK_ZERO_VOICE_ENABLED";let voiceEnabled=localStorage.getItem(VOICE_ENABLED_KEY)!=="0",currentAudio=null,voiceRunId=0,streamNextAt=0,streamSources=[],lastTtsError=null;
+const VOICE_ENABLED_KEY="STACK_ZERO_FINAL_VOICE_ENABLED";let voiceEnabled=localStorage.getItem(VOICE_ENABLED_KEY)!=="0",currentAudio=null,voiceRunId=0,streamNextAt=0,streamSources=[],lastTtsError=null;
 function updateVoiceButton(){const b=document.getElementById("kaguyaVoiceToggle");if(!b)return;b.classList.toggle("off",!voiceEnabled);b.textContent=voiceEnabled?"🔊":"🔇";b.title=voiceEnabled?"일본어 음성 켜짐":"일본어 음성 꺼짐"}
 function getVoiceAudioContext(){return getAppAudioContext()}
 function primeKaguyaAudio(){if(!voiceEnabled)return null;try{const ctx=getAppAudioContext();if(ctx&&ctx.state==="suspended")ctx.resume().catch(()=>{});return ctx}catch(e){return null}}
@@ -912,10 +930,10 @@ async function playKaguyaVoice(text,mood="normal",voiceStyle="",onFirstAudio){
     const ok=schedulePcmChunk(data.audioBase64,myRun,announce,Number(data.sampleRate||24000));
     if(!ok)throw new Error("WebAudio playback unavailable");
     return true;
-  }catch(e){lastTtsError={message:String(e?.message||e),status:e?.status||e?.details?.status||null,details:e?.details||null};console.warn("[STACK ZERO TTS unary]",lastTtsError);return false}
+  }catch(e){lastTtsError={message:String(e?.message||e),status:e?.status||e?.details?.status||null,details:e?.details||null};setServiceConnection("tts",false);console.warn("[STACK ZERO TTS unary]",lastTtsError);return false}
 }
 function base64PcmToFloat32(base64){const raw=atob(base64),n=Math.floor(raw.length/2),out=new Float32Array(n);for(let i=0;i<n;i++){let v=raw.charCodeAt(i*2)|(raw.charCodeAt(i*2+1)<<8);if(v&0x8000)v-=0x10000;out[i]=Math.max(-1,Math.min(1,v/32768))}return out}
-function schedulePcmChunk(base64,myRun,onFirst,sampleRate=24000){if(myRun!==voiceRunId||!base64)return false;const ctx=getVoiceAudioContext();if(!ctx)return false;if(ctx.state==="suspended")ctx.resume().catch(()=>{});const samples=base64PcmToFloat32(base64);if(!samples.length)return false;const b=ctx.createBuffer(1,samples.length,Number(sampleRate||24000));b.copyToChannel(samples,0);const src=ctx.createBufferSource();src.buffer=b;src.playbackRate.value=.96;const gain=ctx.createGain();gain.gain.value=1.22;src.connect(gain);gain.connect(ctx.destination);const start=Math.max(ctx.currentTime+.045,streamNextAt||0);src.start(start);streamNextAt=start+(b.duration/.96);streamSources.push(src);src.onended=()=>{const i=streamSources.indexOf(src);if(i>=0)streamSources.splice(i,1)};if(onFirst)onFirst();return true}
+function schedulePcmChunk(base64,myRun,onFirst,sampleRate=24000){if(myRun!==voiceRunId||!base64)return false;const ctx=getVoiceAudioContext();if(!ctx)return false;if(ctx.state==="suspended")ctx.resume().catch(()=>{});const samples=base64PcmToFloat32(base64);if(!samples.length)return false;const b=ctx.createBuffer(1,samples.length,Number(sampleRate||24000));b.copyToChannel(samples,0);const src=ctx.createBufferSource();src.buffer=b;src.playbackRate.value=.99;const gain=ctx.createGain();gain.gain.value=1.22;src.connect(gain);gain.connect(ctx.destination);const start=Math.max(ctx.currentTime+.045,streamNextAt||0);src.start(start);streamNextAt=start+(b.duration/.99);streamSources.push(src);src.onended=()=>{const i=streamSources.indexOf(src);if(i>=0)streamSources.splice(i,1)};if(onFirst)onFirst();return true}
 async function playKaguyaVoiceStream(text,mood="normal",voiceStyle="",onFirstAudio){
   if(!voiceEnabled||!text)return false;
   stopKaguyaVoicePlayback();primeKaguyaAudio();const myRun=voiceRunId,controller=new AbortController();
@@ -1226,9 +1244,9 @@ document.getElementById("celebrateClose").onclick=()=>{playUiSfx("reward");docum
 document.getElementById("kaguyaChatSend").onclick=()=>{playUiSfx("send");sendKaguyaChat()}
 document.getElementById("kaguyaChatInput").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();playUiSfx("send");sendKaguyaChat()}})
 document.getElementById("kaguyaVoiceToggle").onclick=()=>{playUiSfx();voiceEnabled=!voiceEnabled;localStorage.setItem(VOICE_ENABLED_KEY,voiceEnabled?"1":"0");if(!voiceEnabled)stopKaguyaVoicePlayback();else primeKaguyaAudio();updateVoiceButton();toast(voiceEnabled?"일본어 음성 ON":"일본어 음성 OFF")}
-document.addEventListener("click",e=>{const t=e.target&&e.target.closest?e.target.closest("button"):null;if(!t)return;const id=t.id||"";if(["plus","minus","studyTestMinus","studyTestPlus","kaguyaChatSend","kaguyaVoiceToggle","manageBtn","addBtn","saveQuest","historyBtn","closeHistory","closeManager","cancelEditor","celebrateClose"].includes(id))return;if(t.matches(".quest-tab,[data-achieve],[data-receive],.quest-empty-action,.tool-btn,.mini,.reward-use,.form-actions button")){playUiSfx(t.classList.contains("danger")?"danger":t.matches("[data-receive],.reward-use")?"reward":t.matches(".quest-tab,[data-achieve],.quest-empty-action")?"quest":"tap")}});
+document.addEventListener("click",e=>{const t=e.target&&e.target.closest?e.target.closest("button"):null;if(!t)return;const id=t.id||"";if(["plus","kaguyaChatSend","kaguyaVoiceToggle","manageBtn","addBtn","saveQuest","historyBtn","closeHistory","closeManager","cancelEditor","celebrateClose"].includes(id))return;if(t.matches(".quest-tab,[data-achieve],[data-receive],.quest-empty-action,.tool-btn,.mini,.reward-use,.form-actions button")){playUiSfx(t.classList.contains("danger")?"danger":t.matches("[data-receive],.reward-use")?"reward":t.matches(".quest-tab,[data-achieve],.quest-empty-action")?"quest":"tap")}});
 updateVoiceButton();openKaguyaDB().catch(()=>{});
-render()
+render();setTimeout(probeTtsConnection,700)
 setInterval(()=>{if(rollover())render()},10000)
 })();
 </script>

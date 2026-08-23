@@ -1,0 +1,28 @@
+STACK ZERO 38.0 FINAL
+
+FINAL RESET
+- New localStorage key: STACK_ZERO_FINAL_V1
+- New IndexedDB: STACK_ZERO_KAGUYA_DB_FINAL_V1
+- App starts at 0 / 0 / 0 with empty history, celebration flags, rewards and AI chat memory.
+- Old RC data is not loaded into FINAL, so level/quest celebrations can trigger again naturally.
+
+FINAL UI
+- Removed STUDY -1.
+- Removed RC-only STUDY -50 / +50.
+- STUDY is add-only from 0 to 14 per day.
+
+KAGUYA
+- Direct-chat mood image persists ~9 seconds.
+- Study progression image rule is unchanged: study actions never get replaced by mood images.
+- 10+ study keeps enlarged Kaguya + hearts.
+
+VOICE
+- Default prebuilt voice: Leda.
+- Direction: calm/poised, naturally bright upper-mid register, more expressive Japanese timing without childish/squeaky delivery.
+- Gemini TTS transport/fallback from V37.7 retained.
+
+CONNECTION STATUS
+- Small Gemini/TTS status indicators are shown below chat.
+- Green = last connection/probe succeeded.
+- Red = last connection/probe failed.
+- TTS runs a silent connection probe in the background shortly after load.
