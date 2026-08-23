@@ -1,0 +1,17 @@
+STACK ZERO V37.5 RC
+
+Fixes
+1. Voice + UI SFX now share one AudioContext. User interaction unlocks the same context used later by Gemini TTS.
+2. Any pointer/key interaction primes audio before async Gemini network waits, preventing autoplay-policy silence.
+3. Gemini unary TTS fallback no longer uses HTMLAudioElement.play(); raw PCM is played through the already-unlocked Web Audio context.
+4. Stream failure is logged and falls back to Gemini unary TTS; no browser/system voice fallback.
+5. study_done prompt treats 1 STACK as 1 actual study hour and strongly forbids stat-announcer patterns.
+6. Exact hour count is normally omitted; if mentioned it must be conversational, never 'N hours done'.
+7. Random study reaction angle + one automatic rewrite when the draft matches robotic/repetitive patterns.
+8. Normal TTS direction lowered further to calm low-mid adult register.
+
+Preserved
+- current 9 stack + 10 mood images
+- 10-stack enlarged heart state
+- rank-specific SFX and 7/10 milestone SFX
+- RC-only STUDY -50/+50

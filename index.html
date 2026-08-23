@@ -526,8 +526,8 @@ html[data-theme="lightning"] .level-bar div{background-image:linear-gradient(90d
 <script>
 (function(){
 "use strict";
-const KEY="STACK_ZERO_V37_4_RC";
-const APP_VERSION="37.4 RC";
+const KEY="STACK_ZERO_V37_5_RC";
+const APP_VERSION="37.5 RC";
 const LEVELS=[
 {min:0,max:100,name:"입문자",gem:"🪨",g1:"#65584c",g2:"#b9a58f",label:"STONE"},
 {min:100,max:200,name:"수련자",gem:"🪵",g1:"#5c3420",g2:"#c9925c",label:"WOOD"},
@@ -701,9 +701,10 @@ function receiveReward(id){
 
 
 const SFX_PREF_KEY="STACK_ZERO_SFX_ENABLED";
-let sfxEnabled=localStorage.getItem(SFX_PREF_KEY)!=="0",sfxContext=null;
-function getSfxContext(){if(!sfxContext){const AC=window.AudioContext||window.webkitAudioContext;if(AC)sfxContext=new AC()}return sfxContext}
-function primeSfx(){if(!sfxEnabled)return null;const ctx=getSfxContext();if(ctx&&ctx.state==="suspended")ctx.resume().catch(()=>{});return ctx}
+let sfxEnabled=localStorage.getItem(SFX_PREF_KEY)!=="0",appAudioContext=null;
+function getAppAudioContext(){if(!appAudioContext){const AC=window.AudioContext||window.webkitAudioContext;if(AC)appAudioContext=new AC()}return appAudioContext}
+function getSfxContext(){return getAppAudioContext()}
+function primeSfx(){if(!sfxEnabled)return null;const ctx=getAppAudioContext();if(ctx&&ctx.state==="suspended")ctx.resume().catch(()=>{});return ctx}
 function sfxEnv(ctx,start,attack=.006,decay=.18,peak=.14){const g=ctx.createGain();g.gain.setValueAtTime(.0001,start);g.gain.linearRampToValueAtTime(peak,start+attack);g.gain.exponentialRampToValueAtTime(.0001,start+attack+decay);g.connect(ctx.destination);return g}
 function playTone(ctx,{freq=440,endFreq=0,type="sine",start,duration=.16,peak=.11,attack=.004,decay=.14}){const osc=ctx.createOscillator();osc.type=type;osc.frequency.setValueAtTime(freq,start);if(endFreq>0)osc.frequency.exponentialRampToValueAtTime(Math.max(20,endFreq),start+duration);const g=sfxEnv(ctx,start,attack,decay,peak);osc.connect(g);osc.start(start);osc.stop(start+Math.max(duration,attack+decay+.025))}
 function playNoise(ctx,{start,duration=.09,peak=.035,hp=900,lp=0}){const len=Math.max(1,Math.floor(ctx.sampleRate*duration)),buf=ctx.createBuffer(1,len,ctx.sampleRate),data=buf.getChannelData(0);for(let i=0;i<len;i++)data[i]=(Math.random()*2-1)*Math.pow(1-i/len,1.8);const src=ctx.createBufferSource();src.buffer=buf;let node=src;if(hp){const f=ctx.createBiquadFilter();f.type="highpass";f.frequency.value=hp;node.connect(f);node=f}if(lp){const f=ctx.createBiquadFilter();f.type="lowpass";f.frequency.value=lp;node.connect(f);node=f}const g=sfxEnv(ctx,start,.002,duration,peak);node.connect(g);src.start(start);src.stop(start+duration+.02)}
@@ -895,27 +896,26 @@ async function renderAICoach(reason){
   catch(err){if(requestId!==coachRequestId)return;setCoachVisual({text:x.msg,mood:"",reason,statusText:err?.name==="AbortError"?"응답이 늦어 로컬 반응으로 전환":"연결이 잠깐 끊겨 로컬 반응으로 전환",statusClass:"err"})}
 }
 
-const VOICE_ENABLED_KEY="STACK_ZERO_VOICE_ENABLED";let voiceEnabled=localStorage.getItem(VOICE_ENABLED_KEY)!=="0",currentAudio=null,voiceAudioContext=null,voiceRunId=0,streamNextAt=0,streamSources=[];
+const VOICE_ENABLED_KEY="STACK_ZERO_VOICE_ENABLED";let voiceEnabled=localStorage.getItem(VOICE_ENABLED_KEY)!=="0",currentAudio=null,voiceRunId=0,streamNextAt=0,streamSources=[];
 function updateVoiceButton(){const b=document.getElementById("kaguyaVoiceToggle");if(!b)return;b.classList.toggle("off",!voiceEnabled);b.textContent=voiceEnabled?"🔊":"🔇";b.title=voiceEnabled?"일본어 음성 켜짐":"일본어 음성 꺼짐"}
-function getVoiceAudioContext(){if(!voiceAudioContext){const AC=window.AudioContext||window.webkitAudioContext;if(AC)voiceAudioContext=new AC()}return voiceAudioContext}
-function primeKaguyaAudio(){if(!voiceEnabled)return;try{const ctx=getVoiceAudioContext();if(ctx&&ctx.state==="suspended")ctx.resume().catch(()=>{})}catch(e){}}
+function getVoiceAudioContext(){return getAppAudioContext()}
+function primeKaguyaAudio(){if(!voiceEnabled)return null;try{const ctx=getAppAudioContext();if(ctx&&ctx.state==="suspended")ctx.resume().catch(()=>{});return ctx}catch(e){return null}}
 function stopKaguyaVoicePlayback(){voiceRunId++;if(currentAudio){try{currentAudio.pause()}catch(e){}currentAudio=null}for(const s of streamSources.splice(0)){try{s.stop()}catch(e){}}streamNextAt=0;if("speechSynthesis" in window)try{window.speechSynthesis.cancel()}catch(e){}}
 function pcm16Base64ToWavUrl(base64,sampleRate=24000){const raw=atob(base64),pcm=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)pcm[i]=raw.charCodeAt(i);const buf=new ArrayBuffer(44+pcm.length),v=new DataView(buf),write=(o,t)=>{for(let i=0;i<t.length;i++)v.setUint8(o+i,t.charCodeAt(i))};write(0,"RIFF");v.setUint32(4,36+pcm.length,true);write(8,"WAVE");write(12,"fmt ");v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,sampleRate,true);v.setUint32(28,sampleRate*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);write(36,"data");v.setUint32(40,pcm.length,true);new Uint8Array(buf,44).set(pcm);return URL.createObjectURL(new Blob([buf],{type:"audio/wav"}))}
 async function playKaguyaVoice(text,mood="normal",voiceStyle="",onFirstAudio){
   if(!voiceEnabled||!text)return false;
   stopKaguyaVoicePlayback();primeKaguyaAudio();const myRun=voiceRunId;
   try{
-    const data=await requestCoach({mode:"tts",text:String(text).slice(0,420),mood,voiceStyle},11000);
+    const data=await requestCoach({mode:"tts",text:String(text).slice(0,420),mood,voiceStyle},12000);
     if(myRun!==voiceRunId)return false;if(!data.audioBase64)throw new Error("no audio");
-    const url=pcm16Base64ToWavUrl(data.audioBase64,Number(data.sampleRate||24000)),a=new Audio(url);currentAudio=a;
     let announced=false;const announce=()=>{if(announced)return;announced=true;if(typeof onFirstAudio==="function")onFirstAudio()};
-    a.onplaying=announce;a.onended=()=>{URL.revokeObjectURL(url);if(currentAudio===a)currentAudio=null};
-    a.onerror=()=>{URL.revokeObjectURL(url);if(currentAudio===a)currentAudio=null};
-    await a.play();announce();return true;
-  }catch(e){return false}
+    const ok=schedulePcmChunk(data.audioBase64,myRun,announce,Number(data.sampleRate||24000));
+    if(!ok)throw new Error("WebAudio playback unavailable");
+    return true;
+  }catch(e){console.warn("[STACK ZERO TTS unary]",e?.message||e);return false}
 }
 function base64PcmToFloat32(base64){const raw=atob(base64),n=Math.floor(raw.length/2),out=new Float32Array(n);for(let i=0;i<n;i++){let v=raw.charCodeAt(i*2)|(raw.charCodeAt(i*2+1)<<8);if(v&0x8000)v-=0x10000;out[i]=Math.max(-1,Math.min(1,v/32768))}return out}
-function schedulePcmChunk(base64,myRun,onFirst){if(myRun!==voiceRunId||!base64)return false;const ctx=getVoiceAudioContext();if(!ctx)return false;const samples=base64PcmToFloat32(base64);if(!samples.length)return false;const b=ctx.createBuffer(1,samples.length,24000);b.copyToChannel(samples,0);const src=ctx.createBufferSource();src.buffer=b;src.connect(ctx.destination);const start=Math.max(ctx.currentTime+.045,streamNextAt||0);src.start(start);streamNextAt=start+b.duration;streamSources.push(src);src.onended=()=>{const i=streamSources.indexOf(src);if(i>=0)streamSources.splice(i,1)};if(onFirst)onFirst();return true}
+function schedulePcmChunk(base64,myRun,onFirst,sampleRate=24000){if(myRun!==voiceRunId||!base64)return false;const ctx=getVoiceAudioContext();if(!ctx)return false;if(ctx.state==="suspended")ctx.resume().catch(()=>{});const samples=base64PcmToFloat32(base64);if(!samples.length)return false;const b=ctx.createBuffer(1,samples.length,Number(sampleRate||24000));b.copyToChannel(samples,0);const src=ctx.createBufferSource();src.buffer=b;src.connect(ctx.destination);const start=Math.max(ctx.currentTime+.045,streamNextAt||0);src.start(start);streamNextAt=start+b.duration;streamSources.push(src);src.onended=()=>{const i=streamSources.indexOf(src);if(i>=0)streamSources.splice(i,1)};if(onFirst)onFirst();return true}
 async function playKaguyaVoiceStream(text,mood="normal",voiceStyle="",onFirstAudio){
   if(!voiceEnabled||!text)return false;
   stopKaguyaVoicePlayback();primeKaguyaAudio();const myRun=voiceRunId,controller=new AbortController();
@@ -941,7 +941,7 @@ async function playKaguyaVoiceStream(text,mood="normal",voiceStyle="",onFirstAud
 async function playKaguyaVoiceReliable(text,mood="normal",voiceStyle="",onFirstAudio){
   if(!voiceEnabled||!text)return false;
   let announced=false;const announce=()=>{if(announced)return;announced=true;if(typeof onFirstAudio==="function")onFirstAudio()};
-  try{if(await playKaguyaVoiceStream(text,mood,voiceStyle,announce))return true}catch(e){}
+  try{if(await playKaguyaVoiceStream(text,mood,voiceStyle,announce))return true}catch(e){console.warn("[STACK ZERO TTS stream]",e?.message||e)}
   return await playKaguyaVoice(text,mood,voiceStyle,announce);
 }
 function setChatBusy(on){chatBusy=Boolean(on);const input=document.getElementById("kaguyaChatInput"),btn=document.getElementById("kaguyaChatSend");if(input)input.disabled=chatBusy;if(btn)btn.disabled=chatBusy}
@@ -1210,6 +1210,10 @@ state.celebratedLevels.push(newIdx);coachReason="level_up";state.recentAction={t
 showCelebrate(l.gem+" "+l.name+" 달성",LEVEL_UP_LINES[newIdx]||("이제 "+l.name+" 단계예요. 후후, 축하해요"),l.gem);burstLevelFX();playLevelUpSfx(newIdx)
 }
 function escapeHtml(s){return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+
+function unlockAppAudio(){primeSfx();primeKaguyaAudio()}
+document.addEventListener("pointerdown",unlockAppAudio,{passive:true});
+document.addEventListener("keydown",unlockAppAudio,{passive:true});
 
 document.getElementById("manageBtn").onclick=()=>{playUiSfx("quest");openManager()}
 document.getElementById("closeManager").onclick=()=>{playUiSfx();document.getElementById("overlay").style.display="none"}

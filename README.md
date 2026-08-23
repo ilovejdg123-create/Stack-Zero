@@ -73,3 +73,9 @@ V37.3 RC pre-final fixes:
 - calmer Sulafat voice direction
 - strongly differentiated rank/UI SFX
 - exact 7 fanfare and 10 heartbeat/heart-bloom SFX
+
+
+V37.5 RC
+- fixed shared WebAudio unlock for Gemini voice
+- removed HTMLAudio async autoplay failure path
+- deeper natural study-hour dialogue + anti-robotic rewrite
