@@ -1,0 +1,52 @@
+STACK ZERO V37.3 RC - pre-final test build
+
+FIXES REQUESTED IN THIS RC
+1) Gemini TTS sync
+- Removed browser/OS Japanese TTS fallback completely.
+- Chat text now reveals on the first Gemini audio chunk when voice is enabled.
+- If Gemini TTS fails, text reveals without substituting the artificial browser voice.
+- Client stream timeout increased to 18s; Netlify upstream connection timeout increased to 8.5s.
+
+2) Voice character
+- Default Gemini voice changed from Leda to Sulafat.
+- Prompt changed from bright/high/youthful to calm low-mid, elegant, restrained Japanese conversational delivery.
+- Mood acting remains supported for all 10 moods.
+
+3) Kaguya images
+- Deleted old image assets from this build.
+- Re-copied the user's latest uploaded files directly from their exact filenames.
+- 9 STACK files + 10 MOOD files = exactly 19 files.
+- Byte hashes verified against the uploaded originals.
+- STACK mapping: 0,1,2,3,4,5,6-7,8-9,10-14.
+- 10 STACK remains the large-image + heart visual threshold.
+
+4) SFX differentiation
+- Study + sound now resolves AFTER the stack/total update, so the active rank sound is used.
+- Each rank has a substantially different timbre/sequence: stone, wood, coin, crest, lightning, diamond, wave, fire, crown, cosmic.
+- Exercise, sleep, send, quest, reward, minus each use distinct UI sounds.
+- RC +/-50 test controls remain present.
+- +50 now triggers rank-up celebration/sound when crossing a rank; -50 rearms higher rank celebrations for repeated testing.
+
+5) Special 7 / 10 sounds
+- TODAY 7: explicit two-hit fanfare ("pa-bam") plus sparkle.
+- TODAY 10: double heartbeat followed by rising heart-bloom chimes/sparkle.
+- Special sound triggers are exact at 7 and 10; 11-14 use the current rank stack sound while heart visuals remain active.
+
+STATIC VERIFICATION PERFORMED
+- Browser script extracted and passed node --check.
+- lib/coach-core.js passed node --check.
+- api/coach.js passed node --check.
+- api/tts-stream.js passed node --check.
+- netlify/functions/coach.js passed node --check.
+- netlify/functions/tts-stream.mjs passed node --check.
+- 19-only Kaguya asset count asserted.
+- All 9 STACK and all 10 MOOD byte hashes matched the latest uploaded originals.
+- 10-stack heart/large threshold asserted.
+- 7/10 special SFX branches asserted.
+- Browser Japanese TTS fallback absence asserted.
+- RC +/-50 controls asserted.
+- Schedule labels asserted absent.
+
+NOT LIVE-TESTED HERE
+- Actual Gemini API/TTS response latency and audio output require the deployed Netlify environment and configured GEMINI_API_KEY.
+- Mobile speaker perception/volume should be checked on the real phone during RC testing.

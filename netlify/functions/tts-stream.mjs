@@ -8,7 +8,7 @@ async function openStream({text,mood,voiceStyle,key}){
   let lastErr;
   for(let attempt=0;attempt<2;attempt++){
     const controller=new AbortController();
-    const timer=setTimeout(()=>controller.abort(),4300);
+    const timer=setTimeout(()=>controller.abort(),8500);
     try{
       const upstream=await fetch(INTERACTIONS_URL,{
         method:"POST",

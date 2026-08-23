@@ -66,3 +66,10 @@ V37.2 RC
 CLEAN BUILD
 - removed all legacy kaguya assets
 - only user-provided 19 current images remain
+
+V37.3 RC pre-final fixes:
+- exact latest uploaded Kaguya 19 assets
+- Gemini-only synchronized TTS, no browser voice fallback
+- calmer Sulafat voice direction
+- strongly differentiated rank/UI SFX
+- exact 7 fanfare and 10 heartbeat/heart-bloom SFX
