@@ -9,3 +9,6 @@ TTS 429 exponential-backoff hardening:
 - Existing STACK ZERO 39.0 production progress and Kaguya memory namespaces are preserved.
 
 All 39.1 functionality is preserved.
+
+
+39.4: TTS provider migrated from Gemini TTS to ElevenLabs. Gemini chat logic unchanged. Requires ELEVENLABS_API_KEY + ELEVENLABS_VOICE_ID in deployment environment.

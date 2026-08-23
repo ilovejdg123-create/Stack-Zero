@@ -12,7 +12,7 @@ Production build.
 - STACK 7 and 10 retain milestone sounds; rank-specific sounds and level-up sounds remain enabled.
 - Exercise and sleep lock after confirmation for the day.
 - History remains view-only; schedule/calendar is not included.
-- Gemini chat + Gemini TTS connection state is shown compactly beside LIVE.
+- Gemini chat + ElevenLabs TTS connection state is shown compactly beside LIVE.
 - TTS uses the known-working Gemini 2.5 Flash TTS path with Sulafat and subtle client-side pitch lift.
 - Chat mood images remain visible longer before reverting to the current STACK image.
 - Relationship model has two independent layers:
@@ -37,3 +37,11 @@ Production build.
 - Larger independent STUDY STACK label; total number stays aligned at the far right.
 - Mobile grid spacing added to prevent rank/label/number overlap.
 - Persistent data keys unchanged from 39.2.
+
+
+## 39.4 FINAL · ElevenLabs TTS
+- Gemini remains responsible for dialogue, memory, mood, and relationship logic.
+- All speech synthesis moved to ElevenLabs. No Gemini TTS request remains in the active TTS path.
+- Required Netlify env vars: `ELEVENLABS_API_KEY`, `ELEVENLABS_VOICE_ID`.
+- Optional: `ELEVENLABS_MODEL_ID` (default `eleven_flash_v2_5`), `ELEVENLABS_OUTPUT_FORMAT` (default `mp3_44100_128`).
+- Existing STACK data and Kaguya memory keys are preserved.

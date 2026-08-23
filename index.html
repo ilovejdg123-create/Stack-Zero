@@ -534,7 +534,7 @@ html[data-theme="lightning"] .level-bar div{background-image:linear-gradient(90d
 (function(){
 "use strict";
 const KEY="STACK_ZERO_FINAL_39_0";
-const APP_VERSION="39.3 FINAL";
+const APP_VERSION="39.4 FINAL · ElevenLabs TTS";
 const LEVELS=[
 {min:0,max:100,name:"입문자",gem:"🪨",g1:"#65584c",g2:"#b9a58f",label:"STONE"},
 {min:100,max:200,name:"수련자",gem:"🪵",g1:"#5c3420",g2:"#c9925c",label:"WOOD"},
@@ -916,7 +916,7 @@ async function requestCoach(payload,timeoutMs=COACH_TIMEOUT_MS){
     const response=await fetch("/api/coach",{method:"POST",headers:{"Content-Type":"application/json"},signal:controller.signal,body:JSON.stringify(payload)});
     const data=await response.json().catch(()=>({}));
     if(!response.ok||!data.ok){const e=new Error(data.error||`HTTP ${response.status}`);e.status=response.status;e.details=data;e.retryAfterMs=Number(data.retryAfterMs||data?.details?.retryAfterMs||0)||0;throw e}
-    if(isTts){clearTtsCooldown(true);setServiceConnection("tts",true,"TTS","Gemini TTS 연결됨 · 429 backoff 초기화")}
+    if(isTts){clearTtsCooldown(true);setServiceConnection("tts",true,"TTS","ElevenLabs TTS 연결됨 · 429 backoff 초기화")}
     else{setServiceConnection("gemini",true);if(data.ttsConfigured===false)setServiceConnection("tts",false,"TTS 설정없음")}
     return data;
   }catch(e){
@@ -932,8 +932,8 @@ async function renderAICoach(reason){
 }
 
 const VOICE_ENABLED_KEY="STACK_ZERO_FINAL_39_0_VOICE_ENABLED";
-const TTS_COOLDOWN_KEY="STACK_ZERO_FINAL_39_2_TTS_COOLDOWN_UNTIL";
-const TTS_BACKOFF_KEY="STACK_ZERO_FINAL_39_2_TTS_BACKOFF_STEP";
+const TTS_COOLDOWN_KEY="STACK_ZERO_FINAL_39_4_ELEVENLABS_COOLDOWN_UNTIL";
+const TTS_BACKOFF_KEY="STACK_ZERO_FINAL_39_4_ELEVENLABS_BACKOFF_STEP";
 const TTS_BACKOFF_STEPS=[60000,120000,300000,600000,1200000,1800000]; // 1m → 2m → 5m → 10m → 20m → 30m
 let voiceEnabled=localStorage.getItem(VOICE_ENABLED_KEY)!=="0",currentAudio=null,voiceRunId=0,streamNextAt=0,streamSources=[],lastTtsError=null;
 let ttsCooldownUntil=Math.max(0,Number(localStorage.getItem(TTS_COOLDOWN_KEY)||0)||0),ttsCooldownTimer=null;
@@ -943,7 +943,7 @@ function getTtsCooldownRemaining(){return Math.max(0,ttsCooldownUntil-Date.now()
 function scheduleTtsCooldownRefresh(){clearTimeout(ttsCooldownTimer);const left=getTtsCooldownRemaining();if(left>0)ttsCooldownTimer=setTimeout(refreshTtsCooldownStatus,Math.min(left+80,2147483000))}
 function refreshTtsCooldownStatus(){
   const left=getTtsCooldownRemaining();
-  if(left>0){const mins=Math.max(1,Math.ceil(left/60000));setServiceConnection("tts",false,"TTS 한도대기",`Gemini TTS 429 · 약 ${mins}분 뒤 다시 시도`);scheduleTtsCooldownRefresh();return true}
+  if(left>0){const mins=Math.max(1,Math.ceil(left/60000));setServiceConnection("tts",false,"TTS 한도대기",`ElevenLabs TTS 429 · 약 ${mins}분 뒤 다시 시도`);scheduleTtsCooldownRefresh();return true}
   if(ttsCooldownUntil){ttsCooldownUntil=0;localStorage.removeItem(TTS_COOLDOWN_KEY);const el=document.getElementById("ttsConnection");if(el&&/한도대기/.test(el.textContent||""))setServiceConnection("tts",null,"TTS 재시도대기", "다음 음성 요청에서 다시 연결을 시도합니다")}
   return false;
 }
@@ -969,49 +969,28 @@ function clearTtsCooldown(resetBackoff=false){
 function getVoiceAudioContext(){return getAppAudioContext()}
 function primeKaguyaAudio(){if(!voiceEnabled)return null;try{const ctx=getAppAudioContext();if(ctx&&ctx.state==="suspended")ctx.resume().catch(()=>{});return ctx}catch(e){return null}}
 function stopKaguyaVoicePlayback(){voiceRunId++;if(currentAudio){try{currentAudio.pause()}catch(e){}currentAudio=null}for(const s of streamSources.splice(0)){try{s.stop()}catch(e){}}streamNextAt=0;if("speechSynthesis" in window)try{window.speechSynthesis.cancel()}catch(e){}}
-function pcm16Base64ToWavUrl(base64,sampleRate=24000){const raw=atob(base64),pcm=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)pcm[i]=raw.charCodeAt(i);const buf=new ArrayBuffer(44+pcm.length),v=new DataView(buf),write=(o,t)=>{for(let i=0;i<t.length;i++)v.setUint8(o+i,t.charCodeAt(i))};write(0,"RIFF");v.setUint32(4,36+pcm.length,true);write(8,"WAVE");write(12,"fmt ");v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,sampleRate,true);v.setUint32(28,sampleRate*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);write(36,"data");v.setUint32(40,pcm.length,true);new Uint8Array(buf,44).set(pcm);return URL.createObjectURL(new Blob([buf],{type:"audio/wav"}))}
+function base64ToArrayBuffer(base64){const raw=atob(base64),bytes=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);return bytes.buffer}
+async function scheduleEncodedAudio(base64,mimeType,myRun,onFirst){
+  if(myRun!==voiceRunId||!base64)return false;const ctx=getVoiceAudioContext();if(!ctx)return false;if(ctx.state==="suspended")await ctx.resume().catch(()=>{});
+  const raw=base64ToArrayBuffer(base64);let decoded;try{decoded=await ctx.decodeAudioData(raw.slice(0))}catch(e){throw new Error(`ElevenLabs audio decode failed (${mimeType||"audio"})`)}
+  if(myRun!==voiceRunId)return false;const src=ctx.createBufferSource();src.buffer=decoded;src.playbackRate.value=1.008;if("detune" in src)src.detune.value=38;const gain=ctx.createGain();gain.gain.value=1.16;src.connect(gain);gain.connect(ctx.destination);const start=Math.max(ctx.currentTime+.035,streamNextAt||0);src.start(start);streamNextAt=start+(decoded.duration/1.008);streamSources.push(src);src.onended=()=>{const i=streamSources.indexOf(src);if(i>=0)streamSources.splice(i,1)};if(onFirst)onFirst();return true;
+}
 async function playKaguyaVoice(text,mood="normal",voiceStyle="",onFirstAudio){
   if(!voiceEnabled||!text)return false;
   const cooldownLeft=getTtsCooldownRemaining();
-  if(cooldownLeft>0){lastTtsError={message:"Gemini TTS cooldown active",status:429,retryAfterMs:cooldownLeft};refreshTtsCooldownStatus();return false}
+  if(cooldownLeft>0){lastTtsError={message:"ElevenLabs TTS cooldown active",status:429,retryAfterMs:cooldownLeft};refreshTtsCooldownStatus();return false}
   stopKaguyaVoicePlayback();primeKaguyaAudio();const myRun=voiceRunId;
   try{
     const data=await requestCoach({mode:"tts",text:String(text).slice(0,420),mood,voiceStyle},22000);
     if(myRun!==voiceRunId)return false;if(!data.audioBase64)throw new Error("no audio");
     let announced=false;const announce=()=>{if(announced)return;announced=true;if(typeof onFirstAudio==="function")onFirstAudio()};
-    const ok=schedulePcmChunk(data.audioBase64,myRun,announce,Number(data.sampleRate||24000));
-    if(!ok)throw new Error("WebAudio playback unavailable");
-    return true;
+    const ok=await scheduleEncodedAudio(data.audioBase64,data.mimeType||"audio/mpeg",myRun,announce);if(!ok)throw new Error("WebAudio playback unavailable");return true;
   }catch(e){
     const status=Number(e?.status||e?.details?.status||0)||null,retryAfterMs=Number(e?.retryAfterMs||e?.details?.retryAfterMs||e?.details?.details?.retryAfterMs||0)||0;
     lastTtsError={message:String(e?.message||e),status,retryAfterMs,details:e?.details||null};
     if(status===429)setTtsCooldown(retryAfterMs,lastTtsError.message);else setServiceConnection("tts",false,"TTS 오류",lastTtsError.message);
-    console.warn("[STACK ZERO TTS unary]",lastTtsError);return false;
+    console.warn("[STACK ZERO ElevenLabs TTS]",lastTtsError);return false;
   }
-}
-function base64PcmToFloat32(base64){const raw=atob(base64),n=Math.floor(raw.length/2),out=new Float32Array(n);for(let i=0;i<n;i++){let v=raw.charCodeAt(i*2)|(raw.charCodeAt(i*2+1)<<8);if(v&0x8000)v-=0x10000;out[i]=Math.max(-1,Math.min(1,v/32768))}return out}
-function schedulePcmChunk(base64,myRun,onFirst,sampleRate=24000){if(myRun!==voiceRunId||!base64)return false;const ctx=getVoiceAudioContext();if(!ctx)return false;if(ctx.state==="suspended")ctx.resume().catch(()=>{});const samples=base64PcmToFloat32(base64);if(!samples.length)return false;const b=ctx.createBuffer(1,samples.length,Number(sampleRate||24000));b.copyToChannel(samples,0);const src=ctx.createBufferSource();src.buffer=b;src.playbackRate.value=1.008;if("detune" in src)src.detune.value=38;const gain=ctx.createGain();gain.gain.value=1.22;src.connect(gain);gain.connect(ctx.destination);const start=Math.max(ctx.currentTime+.045,streamNextAt||0);src.start(start);streamNextAt=start+(b.duration/1.008);streamSources.push(src);src.onended=()=>{const i=streamSources.indexOf(src);if(i>=0)streamSources.splice(i,1)};if(onFirst)onFirst();return true}
-async function playKaguyaVoiceStream(text,mood="normal",voiceStyle="",onFirstAudio){
-  if(!voiceEnabled||!text)return false;
-  stopKaguyaVoicePlayback();primeKaguyaAudio();const myRun=voiceRunId,controller=new AbortController();
-  let gotAudio=false,buffer="",streamError=null,firstAudioTimedOut=false;
-  const firstAudioTimer=setTimeout(()=>{if(!gotAudio){firstAudioTimedOut=true;controller.abort()}},5200);
-  const hardTimer=setTimeout(()=>controller.abort(),14000);
-  try{
-    const response=await fetch("/api/tts-stream",{method:"POST",headers:{"Content-Type":"application/json"},signal:controller.signal,body:JSON.stringify({text:String(text).slice(0,420),mood,voiceStyle})});
-    if(!response.ok||!response.body){const d=await response.json().catch(()=>({}));throw new Error(d.error||`TTS stream HTTP ${response.status}`)}
-    const reader=response.body.getReader(),decoder=new TextDecoder();
-    const processBlock=block=>{
-      const lines=String(block||"").split(/\r?\n/),parts=[];for(const line of lines)if(line.startsWith("data:"))parts.push(line.slice(5).trim());
-      if(!parts.length)return;const payload=parts.join("\n");if(!payload||payload==="[DONE]")return;
-      let evt;try{evt=JSON.parse(payload)}catch(e){return}
-      if(evt?.event_type==="error"){streamError=new Error(evt?.error?.message||"TTS stream error");return}
-      const audio=evt?.event_type==="step.delta"&&evt?.delta?.type==="audio"?evt?.delta?.data:null;
-      if(audio){const first=!gotAudio;if(schedulePcmChunk(audio,myRun,first?()=>{gotAudio=true;clearTimeout(firstAudioTimer);if(typeof onFirstAudio==="function")onFirstAudio()}:null))gotAudio=true}
-    };
-    while(myRun===voiceRunId){const {done,value}=await reader.read();if(done)break;buffer+=decoder.decode(value,{stream:true}).replace(/\r\n/g,"\n");let idx;while((idx=buffer.indexOf("\n\n"))>=0){const block=buffer.slice(0,idx);buffer=buffer.slice(idx+2);processBlock(block);if(streamError)throw streamError}}
-    if(buffer.trim())processBlock(buffer);if(streamError)throw streamError;if(!gotAudio)throw new Error(firstAudioTimedOut?"TTS first audio timeout":"TTS stream returned no audio");return true;
-  }finally{clearTimeout(firstAudioTimer);clearTimeout(hardTimer)}
 }
 function levelVoiceBias(){
   const r=levelIndex(Number(state.total.study||0));
