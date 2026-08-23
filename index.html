@@ -532,8 +532,8 @@ html[data-theme="lightning"] .level-bar div{background-image:linear-gradient(90d
 <script>
 (function(){
 "use strict";
-const KEY="STACK_ZERO_FINAL_V2";
-const APP_VERSION="38.1 FINAL";
+const KEY="STACK_ZERO_FINAL_39_0";
+const APP_VERSION="39.0 FINAL";
 const LEVELS=[
 {min:0,max:100,name:"입문자",gem:"🪨",g1:"#65584c",g2:"#b9a58f",label:"STONE"},
 {min:100,max:200,name:"수련자",gem:"🪵",g1:"#5c3420",g2:"#c9925c",label:"WOOD"},
@@ -704,7 +704,7 @@ function receiveReward(id){
 }function updateTabs(){document.querySelectorAll(".quest-tab").forEach(x=>x.classList.toggle("active",x.dataset.type===active))}
 
 
-const SFX_PREF_KEY="STACK_ZERO_FINAL_V2_SFX_ENABLED";
+const SFX_PREF_KEY="STACK_ZERO_FINAL_39_0_SFX_ENABLED";
 let sfxEnabled=localStorage.getItem(SFX_PREF_KEY)!=="0",appAudioContext=null;
 function getAppAudioContext(){if(!appAudioContext){const AC=window.AudioContext||window.webkitAudioContext;if(AC)appAudioContext=new AC()}return appAudioContext}
 function getSfxContext(){return getAppAudioContext()}
@@ -756,7 +756,7 @@ function dailyAffinity(){
 function normalizeLine(s){return String(s||"").replace(/[\s…,.!?♡♥✦☆~]/g,"").toLowerCase()}
 function chooseFresh(lines){const recent=(state.aiRecentMessages||[]).slice(0,30).map(normalizeLine),pool=lines.filter(x=>!recent.includes(normalizeLine(x)));const src=pool.length?pool:lines;return src[Math.floor(Math.random()*src.length)]}
 function aiCoachMessage(reason="refresh"){
-  const study=Number(state.today.study||0),rank=levelFor(Number(state.total.study||0));let lines=[];
+  const study=Number(state.today.study||0),rank=levelFor(Number(state.total.study||0)),rIdx=levelIndex(Number(state.total.study||0));let lines=[];
   if(reason==="study_done"){
     if(study>=10) lines=["…잠깐, 그렇게 웃게 만들면 곤란한데.","진짜 끝까지 가버리네… 후후, 오늘은 내가 졌어요.","아, 잠깐만. 지금은 좀 기뻐해도 되죠? …정말 대단해.","그만 멋있는 척해요. 이미 충분히 멋있으니까."];
     else if(study>=7) lines=["아직도 집중하고 있었어? …후후, 오늘 좀 멋있네.","이제는 슬쩍 기대해도 되겠는데요. 어디까지 가나 볼래.","그 표정 보니까 아직 끝낼 생각 없죠? 좋아, 나도 끝까지 볼게.",`일곱 시간 넘게 붙잡고 있으면서 태연한 척은… 좀 반칙 아닌가?`];
@@ -773,6 +773,13 @@ function aiCoachMessage(reason="refresh"){
   else if(study>=4) lines=["오늘은 꽤 괜찮은 얼굴 하고 있네요.","흠, 지금은 조금 마음에 들어요.","이런 날은 괜히 장난 좀 치고 싶어지네."];
   else if(study>=1) lines=["오늘은 시작했네요. 그럼 조금 더 지켜볼게.","흠, 이제 좀 분위기가 나네.","좋아. 오늘은 아직 기대해볼 만하겠네요."];
   else lines=["오늘은 아직 조용하네요.","아직 시작 전인가요? …뭐, 보고는 있을게요.","흠. 오늘은 어떤 얼굴을 보여줄 건데요?"];
+  if(rIdx>=8&&reason==="refresh"&&study<7){
+    lines=lines.concat(["후후, 오늘은 조용하네. 그래도 이제 와서 내가 모른 척할 사이는 아니잖아요.","뭘 하든 말은 해줘요. 괜히 신경 쓰이게 하지 말고.","오늘 텐션이 낮아도 상관없어요. 당신이 어떤 사람인지는 이제 아니까."]);
+  }else if(rIdx>=6&&reason==="refresh"&&study<7){
+    lines=lines.concat(["오늘은 좀 느긋하네. 뭐, 그런 날도 당신답긴 해요.","후후, 이제는 굳이 잘 보이려고 안 해도 돼요. 이미 충분히 봤으니까."]);
+  }else if(rIdx>=4&&reason==="refresh"&&study<4){
+    lines=lines.concat(["오늘은 아직 조용하네. 그래도 예전처럼 낯설진 않아서 좀 웃기네요.","흠, 오늘은 무슨 생각 하고 있는지 조금 궁금하네."]);
+  }
   return {rank,msg:chooseFresh(lines),affinity:dailyAffinity()};
 }
 
@@ -875,7 +882,7 @@ function showTransientKaguyaMood(avatar,{mood="",text="",reason=""}={}){
   const ms=reason==="chat"?9000:(resolved==="angry"||resolved==="cry"?4300:3400);
   kaguyaMoodTimer=setTimeout(()=>restoreKaguyaStackFace(avatar),ms);
 }
-const KAGUYA_DB_NAME="STACK_ZERO_KAGUYA_DB_FINAL_V2";
+const KAGUYA_DB_NAME="STACK_ZERO_KAGUYA_DB_FINAL_39_0";
 const KAGUYA_DB_VERSION=1;
 let kaguyaDBPromise=null;
 function openKaguyaDB(){
@@ -902,19 +909,14 @@ function setServiceConnection(service,stateValue,label=""){
   const stateName=stateValue===true?"ok":stateValue===false?"err":"checking";el.className="conn "+stateName;
   const base=service==="tts"?"TTS":"Gemini";el.textContent=label||base;el.title=`${base} ${stateName==="ok"?"연결됨":stateName==="err"?"연결 안됨":"확인 중"}`;
 }
-async function requestCoach(payload,timeoutMs=COACH_TIMEOUT_MS){const isTts=payload?.mode==="tts",controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeoutMs);try{const response=await fetch("/api/coach",{method:"POST",headers:{"Content-Type":"application/json"},signal:controller.signal,body:JSON.stringify(payload)});const data=await response.json().catch(()=>({}));if(!response.ok||!data.ok){const e=new Error(data.error||`HTTP ${response.status}`);e.status=response.status;e.details=data;throw e}setServiceConnection(isTts?"tts":"gemini",true);return data}catch(e){setServiceConnection(isTts?"tts":"gemini",false);throw e}finally{clearTimeout(timer)}}
-async function probeTtsConnection(){
-  setServiceConnection("tts",null);const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),22000);
-  try{const r=await fetch("/api/coach?probe=tts",{method:"GET",cache:"no-store",signal:controller.signal});const d=await r.json().catch(()=>({}));setServiceConnection("tts",Boolean(r.ok&&d.ok));}
-  catch(e){setServiceConnection("tts",false)}finally{clearTimeout(timer)}
-}
+async function requestCoach(payload,timeoutMs=COACH_TIMEOUT_MS){const isTts=payload?.mode==="tts",controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeoutMs);try{const response=await fetch("/api/coach",{method:"POST",headers:{"Content-Type":"application/json"},signal:controller.signal,body:JSON.stringify(payload)});const data=await response.json().catch(()=>({}));if(!response.ok||!data.ok){const e=new Error(data.error||`HTTP ${response.status}`);e.status=response.status;e.details=data;throw e}setServiceConnection(isTts?"tts":"gemini",true);if(!isTts&&typeof data.ttsConfigured==="boolean")setServiceConnection("tts",data.ttsConfigured);return data}catch(e){setServiceConnection(isTts?"tts":"gemini",false);throw e}finally{clearTimeout(timer)}}
 async function renderAICoach(reason){
   const requestId=++coachRequestId,x=aiCoachMessage(reason||"refresh");if(coachAbortController)coachAbortController.abort();setCoachThinking();
   try{const [chat,memories]=await Promise.all([recentChat(36),relevantMemories(String(state.recentAction?.title||reason||""),18)]);const data=await requestCoach({mode:"event",...coachContext(reason),recentChat:chat,memories});if(requestId!==coachRequestId)return;const aiText=String(data.message||data.replyKo||"").trim();if(!aiText)throw new Error("empty reply");state.aiRecentMessages=[aiText,...(state.aiRecentMessages||[]).filter(v=>v!==aiText)].slice(0,30);state.aiLastMessage=aiText;save();await addChatMessage("assistant",aiText,{kind:"event",reason});await revealReplySynced(data,aiText,reason)}
   catch(err){if(requestId!==coachRequestId)return;setCoachVisual({text:x.msg,mood:"",reason,statusText:err?.name==="AbortError"?"응답이 늦어 로컬 반응으로 전환":"연결이 잠깐 끊겨 로컬 반응으로 전환",statusClass:"err"})}
 }
 
-const VOICE_ENABLED_KEY="STACK_ZERO_FINAL_V2_VOICE_ENABLED";let voiceEnabled=localStorage.getItem(VOICE_ENABLED_KEY)!=="0",currentAudio=null,voiceRunId=0,streamNextAt=0,streamSources=[],lastTtsError=null;
+const VOICE_ENABLED_KEY="STACK_ZERO_FINAL_39_0_VOICE_ENABLED";let voiceEnabled=localStorage.getItem(VOICE_ENABLED_KEY)!=="0",currentAudio=null,voiceRunId=0,streamNextAt=0,streamSources=[],lastTtsError=null;
 function updateVoiceButton(){const b=document.getElementById("kaguyaVoiceToggle");if(!b)return;b.classList.toggle("off",!voiceEnabled);b.textContent=voiceEnabled?"🔊":"🔇";b.title=voiceEnabled?"일본어 음성 켜짐":"일본어 음성 꺼짐"}
 function getVoiceAudioContext(){return getAppAudioContext()}
 function primeKaguyaAudio(){if(!voiceEnabled)return null;try{const ctx=getAppAudioContext();if(ctx&&ctx.state==="suspended")ctx.resume().catch(()=>{});return ctx}catch(e){return null}}
@@ -933,7 +935,7 @@ async function playKaguyaVoice(text,mood="normal",voiceStyle="",onFirstAudio){
   }catch(e){lastTtsError={message:String(e?.message||e),status:e?.status||e?.details?.status||null,details:e?.details||null};setServiceConnection("tts",false);console.warn("[STACK ZERO TTS unary]",lastTtsError);return false}
 }
 function base64PcmToFloat32(base64){const raw=atob(base64),n=Math.floor(raw.length/2),out=new Float32Array(n);for(let i=0;i<n;i++){let v=raw.charCodeAt(i*2)|(raw.charCodeAt(i*2+1)<<8);if(v&0x8000)v-=0x10000;out[i]=Math.max(-1,Math.min(1,v/32768))}return out}
-function schedulePcmChunk(base64,myRun,onFirst,sampleRate=24000){if(myRun!==voiceRunId||!base64)return false;const ctx=getVoiceAudioContext();if(!ctx)return false;if(ctx.state==="suspended")ctx.resume().catch(()=>{});const samples=base64PcmToFloat32(base64);if(!samples.length)return false;const b=ctx.createBuffer(1,samples.length,Number(sampleRate||24000));b.copyToChannel(samples,0);const src=ctx.createBufferSource();src.buffer=b;src.playbackRate.value=1.012;const gain=ctx.createGain();gain.gain.value=1.22;src.connect(gain);gain.connect(ctx.destination);const start=Math.max(ctx.currentTime+.045,streamNextAt||0);src.start(start);streamNextAt=start+(b.duration/1.012);streamSources.push(src);src.onended=()=>{const i=streamSources.indexOf(src);if(i>=0)streamSources.splice(i,1)};if(onFirst)onFirst();return true}
+function schedulePcmChunk(base64,myRun,onFirst,sampleRate=24000){if(myRun!==voiceRunId||!base64)return false;const ctx=getVoiceAudioContext();if(!ctx)return false;if(ctx.state==="suspended")ctx.resume().catch(()=>{});const samples=base64PcmToFloat32(base64);if(!samples.length)return false;const b=ctx.createBuffer(1,samples.length,Number(sampleRate||24000));b.copyToChannel(samples,0);const src=ctx.createBufferSource();src.buffer=b;src.playbackRate.value=1.008;if("detune" in src)src.detune.value=38;const gain=ctx.createGain();gain.gain.value=1.22;src.connect(gain);gain.connect(ctx.destination);const start=Math.max(ctx.currentTime+.045,streamNextAt||0);src.start(start);streamNextAt=start+(b.duration/1.008);streamSources.push(src);src.onended=()=>{const i=streamSources.indexOf(src);if(i>=0)streamSources.splice(i,1)};if(onFirst)onFirst();return true}
 async function playKaguyaVoiceStream(text,mood="normal",voiceStyle="",onFirstAudio){
   if(!voiceEnabled||!text)return false;
   stopKaguyaVoicePlayback();primeKaguyaAudio();const myRun=voiceRunId,controller=new AbortController();
@@ -956,18 +958,31 @@ async function playKaguyaVoiceStream(text,mood="normal",voiceStyle="",onFirstAud
     if(buffer.trim())processBlock(buffer);if(streamError)throw streamError;if(!gotAudio)throw new Error(firstAudioTimedOut?"TTS first audio timeout":"TTS stream returned no audio");return true;
   }finally{clearTimeout(firstAudioTimer);clearTimeout(hardTimer)}
 }
+function levelVoiceBias(){
+  const r=levelIndex(Number(state.total.study||0));
+  if(r>=9)return "PERMANENT RELATIONSHIP: deeply trusted and very close; speak with effortless familiarity, warm attachment, relaxed teasing and tender attentiveness even on a low-study day. Never revert to distant baseline.";
+  if(r>=8)return "PERMANENT RELATIONSHIP: very close and strongly affectionate; naturally warm, proud and personally invested, with easy smiles and softer intimate endings.";
+  if(r>=7)return "PERMANENT RELATIONSHIP: high trust and clear affection; comfortable teasing, noticeably warm attention and an easy familiar cadence.";
+  if(r>=6)return "PERMANENT RELATIONSHIP: deep trust; more personal, relaxed and caring than the early-rank baseline.";
+  if(r>=5)return "PERMANENT RELATIONSHIP: clear fondness and trust; a naturally softer, friendlier voice with occasional playful warmth.";
+  if(r>=4)return "PERMANENT RELATIONSHIP: growing closeness; subtly warmer, more familiar and more playful than early ranks.";
+  if(r>=3)return "PERMANENT RELATIONSHIP: becoming comfortable; reduce formality and allow a little more warmth.";
+  if(r>=2)return "PERMANENT RELATIONSHIP: interest is growing; retain composure but sound a little more personally engaged.";
+  if(r>=1)return "PERMANENT RELATIONSHIP: no longer a stranger; a faintly softer familiarity is present.";
+  return "PERMANENT RELATIONSHIP: early relationship; poised, observant and slightly reserved.";
+}
 function dailyVoiceBias(){
   const h=Number(state.today.study||0);
-  if(h>=10)return "Daily bond is at its warmest: keep the elegant baseline, but allow unmistakable excitement, brighter energy, smiling breath, faster emotional reactions and occasional flustered delight; she is having trouble hiding how pleased she is.";
-  if(h>=7)return "Daily bond is very warm: sound noticeably more engaged, playful and pleased, with brighter pitch movement, teasing confidence and a smile that leaks through more often.";
-  if(h>=4)return "Daily bond is warming: keep composure, but sound softer, friendlier and more interested, with a few light pitch lifts and subtle smiles.";
-  if(h>=1)return "Daily bond is reserved but attentive: calm, observant and lightly warm, without sounding cold.";
-  return "Daily bond baseline: composed, observant and slightly reserved, with restrained warmth.";
+  if(h>=10)return "VERY WARM TODAY: unmistakably happier and closer than the low-study baseline. Keep elegance, but let delight leak through clearly: smiling breath, brighter upper-mid pitch movement, quicker reactions, occasional soft laugh or flustered catch, and visibly warmer sentence endings. Do not sound neutral unless the topic is serious.";
+  if(h>=7)return "WARM TODAY: noticeably more engaged, playful and pleased than the low-study baseline, with a clear smile, teasing confidence, livelier Japanese pitch movement and warmer endings.";
+  if(h>=4)return "WARMING TODAY: softer, friendlier and more personally interested than baseline, with subtle smiles and a few natural pitch lifts.";
+  if(h>=1)return "EARLY TODAY: calm, observant and only lightly warm; keep emotional energy restrained.";
+  return "BASELINE TODAY: composed, observant and slightly reserved; minimal emotional leakage.";
 }
 async function playKaguyaVoiceReliable(text,mood="normal",voiceStyle="",onFirstAudio){
   if(!voiceEnabled||!text)return false;
   let announced=false;const announce=()=>{if(announced)return;announced=true;if(typeof onFirstAudio==="function")onFirstAudio()};
-  const enriched=[String(voiceStyle||"").trim(),dailyVoiceBias()].filter(Boolean).join("; ");
+  const enriched=[String(voiceStyle||"").trim(),levelVoiceBias(),dailyVoiceBias()].filter(Boolean).join("; ");
   return await playKaguyaVoice(text,mood,enriched,announce);
 }
 function setChatBusy(on){chatBusy=Boolean(on);const input=document.getElementById("kaguyaChatInput"),btn=document.getElementById("kaguyaChatSend");if(input)input.disabled=chatBusy;if(btn)btn.disabled=chatBusy}
@@ -1255,7 +1270,7 @@ document.getElementById("kaguyaChatInput").addEventListener("keydown",e=>{if(e.k
 document.getElementById("kaguyaVoiceToggle").onclick=()=>{playUiSfx();voiceEnabled=!voiceEnabled;localStorage.setItem(VOICE_ENABLED_KEY,voiceEnabled?"1":"0");if(!voiceEnabled)stopKaguyaVoicePlayback();else primeKaguyaAudio();updateVoiceButton();toast(voiceEnabled?"일본어 음성 ON":"일본어 음성 OFF")}
 document.addEventListener("click",e=>{const t=e.target&&e.target.closest?e.target.closest("button"):null;if(!t)return;const id=t.id||"";if(["plus","kaguyaChatSend","kaguyaVoiceToggle","manageBtn","addBtn","saveQuest","historyBtn","closeHistory","closeManager","cancelEditor","celebrateClose"].includes(id))return;if(t.matches(".quest-tab,[data-achieve],[data-receive],.quest-empty-action,.tool-btn,.mini,.reward-use,.form-actions button")){playUiSfx(t.classList.contains("danger")?"danger":t.matches("[data-receive],.reward-use")?"reward":t.matches(".quest-tab,[data-achieve],.quest-empty-action")?"quest":"tap")}});
 updateVoiceButton();openKaguyaDB().catch(()=>{});
-render();setTimeout(probeTtsConnection,700)
+render()
 setInterval(()=>{if(rollover())render()},10000)
 })();
 </script>

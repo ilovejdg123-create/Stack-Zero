@@ -1,15 +1,21 @@
-# STACK ZERO · FINAL
+# STACK ZERO 39.0 FINAL
 
-Production-ready final build based on V37.7 RC.
+Production build.
 
-Final changes:
-- fresh FINAL storage namespace: starts from STUDY/EXERCISE/SLEEP 0
-- previous level/quest celebration flags are not carried into FINAL
-- study decrement button removed
-- RC STUDY ±50 test buttons removed
-- 10-stack love/expanded Kaguya threshold retained
-- latest user-provided 9 STACK + 10 MOOD images retained
-- direct-chat mood image persists for about 9 seconds
-- Gemini/TTS connection indicators below chat (green connected / red disconnected)
-- TTS default voice retuned to a brighter upper-mid, calm youthful Japanese delivery using Leda
-- all rank/button/milestone sound systems retained
+## Final behavior
+- Fresh production namespace: STUDY / EXERCISE / SLEEP begin at 0 on first launch of 39.0 FINAL.
+- Previous test level-up / quest celebration flags are not inherited, so milestones celebrate again when earned.
+- Previous Kaguya test chat/memory DB is not inherited.
+- Study is add-only: +1 hour, daily maximum 14. No -1 and no ±50 developer buttons.
+- Latest user-provided Kaguya assets only: 9 STACK images + 10 mood images.
+- STACK 10 is the love/high-impact threshold: enlarged Kaguya area + hearts + special sound.
+- STACK 7 and 10 retain milestone sounds; rank-specific sounds and level-up sounds remain enabled.
+- Exercise and sleep lock after confirmation for the day.
+- History remains view-only; schedule/calendar is not included.
+- Gemini chat + Gemini TTS connection state is shown compactly beside LIVE.
+- TTS uses the known-working Gemini 2.5 Flash TTS path with Sulafat and subtle client-side pitch lift.
+- Chat mood images remain visible longer before reverting to the current STACK image.
+- Relationship model has two independent layers:
+  1. cumulative STUDY rank = long-term baseline closeness;
+  2. today's study hours = temporary daily warmth / excitement.
+- High daily study changes both text tone and TTS acting, while cumulative rank permanently softens Kaguya's baseline relationship.

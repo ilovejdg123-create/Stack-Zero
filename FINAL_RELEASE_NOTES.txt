@@ -1,28 +1,19 @@
-STACK ZERO 38.0 FINAL
+STACK ZERO 39.0 FINAL
 
-FINAL RESET
-- New localStorage key: STACK_ZERO_FINAL_V1
-- New IndexedDB: STACK_ZERO_KAGUYA_DB_FINAL_V1
-- App starts at 0 / 0 / 0 with empty history, celebration flags, rewards and AI chat memory.
-- Old RC data is not loaded into FINAL, so level/quest celebrations can trigger again naturally.
+Release status: production candidate / final package
 
-FINAL UI
-- Removed STUDY -1.
-- Removed RC-only STUDY -50 / +50.
-- STUDY is add-only from 0 to 14 per day.
+Finalization changes from 38.3:
+1. New localStorage namespace STACK_ZERO_FINAL_39_0 -> clean 0-start.
+2. New IndexedDB namespace STACK_ZERO_KAGUYA_DB_FINAL_39_0 -> clean Kaguya chat/memory start.
+3. APP_VERSION set to 39.0 FINAL and package version 39.0.0.
+4. Removed accumulated RC/test reports from the distributable ZIP.
+5. No behavior changes to the working 38.3 TTS path, sound system, Kaguya images, mood timing, connection UI, daily attitude model, or cumulative relationship model.
 
-KAGUYA
-- Direct-chat mood image persists ~9 seconds.
-- Study progression image rule is unchanged: study actions never get replaced by mood images.
-- 10+ study keeps enlarged Kaguya + hearts.
-
-VOICE
-- Default prebuilt voice: Leda.
-- Direction: calm/poised, naturally bright upper-mid register, more expressive Japanese timing without childish/squeaky delivery.
-- Gemini TTS transport/fallback from V37.7 retained.
-
-CONNECTION STATUS
-- Small Gemini/TTS status indicators are shown below chat.
-- Green = last connection/probe succeeded.
-- Red = last connection/probe failed.
-- TTS runs a silent connection probe in the background shortly after load.
+Static verification performed before packaging:
+- inline browser JS syntax check
+- Node syntax checks for coach/API functions
+- required 19 Kaguya image assets present
+- no study minus button
+- no ±50 developer buttons
+- fresh production storage keys present
+- Gemini/TTS compact connection indicators present next to LIVE
