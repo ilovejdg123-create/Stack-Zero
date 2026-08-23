@@ -1,5 +1,0 @@
-const {openTTSStream,TTS_PROVIDER,TTS_MODEL}=require("../lib/coach-core");
-module.exports=async(req,res)=>{
-  res.setHeader("Cache-Control","no-store");if(req.method==="OPTIONS")return res.status(204).end();if(req.method!=="POST")return res.status(405).json({ok:false,error:"Method not allowed"});
-  try{const body=typeof req.body==="string"?JSON.parse(req.body||"{}"):req.body||{};const text=String(body.text||"").trim().slice(0,500);if(!text)return res.status(400).json({ok:false,error:"text is required"});const upstream=await openTTSStream(text,body.mood,body.voiceStyle);res.status(200);res.setHeader("Content-Type",upstream.headers.get("content-type")||"audio/mpeg");res.setHeader("X-TTS-Provider",TTS_PROVIDER);res.setHeader("X-TTS-Model",TTS_MODEL);const reader=upstream.body.getReader();while(true){const {done,value}=await reader.read();if(done)break;res.write(Buffer.from(value))}res.end()}catch(err){if(!res.headersSent)res.status(err?.status&&err.status>=400&&err.status<600?err.status:502).json({ok:false,provider:TTS_PROVIDER,error:err?.message||"TTS stream failed",code:err?.code||null,retryAfterMs:Number(err?.retryAfterMs||0)||0});else res.end()}
-};
