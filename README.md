@@ -1,47 +1,30 @@
-# STACK ZERO 39.0 FINAL
+# STACK ZERO 39.5 FINAL · FREE TTS FALLBACK
 
-Production build.
+Production build based on 39.4.
 
-## Final behavior
-- Fresh production namespace: STUDY / EXERCISE / SLEEP begin at 0 on first launch of 39.0 FINAL.
-- Previous test level-up / quest celebration flags are not inherited, so milestones celebrate again when earned.
-- Previous Kaguya test chat/memory DB is not inherited.
-- Study is add-only: +1 hour, daily maximum 14. No -1 and no ±50 developer buttons.
-- Latest user-provided Kaguya assets only: 9 STACK images + 10 mood images.
-- STACK 10 is the love/high-impact threshold: enlarged Kaguya area + hearts + special sound.
-- STACK 7 and 10 retain milestone sounds; rank-specific sounds and level-up sounds remain enabled.
-- Exercise and sleep lock after confirmation for the day.
-- History remains view-only; schedule/calendar is not included.
-- Gemini chat + ElevenLabs TTS connection state is shown compactly beside LIVE.
-- TTS uses the known-working Gemini 2.5 Flash TTS path with Sulafat and subtle client-side pitch lift.
-- Chat mood images remain visible longer before reverting to the current STACK image.
-- Relationship model has two independent layers:
-  1. cumulative STUDY rank = long-term baseline closeness;
-  2. today's study hours = temporary daily warmth / excitement.
-- High daily study changes both text tone and TTS acting, while cumulative rank permanently softens Kaguya's baseline relationship.
+## Voice pipeline
+1. Gemini generates Kaguya dialogue, Japanese speech text, mood, memory and relationship tone.
+2. ElevenLabs TTS is attempted first using `ELEVENLABS_API_KEY` + `ELEVENLABS_VOICE_ID`.
+3. If ElevenLabs is rate-limited, out of free credits, unavailable, misconfigured, times out, or audio playback fails, STACK ZERO automatically falls back to the browser/OS Japanese Speech Synthesis voice.
+4. Browser fallback needs no additional API key or paid account. It is intentionally used as the zero-cost safety net; voice quality depends on the device/browser.
+5. ElevenLabs cooldown/backoff remains enabled so the app does not repeatedly hammer a limited API. While cooldown is active, speech goes directly to browser TTS.
 
-## 39.1 FINAL — TTS quota hardening
-- Gemini 3.1 Flash TTS Preview first, Gemini 2.5 Flash TTS Preview one-time fallback.
-- No immediate same-model retry on 429/5xx.
-- Double-429 starts a persistent client cooldown; text chat continues and TTS is retried only after cooldown expires.
-- Existing 39.0 app progress and Kaguya memory are preserved.
+## Existing production behavior preserved
+- Existing STACK progress and Kaguya long-term memory are preserved.
+- Gemini remains the dialogue/mood/memory engine.
+- Current 9 STACK images + 10 mood images are preserved.
+- 7/10 milestone sounds, 10-hour heart/enlarged Kaguya state, level themes, quests/rewards and relationship logic are unchanged.
+- Cumulative study level controls permanent baseline closeness; today's study hours control daily warmth/excitement.
+- LIVE connection indicators remain beside Kaguya status.
 
-## 39.2 FINAL — progressive TTS 429 backoff
-- 429 waits increase 1m → 2m → 5m → 10m → 20m → 30m instead of repeatedly hammering the TTS API.
-- Successful TTS resets the sequence back to 1m.
-- Real Gemini Retry-After hints are respected when longer.
-- Existing 39.0 production progress and Kaguya memory remain intact.
+## Netlify environment variables
+Required for high-quality ElevenLabs TTS:
+- `GEMINI_API_KEY`
+- `ELEVENLABS_API_KEY`
+- `ELEVENLABS_VOICE_ID`
 
-## 39.3 UI polish
-- Top rank card: STUDY STACK label moved out of the number column into the open center-right area.
-- Larger independent STUDY STACK label; total number stays aligned at the far right.
-- Mobile grid spacing added to prevent rank/label/number overlap.
-- Persistent data keys unchanged from 39.2.
+Optional:
+- `ELEVENLABS_MODEL_ID` (default `eleven_flash_v2_5`)
+- `ELEVENLABS_OUTPUT_FORMAT` (default `mp3_44100_128`)
 
-
-## 39.4 FINAL · ElevenLabs TTS
-- Gemini remains responsible for dialogue, memory, mood, and relationship logic.
-- All speech synthesis moved to ElevenLabs. No Gemini TTS request remains in the active TTS path.
-- Required Netlify env vars: `ELEVENLABS_API_KEY`, `ELEVENLABS_VOICE_ID`.
-- Optional: `ELEVENLABS_MODEL_ID` (default `eleven_flash_v2_5`), `ELEVENLABS_OUTPUT_FORMAT` (default `mp3_44100_128`).
-- Existing STACK data and Kaguya memory keys are preserved.
+If ElevenLabs is unavailable, browser TTS still works without any new environment variable.

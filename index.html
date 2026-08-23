@@ -534,7 +534,7 @@ html[data-theme="lightning"] .level-bar div{background-image:linear-gradient(90d
 (function(){
 "use strict";
 const KEY="STACK_ZERO_FINAL_39_0";
-const APP_VERSION="39.4 FINAL · ElevenLabs TTS";
+const APP_VERSION="39.5 FINAL";
 const LEVELS=[
 {min:0,max:100,name:"입문자",gem:"🪨",g1:"#65584c",g2:"#b9a58f",label:"STONE"},
 {min:100,max:200,name:"수련자",gem:"🪵",g1:"#5c3420",g2:"#c9925c",label:"WOOD"},
@@ -932,8 +932,8 @@ async function renderAICoach(reason){
 }
 
 const VOICE_ENABLED_KEY="STACK_ZERO_FINAL_39_0_VOICE_ENABLED";
-const TTS_COOLDOWN_KEY="STACK_ZERO_FINAL_39_4_ELEVENLABS_COOLDOWN_UNTIL";
-const TTS_BACKOFF_KEY="STACK_ZERO_FINAL_39_4_ELEVENLABS_BACKOFF_STEP";
+const TTS_COOLDOWN_KEY="STACK_ZERO_FINAL_39_5_FREE_TTS_COOLDOWN_UNTIL";
+const TTS_BACKOFF_KEY="STACK_ZERO_FINAL_39_5_FREE_TTS_BACKOFF_STEP";
 const TTS_BACKOFF_STEPS=[60000,120000,300000,600000,1200000,1800000]; // 1m → 2m → 5m → 10m → 20m → 30m
 let voiceEnabled=localStorage.getItem(VOICE_ENABLED_KEY)!=="0",currentAudio=null,voiceRunId=0,streamNextAt=0,streamSources=[],lastTtsError=null;
 let ttsCooldownUntil=Math.max(0,Number(localStorage.getItem(TTS_COOLDOWN_KEY)||0)||0),ttsCooldownTimer=null;
@@ -969,6 +969,40 @@ function clearTtsCooldown(resetBackoff=false){
 function getVoiceAudioContext(){return getAppAudioContext()}
 function primeKaguyaAudio(){if(!voiceEnabled)return null;try{const ctx=getAppAudioContext();if(ctx&&ctx.state==="suspended")ctx.resume().catch(()=>{});return ctx}catch(e){return null}}
 function stopKaguyaVoicePlayback(){voiceRunId++;if(currentAudio){try{currentAudio.pause()}catch(e){}currentAudio=null}for(const s of streamSources.splice(0)){try{s.stop()}catch(e){}}streamNextAt=0;if("speechSynthesis" in window)try{window.speechSynthesis.cancel()}catch(e){}}
+function browserJapaneseTTS(text,onStart){
+  return new Promise(resolve=>{
+    try{
+      if(!voiceEnabled||!text||!("speechSynthesis" in window)||typeof SpeechSynthesisUtterance==="undefined"){resolve(false);return}
+      const synth=window.speechSynthesis;
+      try{synth.cancel()}catch(e){}
+      const speak=()=>{
+        const voices=synth.getVoices? synth.getVoices():[];
+        const ja=voices.filter(v=>String(v.lang||"").toLowerCase().startsWith("ja"));
+        const preferred=ja.find(v=>v.localService&&/Nanami|Haruka|Kyoko|Ayumi|Otoya|Japanese|日本/i.test(String(v.name||"")))
+          ||ja.find(v=>v.localService)
+          ||ja.find(v=>/Nanami|Haruka|Kyoko|Ayumi|Otoya|Google.*日本|Japanese|日本/i.test(String(v.name||"")))
+          ||ja[0]||null;
+        const u=new SpeechSynthesisUtterance(String(text).slice(0,500));
+        if(preferred)u.voice=preferred;
+        u.lang="ja-JP";u.rate=.98;u.pitch=1.08;u.volume=1;
+        let started=false,finished=false;
+        const finish=ok=>{if(finished)return;finished=true;resolve(Boolean(ok))};
+        u.onstart=()=>{started=true;setServiceConnection("tts",true,"TTS 무료","ElevenLabs 무료분/연결 실패 시 브라우저 일본어 TTS로 자동 전환 중");if(typeof onStart==="function")onStart()};
+        u.onend=()=>finish(started);
+        u.onerror=()=>{setServiceConnection("tts",false,"TTS 오류","ElevenLabs와 브라우저 일본어 TTS 모두 재생할 수 없습니다");finish(false)};
+        try{synth.speak(u)}catch(e){finish(false)}
+        setTimeout(()=>{if(!started&&!finished){try{synth.resume()}catch(e){};setTimeout(()=>{if(!started&&!finished)finish(false)},900)}},450);
+      };
+      // Chrome may populate voices asynchronously. Give it a short chance, then speak anyway.
+      const initial=synth.getVoices? synth.getVoices():[];
+      if(initial.length){speak();return}
+      let done=false;
+      const go=()=>{if(done)return;done=true;try{synth.removeEventListener&&synth.removeEventListener("voiceschanged",go)}catch(e){};speak()};
+      try{synth.addEventListener&&synth.addEventListener("voiceschanged",go,{once:true})}catch(e){}
+      setTimeout(go,300);
+    }catch(e){resolve(false)}
+  });
+}
 function base64ToArrayBuffer(base64){const raw=atob(base64),bytes=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);return bytes.buffer}
 async function scheduleEncodedAudio(base64,mimeType,myRun,onFirst){
   if(myRun!==voiceRunId||!base64)return false;const ctx=getVoiceAudioContext();if(!ctx)return false;if(ctx.state==="suspended")await ctx.resume().catch(()=>{});
@@ -1017,7 +1051,12 @@ async function playKaguyaVoiceReliable(text,mood="normal",voiceStyle="",onFirstA
   if(!voiceEnabled||!text)return false;
   let announced=false;const announce=()=>{if(announced)return;announced=true;if(typeof onFirstAudio==="function")onFirstAudio()};
   const enriched=[String(voiceStyle||"").trim(),levelVoiceBias(),dailyVoiceBias()].filter(Boolean).join("; ");
-  return await playKaguyaVoice(text,mood,enriched,announce);
+  // High-quality path first. During ElevenLabs cooldown we skip the paid/limited API and go straight to the free browser voice.
+  const elevenOk=await playKaguyaVoice(text,mood,enriched,announce);
+  if(elevenOk)return true;
+  const browserOk=await browserJapaneseTTS(text,announce);
+  if(browserOk)return true;
+  return false;
 }
 function setChatBusy(on){chatBusy=Boolean(on);const input=document.getElementById("kaguyaChatInput"),btn=document.getElementById("kaguyaChatSend");if(input)input.disabled=chatBusy;if(btn)btn.disabled=chatBusy}
 function revealReplySynced(data,reply,reason="chat"){

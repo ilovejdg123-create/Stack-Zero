@@ -1,14 +1,7 @@
-STACK ZERO 39.2 FINAL
+STACK ZERO 39.5 FINAL
 
-TTS 429 exponential-backoff hardening:
-- 429 cooldown progression: 1 min → 2 min → 5 min → 10 min → 20 min → 30 min.
-- A real Retry-After from Gemini is respected when it is longer than the current backoff step.
-- A successful TTS response resets the backoff to 1 minute for any future rate-limit event.
-- No background audio probe is sent during cooldown; the next real voice request retries after the wait expires.
-- Gemini text chat continues while TTS is cooling down.
-- Existing STACK ZERO 39.0 production progress and Kaguya memory namespaces are preserved.
-
-All 39.1 functionality is preserved.
-
-
-39.4: TTS provider migrated from Gemini TTS to ElevenLabs. Gemini chat logic unchanged. Requires ELEVENLABS_API_KEY + ELEVENLABS_VOICE_ID in deployment environment.
+TTS policy:
+- ElevenLabs first for selected high-quality Japanese voice.
+- Automatic zero-cost browser Japanese TTS fallback on ElevenLabs failure/quota/cooldown.
+- No additional API key is needed for the browser fallback.
+- Existing application progress and Kaguya memory remain intact.
