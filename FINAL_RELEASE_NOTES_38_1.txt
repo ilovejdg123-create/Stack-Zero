@@ -1,0 +1,15 @@
+STACK ZERO 38.1 FINAL
+
+Final adjustments:
+- Gemini/TTS connection indicators moved into the Kaguya status row immediately beside LIVE, under the rank line.
+- Indicators are intentionally tiny; green = connected, red = disconnected, gray = checking.
+- Kaguya voice raised/thinned only slightly while preserving calm/elegant baseline.
+- Daily study hours now progressively warm Kaguya's baseline attitude in BOTH text and TTS without forcing study-hour mentions.
+  0h: poised/reserved
+  1-3h: attentive/softer
+  4-6h: visibly warmer/playful
+  7-9h: excited/proud/teasing, emotion leaks more often
+  10-14h: clearly delighted, occasional high-energy/flustered/smiling reactions
+- Top rank identity and STUDY STACK total now use separate flex columns with a fixed gap to prevent visual overlap.
+- Fresh FINAL V2 storage namespace starts clean from 0 and allows all achievements/celebrations to trigger again.
+- Existing images, effects, quests, sounds, Gemini/TTS transport, 7/10 special effects, and add-only study control preserved.
