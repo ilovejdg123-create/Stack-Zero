@@ -1,7 +1,13 @@
-STACK ZERO 39.5 FINAL
+STACK ZERO v39.8 AUDITED FINAL
 
-TTS policy:
-- ElevenLabs first for selected high-quality Japanese voice.
-- Automatic zero-cost browser Japanese TTS fallback on ElevenLabs failure/quota/cooldown.
-- No additional API key is needed for the browser fallback.
-- Existing application progress and Kaguya memory remain intact.
+This build was rebuilt after a full regression audit instead of another incremental hotfix.
+
+Important fixes:
+- Netlify coach function is self-contained; the previous ../../lib/coach-core import crash cannot occur.
+- UI SFX use a dedicated Web Audio engine, are always enabled, and no longer share the TTS audio engine.
+- Existing button/study/rank/milestone/level-up sound design is preserved.
+- Bottom-right version label is always visible.
+- Gemini/TTS status stays beside LIVE.
+- Startup probe checks Netlify function/environment configuration without consuming a Gemini or TTS generation request.
+
+All prior final features are retained.

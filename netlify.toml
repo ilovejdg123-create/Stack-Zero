@@ -7,9 +7,3 @@
   to = "/.netlify/functions/coach"
   status = 200
   force = true
-
-[[redirects]]
-  from = "/api/tts-stream"
-  to = "/.netlify/functions/tts-stream"
-  status = 200
-  force = true

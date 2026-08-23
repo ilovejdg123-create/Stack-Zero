@@ -57,6 +57,8 @@ h1{margin:0;font-size:32px;letter-spacing:-1.5px}
 .history-edit{background:#20242c;border-radius:13px;padding:12px;margin:8px 0}.history-edit input{width:100%;padding:10px;border:0;border-radius:9px;background:#292e38;color:#fff;margin:4px 0}.history-edit .row{display:flex;gap:6px}.history-edit button{flex:1}
 .celebrate{position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;padding:25px;background:rgba(0,0,0,.78)}.celebrate-box{width:min(430px,100%);text-align:center;padding:30px 22px;border-radius:28px;background:linear-gradient(145deg,#181b24,#0e1016);border:1px solid var(--accent2);box-shadow:0 0 45px var(--glow);animation:pop .25s ease}.celebrate-gem{font-size:52px}.celebrate h2{font-size:26px;margin:10px 0}.celebrate p{color:#c7cbd2;line-height:1.55;margin:8px 0 20px}.celebrate button{padding:13px 30px;border-radius:12px;background:var(--accent);color:#111;font-weight:900}
 @keyframes pop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+.build-version{position:fixed;right:8px;bottom:6px;z-index:120;color:rgba(198,205,216,.48);font-size:9px;font-weight:800;letter-spacing:.45px;line-height:1;pointer-events:none;user-select:none;text-shadow:0 1px 5px rgba(0,0,0,.75)}
+@media(max-width:420px){.build-version{right:6px;bottom:5px;font-size:8px;opacity:.88}}
 .toast{position:fixed;left:50%;bottom:25px;transform:translateX(-50%);background:var(--accent);color:#111;border-radius:99px;padding:11px 17px;font-size:13px;font-weight:900;display:none;z-index:200;white-space:nowrap}
 
 /* V9 premium mobile UX */
@@ -530,11 +532,12 @@ html[data-theme="lightning"] .level-bar div{background-image:linear-gradient(90d
 </div></div>
 <div id="toast" class="toast"></div>
 
+<div class="build-version" id="buildVersion">STACK ZERO v39.8</div>
 <script>
 (function(){
 "use strict";
 const KEY="STACK_ZERO_FINAL_39_0";
-const APP_VERSION="39.5 FINAL";
+const APP_VERSION="39.8 AUDITED FINAL";
 const LEVELS=[
 {min:0,max:100,name:"입문자",gem:"🪨",g1:"#65584c",g2:"#b9a58f",label:"STONE"},
 {min:100,max:200,name:"수련자",gem:"🪵",g1:"#5c3420",g2:"#c9925c",label:"WOOD"},
@@ -705,12 +708,11 @@ function receiveReward(id){
 }function updateTabs(){document.querySelectorAll(".quest-tab").forEach(x=>x.classList.toggle("active",x.dataset.type===active))}
 
 
-const SFX_PREF_KEY="STACK_ZERO_FINAL_39_0_SFX_ENABLED";
-let sfxEnabled=localStorage.getItem(SFX_PREF_KEY)!=="0",appAudioContext=null;
+let sfxAudioContext=null,sfxMasterGain=null,appAudioContext=null;
 function getAppAudioContext(){if(!appAudioContext){const AC=window.AudioContext||window.webkitAudioContext;if(AC)appAudioContext=new AC()}return appAudioContext}
-function getSfxContext(){return getAppAudioContext()}
-function primeSfx(){if(!sfxEnabled)return null;const ctx=getAppAudioContext();if(ctx&&ctx.state==="suspended")ctx.resume().catch(()=>{});return ctx}
-function sfxEnv(ctx,start,attack=.006,decay=.18,peak=.14){const g=ctx.createGain();g.gain.setValueAtTime(.0001,start);g.gain.linearRampToValueAtTime(peak,start+attack);g.gain.exponentialRampToValueAtTime(.0001,start+attack+decay);g.connect(ctx.destination);return g}
+function getSfxContext(){if(!sfxAudioContext){const AC=window.AudioContext||window.webkitAudioContext;if(AC){sfxAudioContext=new AC();sfxMasterGain=sfxAudioContext.createGain();sfxMasterGain.gain.value=1.18;sfxMasterGain.connect(sfxAudioContext.destination)}}return sfxAudioContext}
+function primeSfx(){const ctx=getSfxContext();if(ctx&&ctx.state==="suspended")ctx.resume().catch(()=>{});return ctx}
+function sfxEnv(ctx,start,attack=.006,decay=.18,peak=.14){const g=ctx.createGain();g.gain.setValueAtTime(.0001,start);g.gain.linearRampToValueAtTime(peak,start+attack);g.gain.exponentialRampToValueAtTime(.0001,start+attack+decay);g.connect(sfxMasterGain||ctx.destination);return g}
 function playTone(ctx,{freq=440,endFreq=0,type="sine",start,duration=.16,peak=.11,attack=.004,decay=.14}){const osc=ctx.createOscillator();osc.type=type;osc.frequency.setValueAtTime(freq,start);if(endFreq>0)osc.frequency.exponentialRampToValueAtTime(Math.max(20,endFreq),start+duration);const g=sfxEnv(ctx,start,attack,decay,peak);osc.connect(g);osc.start(start);osc.stop(start+Math.max(duration,attack+decay+.025))}
 function playNoise(ctx,{start,duration=.09,peak=.035,hp=900,lp=0}){const len=Math.max(1,Math.floor(ctx.sampleRate*duration)),buf=ctx.createBuffer(1,len,ctx.sampleRate),data=buf.getChannelData(0);for(let i=0;i<len;i++)data[i]=(Math.random()*2-1)*Math.pow(1-i/len,1.8);const src=ctx.createBufferSource();src.buffer=buf;let node=src;if(hp){const f=ctx.createBiquadFilter();f.type="highpass";f.frequency.value=hp;node.connect(f);node=f}if(lp){const f=ctx.createBiquadFilter();f.type="lowpass";f.frequency.value=lp;node.connect(f);node=f}const g=sfxEnv(ctx,start,.002,duration,peak);node.connect(g);src.start(start);src.stop(start+duration+.02)}
 function soundThemeName(){return THEME_BY_LEVEL[Math.max(0,levelIndex(Number(state.total.study||0)))]||"stone"}
@@ -921,14 +923,14 @@ async function requestCoach(payload,timeoutMs=COACH_TIMEOUT_MS){
     return data;
   }catch(e){
     if(isTts){if(Number(e?.status||0)!==429)setServiceConnection("tts",false,"TTS 오류",String(e?.message||e))}
-    else setServiceConnection("gemini",false);
+    else{const code=Number(e?.status||0)||0;setServiceConnection("gemini",false,code?`Gemini ${code}`:"Gemini 오류",String(e?.message||e))}
     throw e;
   }finally{clearTimeout(timer)}
 }
 async function renderAICoach(reason){
   const requestId=++coachRequestId,x=aiCoachMessage(reason||"refresh");if(coachAbortController)coachAbortController.abort();setCoachThinking();
   try{const [chat,memories]=await Promise.all([recentChat(36),relevantMemories(String(state.recentAction?.title||reason||""),18)]);const data=await requestCoach({mode:"event",...coachContext(reason),recentChat:chat,memories});if(requestId!==coachRequestId)return;const aiText=String(data.message||data.replyKo||"").trim();if(!aiText)throw new Error("empty reply");state.aiRecentMessages=[aiText,...(state.aiRecentMessages||[]).filter(v=>v!==aiText)].slice(0,30);state.aiLastMessage=aiText;save();await addChatMessage("assistant",aiText,{kind:"event",reason});await revealReplySynced(data,aiText,reason)}
-  catch(err){if(requestId!==coachRequestId)return;setCoachVisual({text:x.msg,mood:"",reason,statusText:err?.name==="AbortError"?"응답이 늦어 로컬 반응으로 전환":"연결이 잠깐 끊겨 로컬 반응으로 전환",statusClass:"err"})}
+  catch(err){if(requestId!==coachRequestId)return;const code=Number(err?.status||0)||0;const statusText=err?.name==="AbortError"?"Gemini 시간초과 · 로컬 반응":code?`Gemini ${code} · 로컬 반응`:"Gemini 오류 · 로컬 반응";setCoachVisual({text:x.msg,mood:"",reason,statusText,statusClass:"err"})}
 }
 
 const VOICE_ENABLED_KEY="STACK_ZERO_FINAL_39_0_VOICE_ENABLED";
@@ -1073,7 +1075,7 @@ async function sendKaguyaChat(){
   if(chatBusy)return;const input=document.getElementById("kaguyaChatInput"),text=String(input?.value||"").trim();if(!text)return;primeKaguyaAudio();stopKaguyaVoicePlayback();input.value="";setChatBusy(true);setCoachThinking();await addChatMessage("user",text,{kind:"chat"});
   const explicitRemember=/기억해|기억해줘|잊지\s*마/.test(text);
   try{const [chat,memories]=await Promise.all([recentChat(44),relevantMemories(text,24)]);const data=await requestCoach({mode:"chat",userMessage:text,...coachContext("chat"),recentChat:chat,memories},18000);const reply=String(data.message||data.replyKo||"").trim();if(!reply)throw new Error("empty reply");await addChatMessage("assistant",reply,{kind:"chat"});await saveMemoryCandidates(data.memories);if(explicitRemember&&(!Array.isArray(data.memories)||!data.memories.length))await saveMemory({text,category:"explicit",importance:5});state.aiRecentMessages=[reply,...(state.aiRecentMessages||[]).filter(v=>v!==reply)].slice(0,30);state.aiLastMessage=reply;save();await revealChatReplySynced(data,reply)}
-  catch(err){if(explicitRemember)await saveMemory({text,category:"explicit",importance:5});setCoachVisual({text:"…연결이 잠깐 이상하네요. 방금 말은 다시 한번만 해줄래요?",mood:"question",reason:"chat",statusText:"대화 연결 실패",statusClass:"err"})}
+  catch(err){if(explicitRemember)await saveMemory({text,category:"explicit",importance:5});const code=Number(err?.status||0)||0;setCoachVisual({text:"…연결이 잠깐 이상하네요. 방금 말은 다시 한번만 해줄래요?",mood:"question",reason:"chat",statusText:code?`Gemini ${code} · 대화 실패`:"Gemini 오류 · 대화 실패",statusClass:"err"})}
   finally{setChatBusy(false);input?.focus()}
 }
 
@@ -1342,7 +1344,15 @@ document.getElementById("kaguyaChatSend").onclick=()=>{playUiSfx("send");sendKag
 document.getElementById("kaguyaChatInput").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();playUiSfx("send");sendKaguyaChat()}})
 document.getElementById("kaguyaVoiceToggle").onclick=()=>{playUiSfx();voiceEnabled=!voiceEnabled;localStorage.setItem(VOICE_ENABLED_KEY,voiceEnabled?"1":"0");if(!voiceEnabled)stopKaguyaVoicePlayback();else primeKaguyaAudio();updateVoiceButton();toast(voiceEnabled?"일본어 음성 ON":"일본어 음성 OFF")}
 document.addEventListener("click",e=>{const t=e.target&&e.target.closest?e.target.closest("button"):null;if(!t)return;const id=t.id||"";if(["plus","kaguyaChatSend","kaguyaVoiceToggle","manageBtn","addBtn","saveQuest","historyBtn","closeHistory","closeManager","cancelEditor","celebrateClose"].includes(id))return;if(t.matches(".quest-tab,[data-achieve],[data-receive],.quest-empty-action,.tool-btn,.mini,.reward-use,.form-actions button")){playUiSfx(t.classList.contains("danger")?"danger":t.matches("[data-receive],.reward-use")?"reward":t.matches(".quest-tab,[data-achieve],.quest-empty-action")?"quest":"tap")}});
-updateVoiceButton();refreshTtsCooldownStatus();openKaguyaDB().catch(()=>{});
+async function probeConnections(){
+  try{
+    const r=await fetch("/api/coach?probe=1",{cache:"no-store"});
+    const d=await r.json().catch(()=>({}));
+    if(r.ok&&d.ok){setServiceConnection("gemini",true,"Gemini","Gemini 함수 정상 · build "+String(d.build||APP_VERSION));setServiceConnection("tts",d.ttsConfigured===true?true:false,d.ttsConfigured===true?"TTS":"TTS 설정없음",d.ttsConfigured===true?"ElevenLabs API key + voice ID configured":"ElevenLabs 환경변수를 확인하세요")}
+    else{setServiceConnection("gemini",false,r.status?"Gemini "+r.status:"Gemini 오류",String(d.error||"probe failed"));if(d.ttsConfigured===false)setServiceConnection("tts",false,"TTS 설정없음")}
+  }catch(e){setServiceConnection("gemini",false,"Gemini 오류",String(e?.message||e))}
+}
+updateVoiceButton();refreshTtsCooldownStatus();openKaguyaDB().catch(()=>{});probeConnections();
 render()
 setInterval(()=>{if(rollover())render()},10000)
 })();
