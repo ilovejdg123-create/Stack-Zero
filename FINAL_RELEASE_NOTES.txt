@@ -1,30 +1,11 @@
-STACK ZERO 39.1 FINAL
+STACK ZERO 39.2 FINAL
 
-Release status: production final
+TTS 429 exponential-backoff hardening:
+- 429 cooldown progression: 1 min → 2 min → 5 min → 10 min → 20 min → 30 min.
+- A real Retry-After from Gemini is respected when it is longer than the current backoff step.
+- A successful TTS response resets the backoff to 1 minute for any future rate-limit event.
+- No background audio probe is sent during cooldown; the next real voice request retries after the wait expires.
+- Gemini text chat continues while TTS is cooling down.
+- Existing STACK ZERO 39.0 production progress and Kaguya memory namespaces are preserved.
 
-TTS quota hardening from 39.0:
-1. Primary TTS model: gemini-3.1-flash-tts-preview.
-2. One fallback only: gemini-2.5-flash-preview-tts.
-3. Removed same-model immediate retries. A TTS reply can make at most one request per model.
-4. If both models return HTTP 429, server returns TTS_RATE_LIMITED and a suggested retryAfterMs.
-5. Browser persists a TTS cooldown and skips new TTS requests during that window instead of repeatedly consuming quota.
-6. LIVE remains the conversation status; the compact TTS indicator becomes red and reads "TTS 한도대기" during cooldown.
-7. Successful TTS automatically clears cooldown and returns the compact TTS indicator to green.
-8. Normal Gemini text chat remains available while TTS is rate-limited.
-9. Existing STACK ZERO 39.0 progress and Kaguya memory namespaces are preserved; this update does not reset user data.
-
-Preserved final behavior:
-- Study starts from the existing 39.0 production save and only has +1.
-- No study -1 or ±50 developer controls.
-- 9 stack images + 10 mood images only.
-- Daily STACK attitude + cumulative LEVEL relationship model.
-- 7 / 10 milestone sounds and 10+ heart/expanded Kaguya presentation.
-- Gemini/TTS compact status indicators beside LIVE.
-
-Verification performed:
-- inline browser JS syntax check
-- Node syntax checks for coach/API/Netlify functions
-- mocked TTS fallback test: 3.1=429 -> 2.5=success (2 calls total)
-- mocked double-429 test -> TTS_RATE_LIMITED + retryAfterMs
-- mocked 403 test -> no fallback request
-- 19 Kaguya image assets present
+All 39.1 functionality is preserved.

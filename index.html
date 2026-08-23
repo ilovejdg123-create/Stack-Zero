@@ -25,8 +25,9 @@ h1{margin:0;font-size:32px;letter-spacing:-1.5px}
 .switch{position:relative;width:62px;height:36px;display:block}.switch input{position:absolute;opacity:0}.slider{position:absolute;inset:0;background:#2a2f39;border-radius:99px}.slider:before{content:"";position:absolute;width:30px;height:30px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.18s}.switch input:checked+.slider{background:var(--accent)}.switch input:checked+.slider:before{transform:translateX(26px);background:#111}
 .level-card{position:relative;overflow:hidden;border-color:var(--accent2);background:linear-gradient(145deg,var(--card),rgba(255,255,255,.02));box-shadow:0 0 25px var(--glow)}
 .level-card:after{content:"";position:absolute;inset:-50%;background:radial-gradient(circle at 70% 20%,var(--glow),transparent 35%);pointer-events:none}
-.level-top{display:flex;align-items:center;gap:14px;position:relative;z-index:1}.level-identity{min-width:0;flex:1}.gem{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;font-size:28px;background:linear-gradient(145deg,var(--gem1),var(--gem2));box-shadow:0 0 16px var(--glow),inset 0 1px 2px rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.35)}
-.level-name{font-size:24px;font-weight:950;white-space:nowrap}.level-range{font-size:11px;color:#8c94a0;margin-top:3px;white-space:nowrap}.level-total{margin-left:28px;min-width:94px;flex:0 0 94px;text-align:right}.level-total span{display:block;font-size:9px;letter-spacing:.08em;white-space:nowrap}.level-total b{display:block;font-size:30px;line-height:1.02;color:var(--accent);margin-top:2px}.level-bar{height:7px;background:#292e37;border-radius:99px;margin-top:15px;overflow:hidden;position:relative;z-index:1}.level-bar div{height:100%;width:0;background:linear-gradient(90deg,var(--gem1),var(--accent));border-radius:99px;transition:.35s;box-shadow:0 0 10px var(--glow)}
+.level-top{display:grid;grid-template-columns:54px minmax(96px,1fr) auto 48px;align-items:center;column-gap:14px;position:relative;z-index:1}.level-identity{min-width:0}.gem{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;font-size:28px;background:linear-gradient(145deg,var(--gem1),var(--gem2));box-shadow:0 0 16px var(--glow),inset 0 1px 2px rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.35)}
+.level-name{font-size:24px;font-weight:950;white-space:nowrap}.level-range{font-size:11px;color:#8c94a0;margin-top:3px;white-space:nowrap}.level-stack-label{justify-self:center;transform:translateX(7px);font-size:15px;line-height:1;font-weight:950;letter-spacing:.075em;color:#c9ced7;white-space:nowrap;text-shadow:0 0 12px var(--glow)}.level-total{min-width:48px;text-align:right}.level-total b{display:block;font-size:32px;line-height:1;color:var(--accent)}.level-bar{height:7px;background:#292e37;border-radius:99px;margin-top:15px;overflow:hidden;position:relative;z-index:1}.level-bar div{height:100%;width:0;background:linear-gradient(90deg,var(--gem1),var(--accent));border-radius:99px;transition:.35s;box-shadow:0 0 10px var(--glow)}
+@media(max-width:420px){.level-top{grid-template-columns:48px minmax(82px,1fr) auto 40px;column-gap:9px}.gem{width:48px;height:48px;border-radius:14px;font-size:25px}.level-name{font-size:21px}.level-range{font-size:9.5px}.level-stack-label{font-size:13px;letter-spacing:.055em;transform:translateX(4px)}.level-total{min-width:40px}.level-total b{font-size:30px}}
 .section{font-size:21px;font-weight:900;margin:31px 2px 8px}.section-sub{font-size:12px;color:#777f8c;margin:0 2px 12px}
 .quest-tabs{display:flex;gap:7px}.quest-tabs .quest-tab{flex:1;background:#20242d;color:#929aa6;border-radius:12px;padding:11px 3px;font-weight:850}.quest-tabs .quest-tab.active{background:var(--accent);color:#111;box-shadow:0 0 15px var(--glow)}
 .quest{position:relative;background:var(--card);border:1px solid var(--line);border-radius:17px;padding:16px 14px 15px 54px;margin:9px 0;overflow:hidden}.quest.locked{opacity:.45}.quest.unlocked{border-color:var(--accent2);box-shadow:0 0 14px var(--glow)}
@@ -533,7 +534,7 @@ html[data-theme="lightning"] .level-bar div{background-image:linear-gradient(90d
 (function(){
 "use strict";
 const KEY="STACK_ZERO_FINAL_39_0";
-const APP_VERSION="39.1 FINAL";
+const APP_VERSION="39.3 FINAL";
 const LEVELS=[
 {min:0,max:100,name:"입문자",gem:"🪨",g1:"#65584c",g2:"#b9a58f",label:"STONE"},
 {min:100,max:200,name:"수련자",gem:"🪵",g1:"#5c3420",g2:"#c9925c",label:"WOOD"},
@@ -610,7 +611,7 @@ function renderLevel(){
 const total=state.total.study,l=levelFor(total),idx=levelIndex(total),next=LEVELS[idx+1],base=l.min,end=l.max===Infinity?Math.max(total,base+1):l.max
 const pct=next?Math.min(100,((total-base)/(next.min-base))*100):100
 applyTheme(l)
-document.getElementById("level").innerHTML=`<section class="card level-card"><div class="level-top"><div class="gem">${l.gem}</div><div class="level-identity"><div class="level-name">${l.name}</div><div class="level-range">STACK ${l.max===Infinity?l.min+"+":l.min+"~"+(l.max-1)} · ${l.label}</div></div><div class="level-total"><span>STUDY STACK</span><b>${total}</b></div></div><div class="level-bar"><div style="width:${pct}%"></div></div></section>`
+document.getElementById("level").innerHTML=`<section class="card level-card"><div class="level-top"><div class="gem">${l.gem}</div><div class="level-identity"><div class="level-name">${l.name}</div><div class="level-range">STACK ${l.max===Infinity?l.min+"+":l.min+"~"+(l.max-1)} · ${l.label}</div></div><div class="level-stack-label">STUDY STACK</div><div class="level-total"><b>${total}</b></div></div><div class="level-bar"><div style="width:${pct}%"></div></div></section>`
 }
 function burstLevelFX(){
   const box=document.querySelector(".celebrate-box");if(!box)return;
@@ -915,7 +916,7 @@ async function requestCoach(payload,timeoutMs=COACH_TIMEOUT_MS){
     const response=await fetch("/api/coach",{method:"POST",headers:{"Content-Type":"application/json"},signal:controller.signal,body:JSON.stringify(payload)});
     const data=await response.json().catch(()=>({}));
     if(!response.ok||!data.ok){const e=new Error(data.error||`HTTP ${response.status}`);e.status=response.status;e.details=data;e.retryAfterMs=Number(data.retryAfterMs||data?.details?.retryAfterMs||0)||0;throw e}
-    if(isTts){clearTtsCooldown();setServiceConnection("tts",true)}
+    if(isTts){clearTtsCooldown(true);setServiceConnection("tts",true,"TTS","Gemini TTS 연결됨 · 429 backoff 초기화")}
     else{setServiceConnection("gemini",true);if(data.ttsConfigured===false)setServiceConnection("tts",false,"TTS 설정없음")}
     return data;
   }catch(e){
@@ -931,24 +932,40 @@ async function renderAICoach(reason){
 }
 
 const VOICE_ENABLED_KEY="STACK_ZERO_FINAL_39_0_VOICE_ENABLED";
-const TTS_COOLDOWN_KEY="STACK_ZERO_FINAL_39_1_TTS_COOLDOWN_UNTIL";
+const TTS_COOLDOWN_KEY="STACK_ZERO_FINAL_39_2_TTS_COOLDOWN_UNTIL";
+const TTS_BACKOFF_KEY="STACK_ZERO_FINAL_39_2_TTS_BACKOFF_STEP";
+const TTS_BACKOFF_STEPS=[60000,120000,300000,600000,1200000,1800000]; // 1m → 2m → 5m → 10m → 20m → 30m
 let voiceEnabled=localStorage.getItem(VOICE_ENABLED_KEY)!=="0",currentAudio=null,voiceRunId=0,streamNextAt=0,streamSources=[],lastTtsError=null;
 let ttsCooldownUntil=Math.max(0,Number(localStorage.getItem(TTS_COOLDOWN_KEY)||0)||0),ttsCooldownTimer=null;
+let ttsBackoffStep=Math.max(0,Math.min(TTS_BACKOFF_STEPS.length-1,Number(localStorage.getItem(TTS_BACKOFF_KEY)||0)||0));
 function updateVoiceButton(){const b=document.getElementById("kaguyaVoiceToggle");if(!b)return;b.classList.toggle("off",!voiceEnabled);b.textContent=voiceEnabled?"🔊":"🔇";b.title=voiceEnabled?"일본어 음성 켜짐":"일본어 음성 꺼짐"}
 function getTtsCooldownRemaining(){return Math.max(0,ttsCooldownUntil-Date.now())}
 function scheduleTtsCooldownRefresh(){clearTimeout(ttsCooldownTimer);const left=getTtsCooldownRemaining();if(left>0)ttsCooldownTimer=setTimeout(refreshTtsCooldownStatus,Math.min(left+80,2147483000))}
 function refreshTtsCooldownStatus(){
   const left=getTtsCooldownRemaining();
   if(left>0){const mins=Math.max(1,Math.ceil(left/60000));setServiceConnection("tts",false,"TTS 한도대기",`Gemini TTS 429 · 약 ${mins}분 뒤 다시 시도`);scheduleTtsCooldownRefresh();return true}
-  if(ttsCooldownUntil){ttsCooldownUntil=0;localStorage.removeItem(TTS_COOLDOWN_KEY);const el=document.getElementById("ttsConnection");if(el&&/한도대기/.test(el.textContent||""))setServiceConnection("tts",null,"TTS")}
+  if(ttsCooldownUntil){ttsCooldownUntil=0;localStorage.removeItem(TTS_COOLDOWN_KEY);const el=document.getElementById("ttsConnection");if(el&&/한도대기/.test(el.textContent||""))setServiceConnection("tts",null,"TTS 재시도대기", "다음 음성 요청에서 다시 연결을 시도합니다")}
   return false;
 }
-function setTtsCooldown(ms,message=""){
-  const requested=Number(ms||0),safe=Math.max(60000,Math.min(30*60*1000,requested||10*60*1000));
+function setTtsCooldown(serverRetryAfterMs=0,message=""){
+  const planned=TTS_BACKOFF_STEPS[Math.min(ttsBackoffStep,TTS_BACKOFF_STEPS.length-1)];
+  const serverHint=Math.max(0,Number(serverRetryAfterMs||0));
+  const safe=Math.min(30*60*1000,Math.max(planned,serverHint));
+  const usedStep=ttsBackoffStep;
+  ttsBackoffStep=Math.min(TTS_BACKOFF_STEPS.length-1,ttsBackoffStep+1);
+  localStorage.setItem(TTS_BACKOFF_KEY,String(ttsBackoffStep));
   ttsCooldownUntil=Date.now()+safe;localStorage.setItem(TTS_COOLDOWN_KEY,String(ttsCooldownUntil));
-  const mins=Math.max(1,Math.ceil(safe/60000));setServiceConnection("tts",false,"TTS 한도대기",message||`Gemini TTS 한도 초과 · 약 ${mins}분 뒤 다시 시도`);scheduleTtsCooldownRefresh();
+  const mins=Math.max(1,Math.ceil(safe/60000));
+  const next=TTS_BACKOFF_STEPS[Math.min(ttsBackoffStep,TTS_BACKOFF_STEPS.length-1)];
+  const nextMins=Math.max(1,Math.ceil(next/60000));
+  setServiceConnection("tts",false,"TTS 한도대기",`429 감지 · 약 ${mins}분 대기 후 다음 음성에서 재시도 · 또 막히면 약 ${nextMins}분 대기`);
+  scheduleTtsCooldownRefresh();
+  return {usedStep,waitMs:safe,nextWaitMs:next};
 }
-function clearTtsCooldown(){clearTimeout(ttsCooldownTimer);ttsCooldownTimer=null;ttsCooldownUntil=0;localStorage.removeItem(TTS_COOLDOWN_KEY)}
+function clearTtsCooldown(resetBackoff=false){
+  clearTimeout(ttsCooldownTimer);ttsCooldownTimer=null;ttsCooldownUntil=0;localStorage.removeItem(TTS_COOLDOWN_KEY);
+  if(resetBackoff){ttsBackoffStep=0;localStorage.removeItem(TTS_BACKOFF_KEY)}
+}
 function getVoiceAudioContext(){return getAppAudioContext()}
 function primeKaguyaAudio(){if(!voiceEnabled)return null;try{const ctx=getAppAudioContext();if(ctx&&ctx.state==="suspended")ctx.resume().catch(()=>{});return ctx}catch(e){return null}}
 function stopKaguyaVoicePlayback(){voiceRunId++;if(currentAudio){try{currentAudio.pause()}catch(e){}currentAudio=null}for(const s of streamSources.splice(0)){try{s.stop()}catch(e){}}streamNextAt=0;if("speechSynthesis" in window)try{window.speechSynthesis.cancel()}catch(e){}}

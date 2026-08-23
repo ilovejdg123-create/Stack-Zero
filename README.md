@@ -25,3 +25,15 @@ Production build.
 - No immediate same-model retry on 429/5xx.
 - Double-429 starts a persistent client cooldown; text chat continues and TTS is retried only after cooldown expires.
 - Existing 39.0 app progress and Kaguya memory are preserved.
+
+## 39.2 FINAL — progressive TTS 429 backoff
+- 429 waits increase 1m → 2m → 5m → 10m → 20m → 30m instead of repeatedly hammering the TTS API.
+- Successful TTS resets the sequence back to 1m.
+- Real Gemini Retry-After hints are respected when longer.
+- Existing 39.0 production progress and Kaguya memory remain intact.
+
+## 39.3 UI polish
+- Top rank card: STUDY STACK label moved out of the number column into the open center-right area.
+- Larger independent STUDY STACK label; total number stays aligned at the far right.
+- Mobile grid spacing added to prevent rank/label/number overlap.
+- Persistent data keys unchanged from 39.2.
