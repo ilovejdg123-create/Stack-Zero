@@ -1,0 +1,26 @@
+STACK ZERO v40.0 · VERCEL AUDIT
+
+Base front-end: byte-identical to v39.8 except the visible build label.
+Kaguya PNG assets: 19/19 identical SHA-256.
+Netlify runtime files removed; Vercel API functions installed.
+Existing localStorage/IndexedDB key names intentionally preserved.
+
+Checks:
+- build_label: PASS
+- coach_endpoint: PASS
+- probe_endpoint: PASS
+- eleven_to_browser_fallback: PASS
+- sfx_dedicated_context: PASS
+- ui_button_sfx: PASS
+- rank_stack_sfx: PASS
+- levelup_sfx: PASS
+- milestone_7_sfx: PASS
+- heart_10_sfx: PASS
+- heart_threshold_asset: PASS
+- all_10_moods: PASS
+- storage_key_preserved: PASS
+- voice_storage_preserved: PASS
+- tts_backoff_preserved: PASS
+- vercel_coach_selfcontained: PASS
+- vercel_tts_selfcontained: PASS
+- netlify_runtime_removed: PASS

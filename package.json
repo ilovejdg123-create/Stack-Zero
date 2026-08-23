@@ -1,0 +1,9 @@
+{
+  "name": "stack-zero",
+  "version": "40.0.0",
+  "private": true,
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "check": "node --check api/coach.js && node --check api/tts-stream.js"
+  }
+}

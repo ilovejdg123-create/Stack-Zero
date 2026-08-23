@@ -1,0 +1,9 @@
+STACK ZERO v40.0 · VERCEL
+
+- Base: v39.8 AUDITED FINAL
+- Deployment platform migrated from Netlify to Vercel.
+- /api/coach is now a self-contained Vercel Node function; no ../../lib module dependency.
+- /api/tts-stream is standalone.
+- UI/STACK/Kaguya/SFX/quest/reward/memory/affinity/TTS fallback behavior preserved.
+- Build label updated to STACK ZERO v40.0 · VERCEL.
+- Existing localStorage/IndexedDB key names intentionally preserved in code so application semantics are unchanged.
