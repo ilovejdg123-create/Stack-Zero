@@ -526,8 +526,8 @@ html[data-theme="lightning"] .level-bar div{background-image:linear-gradient(90d
 <script>
 (function(){
 "use strict";
-const KEY="STACK_ZERO_V37_5_RC";
-const APP_VERSION="37.5 RC";
+const KEY="STACK_ZERO_V37_6_RC";
+const APP_VERSION="37.6 RC";
 const LEVELS=[
 {min:0,max:100,name:"입문자",gem:"🪨",g1:"#65584c",g2:"#b9a58f",label:"STONE"},
 {min:100,max:200,name:"수련자",gem:"🪵",g1:"#5c3420",g2:"#c9925c",label:"WOOD"},
@@ -906,7 +906,7 @@ async function playKaguyaVoice(text,mood="normal",voiceStyle="",onFirstAudio){
   if(!voiceEnabled||!text)return false;
   stopKaguyaVoicePlayback();primeKaguyaAudio();const myRun=voiceRunId;
   try{
-    const data=await requestCoach({mode:"tts",text:String(text).slice(0,420),mood,voiceStyle},12000);
+    const data=await requestCoach({mode:"tts",text:String(text).slice(0,420),mood,voiceStyle},22000);
     if(myRun!==voiceRunId)return false;if(!data.audioBase64)throw new Error("no audio");
     let announced=false;const announce=()=>{if(announced)return;announced=true;if(typeof onFirstAudio==="function")onFirstAudio()};
     const ok=schedulePcmChunk(data.audioBase64,myRun,announce,Number(data.sampleRate||24000));
@@ -915,7 +915,7 @@ async function playKaguyaVoice(text,mood="normal",voiceStyle="",onFirstAudio){
   }catch(e){console.warn("[STACK ZERO TTS unary]",e?.message||e);return false}
 }
 function base64PcmToFloat32(base64){const raw=atob(base64),n=Math.floor(raw.length/2),out=new Float32Array(n);for(let i=0;i<n;i++){let v=raw.charCodeAt(i*2)|(raw.charCodeAt(i*2+1)<<8);if(v&0x8000)v-=0x10000;out[i]=Math.max(-1,Math.min(1,v/32768))}return out}
-function schedulePcmChunk(base64,myRun,onFirst,sampleRate=24000){if(myRun!==voiceRunId||!base64)return false;const ctx=getVoiceAudioContext();if(!ctx)return false;if(ctx.state==="suspended")ctx.resume().catch(()=>{});const samples=base64PcmToFloat32(base64);if(!samples.length)return false;const b=ctx.createBuffer(1,samples.length,Number(sampleRate||24000));b.copyToChannel(samples,0);const src=ctx.createBufferSource();src.buffer=b;src.connect(ctx.destination);const start=Math.max(ctx.currentTime+.045,streamNextAt||0);src.start(start);streamNextAt=start+b.duration;streamSources.push(src);src.onended=()=>{const i=streamSources.indexOf(src);if(i>=0)streamSources.splice(i,1)};if(onFirst)onFirst();return true}
+function schedulePcmChunk(base64,myRun,onFirst,sampleRate=24000){if(myRun!==voiceRunId||!base64)return false;const ctx=getVoiceAudioContext();if(!ctx)return false;if(ctx.state==="suspended")ctx.resume().catch(()=>{});const samples=base64PcmToFloat32(base64);if(!samples.length)return false;const b=ctx.createBuffer(1,samples.length,Number(sampleRate||24000));b.copyToChannel(samples,0);const src=ctx.createBufferSource();src.buffer=b;src.playbackRate.value=.96;const gain=ctx.createGain();gain.gain.value=1.22;src.connect(gain);gain.connect(ctx.destination);const start=Math.max(ctx.currentTime+.045,streamNextAt||0);src.start(start);streamNextAt=start+(b.duration/.96);streamSources.push(src);src.onended=()=>{const i=streamSources.indexOf(src);if(i>=0)streamSources.splice(i,1)};if(onFirst)onFirst();return true}
 async function playKaguyaVoiceStream(text,mood="normal",voiceStyle="",onFirstAudio){
   if(!voiceEnabled||!text)return false;
   stopKaguyaVoicePlayback();primeKaguyaAudio();const myRun=voiceRunId,controller=new AbortController();
@@ -941,7 +941,6 @@ async function playKaguyaVoiceStream(text,mood="normal",voiceStyle="",onFirstAud
 async function playKaguyaVoiceReliable(text,mood="normal",voiceStyle="",onFirstAudio){
   if(!voiceEnabled||!text)return false;
   let announced=false;const announce=()=>{if(announced)return;announced=true;if(typeof onFirstAudio==="function")onFirstAudio()};
-  try{if(await playKaguyaVoiceStream(text,mood,voiceStyle,announce))return true}catch(e){console.warn("[STACK ZERO TTS stream]",e?.message||e)}
   return await playKaguyaVoice(text,mood,voiceStyle,announce);
 }
 function setChatBusy(on){chatBusy=Boolean(on);const input=document.getElementById("kaguyaChatInput"),btn=document.getElementById("kaguyaChatSend");if(input)input.disabled=chatBusy;if(btn)btn.disabled=chatBusy}
@@ -950,7 +949,7 @@ function revealReplySynced(data,reply,reason="chat"){
   return new Promise(resolve=>{
     let revealed=false;const reveal=()=>{if(revealed)return;revealed=true;setCoachVisual({text:reply,model:data.model,mood:data.mood,reason,statusText});resolve()};
     if(!voiceEnabled||!data.voiceJa||reason==="refresh"){reveal();return}
-    playKaguyaVoiceReliable(data.voiceJa,data.mood,data.voiceStyle,reveal).then(ok=>{if(!ok)reveal()}).catch(()=>reveal());
+    playKaguyaVoiceReliable(data.voiceJa,data.mood,data.voiceStyle,reveal).then(ok=>{if(!ok){reveal();const st=document.getElementById("aiStatus");if(st){st.textContent="LIVE · TTS 오류";st.className="ai-status err"}}}).catch(err=>{console.warn("[STACK ZERO TTS]",err?.message||err);reveal();const st=document.getElementById("aiStatus");if(st){st.textContent="LIVE · TTS 오류";st.className="ai-status err"}});
   });
 }
 function revealChatReplySynced(data,reply){return revealReplySynced(data,reply,"chat")}

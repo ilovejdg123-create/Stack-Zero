@@ -1,6 +1,6 @@
 {
   "name": "stack-zero",
-  "version": "37.5.0-rc",
+  "version": "37.6.0-rc",
   "private": true,
   "engines": {
     "node": ">=20"

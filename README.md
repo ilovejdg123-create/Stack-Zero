@@ -79,3 +79,10 @@ V37.5 RC
 - fixed shared WebAudio unlock for Gemini voice
 - removed HTMLAudio async autoplay failure path
 - deeper natural study-hour dialogue + anti-robotic rewrite
+
+V37.6 RC
+- TTS root-cause fix: GenerateContent TTS is primary, not a late fallback behind long Interactions retries.
+- Frontend no longer burns ~5s on the stream path before requesting the reliable TTS path.
+- TTS request timeout enlarged so server retry can actually finish.
+- Shared WebAudio playback with 1.22 gain and 0.96 playback rate for a slightly calmer/lower presentation.
+- Visible LIVE · TTS 오류 status if server-side TTS still fails, so remaining deployment/config errors are diagnosable.
