@@ -28,3 +28,10 @@ Optional:
 - `ELEVENLABS_OUTPUT_FORMAT` (default `mp3_44100_128`)
 
 If ElevenLabs is unavailable, browser TTS still works without any new environment variable.
+
+
+## 39.6 Netlify hotfix
+- Fixes Runtime.ImportModuleError for Netlify Functions.
+- netlify/functions/coach-core.js is bundled locally with the functions.
+- coach.js and tts-stream.mjs no longer import ../../lib/coach-core.
+- No STACK, Kaguya, Gemini prompt, ElevenLabs, browser-TTS fallback, or saved-data behavior changed.

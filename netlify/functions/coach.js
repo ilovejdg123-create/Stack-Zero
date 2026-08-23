@@ -1,4 +1,4 @@
-const {PRIMARY_MODEL,FAST_MODEL,TTS_PROVIDER,TTS_MODEL,TTS_VOICE_ID,generateAssistant,generateTTS,callGeminiRaw}=require("../../lib/coach-core");
+const {PRIMARY_MODEL,FAST_MODEL,TTS_PROVIDER,TTS_MODEL,TTS_VOICE_ID,generateAssistant,generateTTS,callGeminiRaw}=require("./coach-core");
 exports.handler=async(event)=>{
   const headers={"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store"};
   if(event.httpMethod==="OPTIONS")return {statusCode:204,headers,body:""};
