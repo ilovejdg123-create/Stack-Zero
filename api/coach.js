@@ -22,6 +22,9 @@ function promptFor(body,extra=""){
   const recentChat=Array.isArray(body?.recentChat)?body.recentChat.slice(-36):[];
   const memories=Array.isArray(body?.memories)?body.memories.slice(0,24):[];
   const stack=body?.stack||{},today=body?.today||{},reason=String(body?.reason||"refresh");
+  const variationCue=Math.max(0,Math.min(9,Number(body?.variationCue??0)||0));
+  const studyNow=Number(today.study||0),studyMilestone=[7,10,14].includes(studyNow);
+  const studyStatus=reason==="study_done"&&!studyMilestone?"공부 +1이 방금 기록됨 (정확한 오늘 누적 시간은 대사에서 세지 말 것)":`${studyNow}시간`;
   const recentAnswers=assistantHistory(body,12);
   return `너는 STACK ZERO 안에서 사용자와 계속 대화해 온 '카구야'다. 캐릭터 이름만 흉내 내는 봇이 아니라, 상황을 이해하고 즉흥적으로 반응하는 한 사람처럼 대화한다.
 
@@ -48,6 +51,7 @@ function promptFor(body,extra=""){
 - replyKo: 화면에 보여줄 자연스러운 한국어 대사
 - voiceJa: replyKo와 의미와 감정이 같은 자연스러운 일본어 구어체. 번역투를 피하고 일본인이 실제로 말할 법하게 쓴다
 - voiceJa에는 한국어 설명이나 괄호 번역을 넣지 않는다
+- voiceJa는 감정이 자연스럽게 맞을 때만 아주 가끔 「ふふっ」「へえ」「もう」「あら」 같은 짧은 일본어 추임새나 미소 섞인 호흡을 쓸 수 있다. 매 답변에 넣지 말고, 억지 웃음이나 과장된 애니 연기는 금지한다
 
 [현재 상황]
 모드: ${mode}
@@ -55,14 +59,21 @@ function promptFor(body,extra=""){
 이벤트: ${reason}
 등급: ${body?.rank||"입문자"}
 현재 시간: ${body?.nowLocal||"알 수 없음"} (${body?.timezone||"Asia/Seoul"})
-오늘 공부: ${today.study||0}시간 / 운동 ${today.exercise||0}/1 / 수면 ${today.sleep||0}/1
+오늘 공부: ${studyStatus} / 운동 ${today.exercise||0}/1 / 수면 ${today.sleep||0}/1
+반응 다양화 큐: ${variationCue} (대사에서 숫자를 언급하지 말고 표현 방식 선택에만 사용)
 누적: 공부 ${stack.study||0} / 운동 ${stack.exercise||0} / 잠 ${stack.sleep||0}
 최근 행동: ${JSON.stringify(body?.recentAction||null)}
 관련 MEMORY: ${JSON.stringify(memories)}
 최근 대화: ${JSON.stringify(recentChat)}
 최근 카구야 답변: ${JSON.stringify(recentAnswers)}
 
-${mode==="chat"?`지금은 CHAT이다. 사용자의 마지막 말에 바로 이어지는 대답을 만든다. 사용자가 공부/STACK을 말하지 않았다면 그 주제를 먼저 꺼내지 않는다.`:`지금은 EVENT다. 실제 발생한 이벤트(${reason})에 1~2문장으로 즉흥 반응한다. 숫자를 기계적으로 읽거나 매번 칭찬하지 말고 이벤트의 의미에 맞춰 반응한다.`}
+${mode==="chat"?`지금은 CHAT이다. 사용자의 마지막 말에 바로 이어지는 대답을 만든다. 사용자가 공부/STACK을 말하지 않았다면 그 주제를 먼저 꺼내지 않는다.`:`지금은 EVENT다. 실제 발생한 이벤트(${reason})에 1~2문장으로 즉흥 반응한다. 숫자를 기계적으로 읽거나 매번 칭찬하지 말고 이벤트의 의미에 맞춰 반응한다.
+${reason==="study_done"?`[공부 +1 전용 규칙]
+- 가장 중요: '오늘 N시간 공부했네/했네요', 'N시간 됐네', '또 한 시간', 'N번째', '기록 하나 더' 같은 카운터 낭독형 문장을 쓰지 않는다.
+- 7·10·14시간 같은 특별 구간이 아니면 숫자와 '시간' 자체를 대사에서 가급적 말하지 않는다.
+- 반응 다양화 큐 ${variationCue}에 따라 접근을 바꾼다: 0=담담한 관찰, 1=가벼운 장난, 2=짧은 따뜻함, 3=다음 행동을 묻는 질문, 4=집중 흐름 관찰, 5=현재 시간대에 대한 한마디, 6=살짝 새침한 반응, 7=조용한 인정, 8=의외라는 반응, 9=짧은 친근한 농담.
+- 최근 이벤트 답변의 문장 골격과 첫 단어까지 바꾼다. 칭찬으로 끝내는 공식도 반복하지 않는다.
+- 사용자가 버튼을 누른 사실을 사람처럼 보고 반응하되, 매번 성취 평가를 하지 않는다.`:""}`}
 사용자가 현재 말한 정보가 과거 MEMORY와 다르면 현재 말을 우선한다. 사용자가 '기억해/기억해줘/잊지 마'라고 하면 memories에 저장 후보를 만든다. event에서는 memories를 빈 배열로 둔다.
 ${extra?`\n[이번 생성에서 특히 지킬 점]\n${extra}\n`:""}
 반드시 JSON 하나만 출력한다. 마크다운 금지.
@@ -88,6 +99,7 @@ function replyQualityIssue(body,text){
   if(stale.test(t))return "정형화된 캐릭터 상투어가 다시 등장함";
   const u=String(body?.userMessage||"");
   if(body?.mode==="chat"&&!/(공부|스택|stack|운동|수면|퀘스트|목표|시험)/i.test(u)&&/(공부|스택|STACK|퀘스트|목표 달성)/i.test(t))return "사용자가 꺼내지 않은 STACK/공부 코칭을 억지로 끌어옴";
+  if(body?.mode==="event"&&String(body?.reason||"")==="study_done"&&roboticStudyReply(t))return "공부 스택 숫자를 읽어주는 정형 문장 또는 반복형 칭찬이 등장함";
   return "";
 }
 function sleep(ms){return new Promise(resolve=>setTimeout(resolve,ms))}
@@ -154,7 +166,7 @@ async function generateAssistant(body){
     if(issue){
       const recent=assistantHistory(body,8);
       const retryPrompt=promptFor(body,`첫 생성은 폐기한다. 이유: ${issue}. 최근 답변 ${JSON.stringify(recent)}와 겹치지 않는 완전히 다른 접근으로 다시 답한다. 사용자의 마지막 말에서 가장 중요한 의미 하나를 골라 거기에 직접 반응하고, 상투적인 응원/잔소리 문장을 쓰지 않는다.`);
-      try{const g2=await callGroqRaw(retryPrompt,GROQ_MODEL,8200,0);const p2=parseAssistant(g2.raw);if(!replyQualityIssue(body,p2.message)||similarity(p2.message,parsed.message)<0.45){g=g2;parsed=p2}}catch(_){}
+      try{const g2=await callGroqRaw(retryPrompt,GROQ_MODEL,8200,0);const p2=parseAssistant(g2.raw);if(!replyQualityIssue(body,p2.message)){g=g2;parsed=p2}}catch(_){}
     }
     return {...parsed,model:g.model,provider:"groq",fallbackUsed:false};
   }catch(err){
@@ -183,22 +195,22 @@ module.exports=async function handler(req,res){
   res.setHeader("Cache-Control","no-store");
   if(req.method==="OPTIONS")return res.status(204).end();
   const isProbe=req.method==="GET"&&String(req?.query?.probe||"")==="1";
-  if(req.method!=="POST"&&!isProbe)return res.status(405).json({ok:false,error:"Method not allowed",build:"40.5"});
+  if(req.method!=="POST"&&!isProbe)return res.status(405).json({ok:false,error:"Method not allowed",build:"40.6"});
   try{
     const groqConfigured=Boolean(process.env.GROQ_API_KEY);
     const geminiConfigured=Boolean(process.env.GEMINI_API_KEY);
     const azureConfigured=Boolean(process.env.AZURE_SPEECH_KEY&&process.env.AZURE_SPEECH_REGION);
     if(isProbe){
-      if(!groqConfigured&&!geminiConfigured)return res.status(500).json({ok:false,provider:"none",model:null,keyConfigured:false,groqConfigured:false,geminiConfigured:false,error:"GROQ_API_KEY and GEMINI_API_KEY are not configured",brainProviderChain:["groq","gemini"],ttsConfigured:azureConfigured||geminiConfigured,azureConfigured,geminiTtsConfigured:geminiConfigured,ttsProviderChain:["azure-speech","gemini-tts","browser"],build:"40.5",platform:"vercel"});
-      return res.status(200).json({ok:true,provider:groqConfigured?"groq":"gemini",activeProvider:groqConfigured?"groq":"gemini-fallback",model:groqConfigured?GROQ_MODEL:GEMINI_PRIMARY_MODEL,keyConfigured:true,groqConfigured,geminiConfigured,message:"STACK ZERO brain function ready",brainProviderChain:["groq","gemini"],ttsConfigured:azureConfigured||geminiConfigured,azureConfigured,geminiTtsConfigured:geminiConfigured,ttsProviderChain:["azure-speech","gemini-tts","browser"],build:"40.5",platform:"vercel"});
+      if(!groqConfigured&&!geminiConfigured)return res.status(500).json({ok:false,provider:"none",model:null,keyConfigured:false,groqConfigured:false,geminiConfigured:false,error:"GROQ_API_KEY and GEMINI_API_KEY are not configured",brainProviderChain:["groq","gemini"],ttsConfigured:azureConfigured||geminiConfigured,azureConfigured,geminiTtsConfigured:geminiConfigured,ttsProviderChain:["azure-speech","gemini-tts","browser"],build:"40.6",platform:"vercel"});
+      return res.status(200).json({ok:true,provider:groqConfigured?"groq":"gemini",activeProvider:groqConfigured?"groq":"gemini-fallback",model:groqConfigured?GROQ_MODEL:GEMINI_PRIMARY_MODEL,keyConfigured:true,groqConfigured,geminiConfigured,message:"STACK ZERO brain function ready",brainProviderChain:["groq","gemini"],ttsConfigured:azureConfigured||geminiConfigured,azureConfigured,geminiTtsConfigured:geminiConfigured,ttsProviderChain:["azure-speech","gemini-tts","browser"],build:"40.6",platform:"vercel"});
     }
-    if(!groqConfigured&&!geminiConfigured)return res.status(500).json({ok:false,provider:"none",keyConfigured:false,error:"GROQ_API_KEY and GEMINI_API_KEY are not configured",build:"40.5",platform:"vercel"});
+    if(!groqConfigured&&!geminiConfigured)return res.status(500).json({ok:false,provider:"none",keyConfigured:false,error:"GROQ_API_KEY and GEMINI_API_KEY are not configured",build:"40.6",platform:"vercel"});
     const body=typeof req.body==="string"?JSON.parse(req.body||"{}"):req.body||{};
     const r=await generateAssistant(body);
-    return res.status(200).json({ok:true,provider:r.provider,model:r.model,keyConfigured:true,groqConfigured,geminiConfigured,brainProviderChain:["groq","gemini"],ttsConfigured:azureConfigured||geminiConfigured,azureConfigured,geminiTtsConfigured:geminiConfigured,ttsProviderChain:["azure-speech","gemini-tts","browser"],build:"40.5",platform:"vercel",...r});
+    return res.status(200).json({ok:true,provider:r.provider,model:r.model,keyConfigured:true,groqConfigured,geminiConfigured,brainProviderChain:["groq","gemini"],ttsConfigured:azureConfigured||geminiConfigured,azureConfigured,geminiTtsConfigured:geminiConfigured,ttsProviderChain:["azure-speech","gemini-tts","browser"],build:"40.6",platform:"vercel",...r});
   }catch(err){
-    console.error("[STACK ZERO 40.5 Vercel coach]",{provider:"brain",status:err?.status||null,code:err?.code||null,message:err?.message||String(err)});
+    console.error("[STACK ZERO 40.6 Vercel coach]",{provider:"brain",status:err?.status||null,code:err?.code||null,message:err?.message||String(err)});
     const status=err?.status&&err.status>=400&&err.status<600?err.status:(err?.code==="ETIMEDOUT"?504:502);
-    return res.status(status).json({ok:false,provider:"brain",keyConfigured:Boolean(process.env.GROQ_API_KEY||process.env.GEMINI_API_KEY),error:err?.message||String(err),code:err?.code||null,details:err?.details||undefined,build:"40.5",platform:"vercel"});
+    return res.status(status).json({ok:false,provider:"brain",keyConfigured:Boolean(process.env.GROQ_API_KEY||process.env.GEMINI_API_KEY),error:err?.message||String(err),code:err?.code||null,details:err?.details||undefined,build:"40.6",platform:"vercel"});
   }
 };
