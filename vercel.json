@@ -1,14 +1,3 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "functions": {
-    "api/coach.js": {
-      "maxDuration": 30
-    },
-    "api/tts-stream.js": {
-      "maxDuration": 30
-    },
-    "api/gemini-tts.js": {
-      "maxDuration": 30
-    }
-  }
+  "$schema": "https://openapi.vercel.sh/vercel.json"
 }

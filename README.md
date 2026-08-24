@@ -1,9 +1,19 @@
-# STACK ZERO v40.2 TEST · VERCEL
+# STACK ZERO v40.4 TEST — GROQ + AZURE
 
-Deploy on Vercel with the existing environment variables:
-- GEMINI_API_KEY
-- ELEVENLABS_API_KEY
-- ELEVENLABS_VOICE_ID
+## Brain
+- Primary: Groq `openai/gpt-oss-120b`
+- Fallback: Gemini
 
-This is a TEST build and intentionally keeps Study ±1 and ±50 controls.
-TTS selector buttons can force ELEVEN, GEMINI, or FREE for diagnosis. Tap the selected provider again to return to AUTO fallback.
+## Voice
+- Primary: Azure Speech Korean Neural TTS
+- Test/select: JiMin / SeoHyeon / YuJin
+- Fallback: Gemini TTS → browser Korean TTS
+
+## Vercel environment variables
+- `GROQ_API_KEY`
+- `GEMINI_API_KEY`
+- `AZURE_SPEECH_KEY`
+- `AZURE_SPEECH_REGION` (example: `koreacentral`)
+- optional `AZURE_SPEECH_VOICE`
+
+Never put API keys in `index.html` or client-side JavaScript.

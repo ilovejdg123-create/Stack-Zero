@@ -1,11 +1,11 @@
 {
   "name": "stack-zero",
-  "version": "40.2.0",
+  "version": "40.4.0",
   "private": true,
   "engines": {
     "node": ">=20"
   },
   "scripts": {
-    "check": "node --check api/coach.js && node --check api/tts-stream.js && node --check api/gemini-tts.js"
+    "check": "node --check api/coach.js && node --check api/azure-tts.js && node --check api/gemini-tts.js"
   }
 }
