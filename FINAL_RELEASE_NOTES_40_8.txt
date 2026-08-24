@@ -1,0 +1,10 @@
+STACK ZERO V40.8 FINAL
+
+1. Removed temporary STUDY -50 / +50 controls
+2. Removed study minus button; + button only
+3. Release state starts at zero with fresh progress/history/reward/celebration state
+4. Kaguya chat/memory test data also starts fresh
+5. All milestone celebration messages remain active for the new run
+6. Voice tests + link tests moved into one collapsed TEST box at the very bottom
+7. Default voice remains C / MAYU with the V40.7 tuning retained
+8. Groq -> Gemini brain fallback and Azure -> Gemini TTS -> Browser voice fallback retained

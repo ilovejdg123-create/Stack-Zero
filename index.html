@@ -19,7 +19,6 @@ h1{margin:0;font-size:32px;letter-spacing:-1.5px}
 .title{font-size:19px;font-weight:900}.desc{font-size:11px;color:#777f8c;margin-top:5px}
 .total{text-align:right;color:#737b88;font-size:10px;letter-spacing:.5px}.total b{display:block;color:var(--accent2);font-size:21px;margin-top:2px}
 .study-row{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:21px}.study-row .round{width:60px;height:60px;border-radius:18px;font-size:31px;box-shadow:0 9px 24px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.06)}
-.study-test-row{display:flex;justify-content:center;gap:8px;margin-top:12px}.study-test-btn{padding:8px 13px;border-radius:11px;background:#20242d;color:#8f98a5;border:1px solid #303642;font-size:11px;font-weight:850;letter-spacing:.2px}.study-test-btn:active{transform:scale(.96)}
 .round{width:52px;height:52px;border-radius:15px;background:#292e38;color:#fff;font-size:28px;font-weight:800}.round:active{transform:scale(.94)}
 .today{text-align:center;min-width:70px}.today b{font-size:39px;line-height:1}.today small{display:block;color:#777f8c;font-size:10px;margin-top:5px}
 .check-row{display:flex;justify-content:space-between;align-items:center;margin-top:20px}.status{font-size:14px;font-weight:800;color:#8c94a0}.status.done{color:#fff}
@@ -466,8 +465,17 @@ html[data-theme="lightning"] .level-bar div{background-image:linear-gradient(90d
   .theme-fx,.theme-fx:before,.theme-fx:after,.theme-fx i,.level-name,.level-bar div,.level-card{animation:none!important}
 }
 
+.study-row-plus-only{display:grid;grid-template-columns:60px minmax(76px,auto) 60px;align-items:center;justify-content:center;gap:18px}
+.study-row-plus-only .study-spacer{width:60px;height:60px;display:block}
+.test-drawer{margin:16px 2px 6px;border:1px solid rgba(255,255,255,.07);border-radius:11px;background:rgba(9,12,18,.38);overflow:hidden}
+.test-drawer summary{list-style:none;cursor:pointer;user-select:none;padding:7px 10px;font-size:8px;font-weight:950;letter-spacing:.15em;color:#687383;text-align:center}
+.test-drawer summary::-webkit-details-marker{display:none}
+.test-drawer summary:after{content:" ＋";color:#596574}.test-drawer[open] summary:after{content:" −"}
+.test-drawer-body{padding:0 7px 7px;border-top:1px solid rgba(255,255,255,.045)}
+.test-drawer .voice-test-panel,.test-drawer .chain-test-panel{margin:7px 0 0;background:rgba(9,12,18,.34)}
 
-/* V40.7 FINAL TEST · 1→14 affection ladder + Mayu micro-tune + diagnostics */
+
+/* V40.8 FINAL · clean release + collapsible diagnostics */
 html,body{touch-action:manipulation;-webkit-text-size-adjust:100%}
 button,.kaguya-chatbar,.voice-test-panel{touch-action:manipulation}
 .kaguya-chatbar input{font-size:16px!important;line-height:1.25}
@@ -565,21 +573,6 @@ html[data-theme="wave"] .level-bar div{background-image:linear-gradient(90deg,#0
   <button class="kaguya-voice-toggle" id="kaguyaVoiceToggle" type="button" title="카구야 음성">🔊</button>
   <button class="kaguya-chat-send" id="kaguyaChatSend" type="button">전송</button>
 </div>
-<div class="voice-test-panel" id="voiceTestPanel" aria-label="Azure 카구야 음성 선택">
-  <span class="voice-test-label">AZURE JP VOICE</span>
-  <button type="button" class="voice-test-btn" data-azure-voice="ja-JP-NanamiNeural">A · NANAMI</button>
-  <button type="button" class="voice-test-btn" data-azure-voice="ja-JP-AoiNeural">B · AOI</button>
-  <button type="button" class="voice-test-btn" data-azure-voice="ja-JP-MayuNeural">C · MAYU</button>
-  <button type="button" class="voice-test-btn" data-azure-voice="ja-JP-ShioriNeural">D · SHIORI</button>
-  <span class="voice-test-hint" id="voiceTestHint">누르면 즉시 테스트 · 자동백업 Gemini</span>
-</div>
-<div class="chain-test-panel" id="chainTestPanel" aria-label="카구야 연동 테스트">
-  <span class="voice-test-label">LINK TEST</span>
-  <button type="button" class="chain-test-btn" id="chatFollowupTest">CHAT ↻</button>
-  <button type="button" class="chain-test-btn" id="mayuVoiceTest">MAYU ♪</button>
-  <button type="button" class="chain-test-btn" id="fullLinkTest">CHAT → VOICE</button>
-  <span class="chain-test-status" id="chainTestStatus">대화 후속 / 음성 / 전체 연동 확인</span>
-</div>
 <div class="kaguya-chat-meta">최근 대화는 기기에 계속 저장 · <strong>중요한 내용은 MEMORY로 따로 기억</strong></div>
 <div id="daily"></div>
 
@@ -596,6 +589,26 @@ html[data-theme="wave"] .level-bar div{background-image:linear-gradient(90deg,#0
 <button class="tool-btn" id="manageBtn" type="button">⚙️ QUEST 관리</button>
 <button class="tool-btn small" id="historyBtn" type="button">📋 기록지</button>
 </div>
+<details class="test-drawer" id="testDrawer">
+  <summary>TEST</summary>
+  <div class="test-drawer-body">
+    <div class="voice-test-panel" id="voiceTestPanel" aria-label="Azure 카구야 음성 선택">
+      <span class="voice-test-label">VOICE</span>
+      <button type="button" class="voice-test-btn" data-azure-voice="ja-JP-NanamiNeural">A · NANAMI</button>
+      <button type="button" class="voice-test-btn" data-azure-voice="ja-JP-AoiNeural">B · AOI</button>
+      <button type="button" class="voice-test-btn" data-azure-voice="ja-JP-MayuNeural">C · MAYU</button>
+      <button type="button" class="voice-test-btn" data-azure-voice="ja-JP-ShioriNeural">D · SHIORI</button>
+      <span class="voice-test-hint" id="voiceTestHint">기본 MAYU · Azure → Gemini 자동백업</span>
+    </div>
+    <div class="chain-test-panel" id="chainTestPanel" aria-label="카구야 연동 테스트">
+      <span class="voice-test-label">LINK</span>
+      <button type="button" class="chain-test-btn" id="chatFollowupTest">CHAT ↻</button>
+      <button type="button" class="chain-test-btn" id="mayuVoiceTest">MAYU ♪</button>
+      <button type="button" class="chain-test-btn" id="fullLinkTest">CHAT → VOICE</button>
+      <span class="chain-test-status" id="chainTestStatus">후속대화 / 음성 / 전체 연동</span>
+    </div>
+  </div>
+</details>
 </div>
 
 <div class="overlay" id="overlay"><div class="modal">
@@ -628,12 +641,12 @@ html[data-theme="wave"] .level-bar div{background-image:linear-gradient(90deg,#0
 </div></div>
 <div id="toast" class="toast"></div>
 
-<div class="build-version" id="buildVersion">STACK ZERO v40.7 · FINAL TEST</div>
+<div class="build-version" id="buildVersion">STACK ZERO v40.8 · FINAL</div>
 <script>
 (function(){
 "use strict";
-const KEY="STACK_ZERO_FINAL_39_0";
-const APP_VERSION="40.7 · FINAL TEST";
+const KEY="STACK_ZERO_FINAL_40_8_RELEASE";
+const APP_VERSION="40.8 · FINAL";
 const LEVELS=[
 {min:0,max:100,name:"입문자",gem:"🪨",g1:"#65584c",g2:"#b9a58f",label:"STONE"},
 {min:100,max:200,name:"수련자",gem:"🪵",g1:"#5c3420",g2:"#c9925c",label:"WOOD"},
@@ -735,14 +748,6 @@ function setToday(type,value){
   if(diff>0)detectQuestClears(beforeTotal);if(type==="study"&&diff>0)checkLevelUp(beforeStudy,state.total.study);render();
 }
 function study(d){setToday("study",Number(state.today.study||0)+d)}
-function testStudyTotal(delta){
-  const before=Number(state.total.study||0),beforeIdx=levelIndex(before);
-  state.total.study=Math.max(0,before+Number(delta||0));
-  const afterIdx=levelIndex(Number(state.total.study||0));
-  state.recentAction={type:delta>0?"test_plus50":"test_minus50",delta,at:new Date().toISOString()};save();render();
-  if(delta>0){if(afterIdx>beforeIdx)playLevelUpSfx(afterIdx);else playRankStackSfx(soundThemeName())}else playUiSfx("minus");
-  toast(`TEST · STUDY TOTAL ${delta>0?"+50":"-50"}`);
-}
 function check(t,on){if(!on&&state.today[t]){toast("오늘 기록은 이미 확정됐습니다");render();return}if(on)playUiSfx(t==="exercise"?"exercise":"sleep");setToday(t,on?1:0)}
 function render(){
   rollover();const d=new Date(),days=["일","월","화","수","목","금","토"];
@@ -750,13 +755,12 @@ function render(){
   renderLevel();
   document.getElementById("daily").innerHTML=`
 <section class="card"><div class="head"><div><div class="title">📚 공부</div><div class="desc">하루 0~14 STACK · 1시간 = 1 STACK</div></div><div class="total">TOTAL<b>${state.total.study}</b></div></div>
-<div class="study-row"><button class="round" id="minus" type="button" aria-label="공부 1시간 감소">−</button><div class="today"><b>${state.today.study}</b><small>TODAY / 14</small></div><button class="round" id="plus" type="button" aria-label="공부 1시간 추가">＋</button></div><div class="study-test-row"><button class="study-test-btn" id="studyTestMinus" type="button">STUDY −50</button><button class="study-test-btn" id="studyTestPlus" type="button">STUDY +50</button></div></section>
+<div class="study-row study-row-plus-only"><span class="study-spacer" aria-hidden="true"></span><div class="today"><b>${state.today.study}</b><small>TODAY / 14</small></div><button class="round" id="plus" type="button" aria-label="공부 1시간 추가">＋</button></div></section>
 <section class="card"><div class="head"><div><div class="title">🏃 운동</div><div class="desc">오늘 목표 달성 → 1 STACK · 체크 후 확정</div></div><div class="total">TOTAL<b>${state.total.exercise}</b></div></div>
 <div class="check-row"><span class="status ${state.today.exercise?'done':''}">오늘 ${state.today.exercise} STACK</span><label class="switch"><input id="exercise" type="checkbox" ${state.today.exercise?'checked disabled':''}><span class="slider"></span></label></div></section>
 <section class="card"><div class="head"><div><div class="title">😴 잠</div><div class="desc">수면 조건 달성 → 1 STACK · 체크 후 확정</div></div><div class="total">TOTAL<b>${state.total.sleep}</b></div></div>
 <div class="check-row"><span class="status ${state.today.sleep?'done':''}">오늘 ${state.today.sleep} STACK</span><label class="switch"><input id="sleep" type="checkbox" ${state.today.sleep?'checked disabled':''}><span class="slider"></span></label></div></section>`;
-  document.getElementById("minus").onclick=()=>study(-1);document.getElementById("plus").onclick=()=>study(1);
-  document.getElementById("studyTestMinus").onclick=()=>testStudyTotal(-50);document.getElementById("studyTestPlus").onclick=()=>testStudyTotal(50);
+  document.getElementById("plus").onclick=()=>study(1);
   const ex=document.getElementById("exercise"),sl=document.getElementById("sleep");if(!ex.disabled)ex.onchange=e=>check("exercise",e.target.checked);if(!sl.disabled)sl.onchange=e=>check("sleep",e.target.checked);
   document.querySelectorAll(".quest-tab").forEach(b=>b.onclick=()=>{playUiSfx("quest");active=b.dataset.type;renderQuest()});
   renderQuest();renderRewards();
@@ -1016,7 +1020,7 @@ function showTransientKaguyaMood(avatar,{mood="",text="",reason=""}={}){
   const ms=reason==="chat"?9000:(resolved==="angry"||resolved==="cry"?4300:3400);
   kaguyaMoodTimer=setTimeout(()=>restoreKaguyaStackFace(avatar),ms);
 }
-const KAGUYA_DB_NAME="STACK_ZERO_KAGUYA_DB_FINAL_39_0";
+const KAGUYA_DB_NAME="STACK_ZERO_KAGUYA_DB_FINAL_40_8_RELEASE";
 const KAGUYA_DB_VERSION=1;
 let kaguyaDBPromise=null;
 function openKaguyaDB(){
@@ -1060,10 +1064,10 @@ async function renderAICoach(reason){
   catch(err){if(requestId!==coachRequestId)return;const code=Number(err?.status||0)||0;const statusText=err?.name==="AbortError"?"AI 시간초과 · 로컬 반응":code?`AI ${code} · 로컬 반응`:"AI 오류 · 로컬 반응";setCoachVisual({text:x.msg,mood:"",reason,statusText,statusClass:"err"})}
 }
 
-const VOICE_ENABLED_KEY="STACK_ZERO_FINAL_39_0_VOICE_ENABLED";
-const AZURE_VOICE_KEY="STACK_ZERO_40_6_AZURE_VOICE";
-const AZURE_COOLDOWN_KEY="STACK_ZERO_40_6_AZURE_COOLDOWN_UNTIL",AZURE_BACKOFF_KEY="STACK_ZERO_40_6_AZURE_BACKOFF_STEP";
-const GEMINI_TTS_COOLDOWN_KEY="STACK_ZERO_40_6_GEMINI_TTS_COOLDOWN_UNTIL",GEMINI_TTS_BACKOFF_KEY="STACK_ZERO_40_6_GEMINI_TTS_BACKOFF_STEP";
+const VOICE_ENABLED_KEY="STACK_ZERO_FINAL_40_8_VOICE_ENABLED";
+const AZURE_VOICE_KEY="STACK_ZERO_40_8_AZURE_VOICE";
+const AZURE_COOLDOWN_KEY="STACK_ZERO_40_8_AZURE_COOLDOWN_UNTIL",AZURE_BACKOFF_KEY="STACK_ZERO_40_8_AZURE_BACKOFF_STEP";
+const GEMINI_TTS_COOLDOWN_KEY="STACK_ZERO_40_8_GEMINI_TTS_COOLDOWN_UNTIL",GEMINI_TTS_BACKOFF_KEY="STACK_ZERO_40_8_GEMINI_TTS_BACKOFF_STEP";
 const TTS_BACKOFF_STEPS=[60000,120000,300000,600000,1200000,1800000];
 const AZURE_VOICES=["ja-JP-NanamiNeural","ja-JP-AoiNeural","ja-JP-MayuNeural","ja-JP-ShioriNeural"];
 const AZURE_VOICE_LABEL={"ja-JP-NanamiNeural":"NANAMI","ja-JP-AoiNeural":"AOI","ja-JP-MayuNeural":"MAYU","ja-JP-ShioriNeural":"SHIORI"};
@@ -1414,7 +1418,7 @@ document.querySelectorAll(".voice-test-btn").forEach(b=>b.onclick=()=>{playUiSfx
 document.getElementById("chatFollowupTest").onclick=()=>{playUiSfx("tap");runChatFollowupTest()}
 document.getElementById("mayuVoiceTest").onclick=()=>{playUiSfx("tap");runMayuVoiceTest()}
 document.getElementById("fullLinkTest").onclick=()=>{playUiSfx("send");runFullLinkTest()}
-document.addEventListener("click",e=>{const t=e.target&&e.target.closest?e.target.closest("button"):null;if(!t)return;const id=t.id||"";if(["minus","plus","studyTestMinus","studyTestPlus","kaguyaChatSend","kaguyaVoiceToggle","manageBtn","addBtn","saveQuest","historyBtn","closeHistory","closeManager","cancelEditor","celebrateClose","chatFollowupTest","mayuVoiceTest","fullLinkTest"].includes(id))return;if(t.matches(".quest-tab,[data-achieve],[data-receive],.quest-empty-action,.tool-btn,.mini,.reward-use,.form-actions button")){playUiSfx(t.classList.contains("danger")?"danger":t.matches("[data-receive],.reward-use")?"reward":t.matches(".quest-tab,[data-achieve],.quest-empty-action")?"quest":"tap")}});
+document.addEventListener("click",e=>{const t=e.target&&e.target.closest?e.target.closest("button"):null;if(!t)return;const id=t.id||"";if(["plus","kaguyaChatSend","kaguyaVoiceToggle","manageBtn","addBtn","saveQuest","historyBtn","closeHistory","closeManager","cancelEditor","celebrateClose","chatFollowupTest","mayuVoiceTest","fullLinkTest"].includes(id))return;if(t.matches(".quest-tab,[data-achieve],[data-receive],.quest-empty-action,.tool-btn,.mini,.reward-use,.form-actions button")){playUiSfx(t.classList.contains("danger")?"danger":t.matches("[data-receive],.reward-use")?"reward":t.matches(".quest-tab,[data-achieve],.quest-empty-action")?"quest":"tap")}});
 async function probeConnections(){
   try{
     const r=await fetch("/api/coach?probe=1",{cache:"no-store"}),d=await r.json().catch(()=>({}));
