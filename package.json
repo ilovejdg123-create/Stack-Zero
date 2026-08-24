@@ -1,11 +1,11 @@
 {
   "name": "stack-zero",
-  "version": "37.0.0",
+  "version": "1.0.0",
   "private": true,
   "engines": {
     "node": ">=20"
   },
   "scripts": {
-    "check": "node --check lib/coach-core.js && node --check api/coach.js && node --check netlify/functions/coach.js"
+    "check": "node --check api/coach.js && node --check api/azure-tts.js && node --check api/gemini-tts.js && node --check api/account.js && node --check api/sync.js && node --check api/_cloud.js"
   }
 }

@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#0b0d12">
 <title>STACK ZERO · AI COACH</title>
 <style>
@@ -18,15 +18,16 @@ h1{margin:0;font-size:32px;letter-spacing:-1.5px}
 .head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
 .title{font-size:19px;font-weight:900}.desc{font-size:11px;color:#777f8c;margin-top:5px}
 .total{text-align:right;color:#737b88;font-size:10px;letter-spacing:.5px}.total b{display:block;color:var(--accent2);font-size:21px;margin-top:2px}
-.study-row{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:21px}
+.study-row{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:21px}.study-row .round{width:60px;height:60px;border-radius:18px;font-size:31px;box-shadow:0 9px 24px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.06)}
 .round{width:52px;height:52px;border-radius:15px;background:#292e38;color:#fff;font-size:28px;font-weight:800}.round:active{transform:scale(.94)}
 .today{text-align:center;min-width:70px}.today b{font-size:39px;line-height:1}.today small{display:block;color:#777f8c;font-size:10px;margin-top:5px}
 .check-row{display:flex;justify-content:space-between;align-items:center;margin-top:20px}.status{font-size:14px;font-weight:800;color:#8c94a0}.status.done{color:#fff}
 .switch{position:relative;width:62px;height:36px;display:block}.switch input{position:absolute;opacity:0}.slider{position:absolute;inset:0;background:#2a2f39;border-radius:99px}.slider:before{content:"";position:absolute;width:30px;height:30px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.18s}.switch input:checked+.slider{background:var(--accent)}.switch input:checked+.slider:before{transform:translateX(26px);background:#111}
 .level-card{position:relative;overflow:hidden;border-color:var(--accent2);background:linear-gradient(145deg,var(--card),rgba(255,255,255,.02));box-shadow:0 0 25px var(--glow)}
 .level-card:after{content:"";position:absolute;inset:-50%;background:radial-gradient(circle at 70% 20%,var(--glow),transparent 35%);pointer-events:none}
-.level-top{display:flex;align-items:center;gap:12px;position:relative;z-index:1}.gem{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;font-size:28px;background:linear-gradient(145deg,var(--gem1),var(--gem2));box-shadow:0 0 16px var(--glow),inset 0 1px 2px rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.35)}
-.level-name{font-size:24px;font-weight:950}.level-range{font-size:11px;color:#8c94a0;margin-top:3px}.level-total{margin-left:auto;text-align:right}.level-total b{font-size:30px;color:var(--accent)}.level-bar{height:7px;background:#292e37;border-radius:99px;margin-top:15px;overflow:hidden;position:relative;z-index:1}.level-bar div{height:100%;width:0;background:linear-gradient(90deg,var(--gem1),var(--accent));border-radius:99px;transition:.35s;box-shadow:0 0 10px var(--glow)}
+.level-top{display:grid;grid-template-columns:54px minmax(96px,1fr) auto 48px;align-items:center;column-gap:14px;position:relative;z-index:1}.level-identity{min-width:0}.gem{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;font-size:28px;background:linear-gradient(145deg,var(--gem1),var(--gem2));box-shadow:0 0 16px var(--glow),inset 0 1px 2px rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.35)}
+.level-name{font-size:24px;font-weight:950;white-space:nowrap}.level-range{font-size:11px;color:#8c94a0;margin-top:3px;white-space:nowrap}.level-stack-label{justify-self:center;transform:translateX(7px);font-size:15px;line-height:1;font-weight:950;letter-spacing:.075em;color:#c9ced7;white-space:nowrap;text-shadow:0 0 12px var(--glow)}.level-total{min-width:48px;text-align:right}.level-total b{display:block;font-size:32px;line-height:1;color:var(--accent)}.level-bar{height:7px;background:#292e37;border-radius:99px;margin-top:15px;overflow:hidden;position:relative;z-index:1}.level-bar div{height:100%;width:0;background:linear-gradient(90deg,var(--gem1),var(--accent));border-radius:99px;transition:.35s;box-shadow:0 0 10px var(--glow)}
+@media(max-width:420px){.level-top{grid-template-columns:48px minmax(82px,1fr) auto 40px;column-gap:9px}.gem{width:48px;height:48px;border-radius:14px;font-size:25px}.level-name{font-size:21px}.level-range{font-size:9.5px}.level-stack-label{font-size:13px;letter-spacing:.055em;transform:translateX(4px)}.level-total{min-width:40px}.level-total b{font-size:30px}}
 .section{font-size:21px;font-weight:900;margin:31px 2px 8px}.section-sub{font-size:12px;color:#777f8c;margin:0 2px 12px}
 .quest-tabs{display:flex;gap:7px}.quest-tabs .quest-tab{flex:1;background:#20242d;color:#929aa6;border-radius:12px;padding:11px 3px;font-weight:850}.quest-tabs .quest-tab.active{background:var(--accent);color:#111;box-shadow:0 0 15px var(--glow)}
 .quest{position:relative;background:var(--card);border:1px solid var(--line);border-radius:17px;padding:16px 14px 15px 54px;margin:9px 0;overflow:hidden}.quest.locked{opacity:.45}.quest.unlocked{border-color:var(--accent2);box-shadow:0 0 14px var(--glow)}
@@ -56,6 +57,21 @@ h1{margin:0;font-size:32px;letter-spacing:-1.5px}
 .history-edit{background:#20242c;border-radius:13px;padding:12px;margin:8px 0}.history-edit input{width:100%;padding:10px;border:0;border-radius:9px;background:#292e38;color:#fff;margin:4px 0}.history-edit .row{display:flex;gap:6px}.history-edit button{flex:1}
 .celebrate{position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;padding:25px;background:rgba(0,0,0,.78)}.celebrate-box{width:min(430px,100%);text-align:center;padding:30px 22px;border-radius:28px;background:linear-gradient(145deg,#181b24,#0e1016);border:1px solid var(--accent2);box-shadow:0 0 45px var(--glow);animation:pop .25s ease}.celebrate-gem{font-size:52px}.celebrate h2{font-size:26px;margin:10px 0}.celebrate p{color:#c7cbd2;line-height:1.55;margin:8px 0 20px}.celebrate button{padding:13px 30px;border-radius:12px;background:var(--accent);color:#111;font-weight:900}
 @keyframes pop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+.build-version{position:fixed;right:8px;bottom:6px;z-index:120;color:rgba(198,205,216,.48);font-size:9px;font-weight:800;letter-spacing:.45px;line-height:1;pointer-events:none;user-select:none;text-shadow:0 1px 5px rgba(0,0,0,.75)}
+@media(max-width:420px){.build-version{right:6px;bottom:5px;font-size:8px;opacity:.88}}
+
+/* V1 · PIN cloud account gate */
+body.auth-locked{overflow:hidden}
+body.auth-locked .app{visibility:hidden;pointer-events:none}
+.auth-gate{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(circle at 50% 22%,rgba(255,255,255,.055),transparent 32%),rgba(5,7,10,.94);backdrop-filter:blur(12px)}
+.auth-gate.hidden{display:none}
+.auth-card{width:min(430px,100%);background:linear-gradient(145deg,#171a22,#0e1016);border:1px solid #2b303a;border-radius:26px;padding:25px 20px 20px;box-shadow:0 26px 80px rgba(0,0,0,.55)}
+.auth-brand{font-size:29px;font-weight:950;letter-spacing:-1.3px}.auth-kicker{font-size:10px;letter-spacing:.18em;color:#8a929f;font-weight:900;margin-top:4px}.auth-copy{color:#8c94a0;font-size:12px;line-height:1.5;margin:13px 0 20px}
+.auth-section{padding:15px 0}.auth-section+.auth-section{border-top:1px solid #292e37}.auth-section-title{font-size:15px;font-weight:950;margin-bottom:5px}.auth-section-desc{font-size:11px;color:#777f8c;margin-bottom:10px}
+.auth-row{display:flex;gap:8px}.auth-row input{min-width:0;flex:1;border:1px solid #303641;background:#20242d;color:#fff;border-radius:13px;padding:13px 14px;font-weight:900;letter-spacing:.14em;outline:none}.auth-row input:focus{border-color:#747d8b;box-shadow:0 0 0 3px rgba(255,255,255,.04)}
+.auth-row button{flex:0 0 auto;border-radius:13px;padding:12px 15px;background:#f4f6f8;color:#111;font-weight:950}.auth-row button:disabled{opacity:.45;cursor:wait}.auth-status{min-height:18px;margin-top:11px;font-size:11px;color:#8b94a0}.auth-status.ok{color:#9ee7bd}.auth-status.err{color:#ff929e}.auth-note{font-size:10px;color:#626a75;line-height:1.45;margin-top:8px}
+.sync-test-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.06)}.sync-test-status{flex:1;min-width:130px;font-size:9px;color:#777f8c}.sync-test-status.ok{color:#9ee7bd}.sync-test-status.err{color:#ff929e}.sync-test-btn{padding:6px 9px;border-radius:8px;background:#242933;color:#c9ced6;font-size:9px;font-weight:900}
+
 .toast{position:fixed;left:50%;bottom:25px;transform:translateX(-50%);background:var(--accent);color:#111;border-radius:99px;padding:11px 17px;font-size:13px;font-weight:900;display:none;z-index:200;white-space:nowrap}
 
 /* V9 premium mobile UX */
@@ -252,6 +268,13 @@ body{overscroll-behavior-y:contain}
 .kaguya-chatbar input{min-width:0;flex:1;border:0;outline:0;background:transparent;color:#eef2f7;padding:8px 8px;font-size:12px;font-weight:700}.kaguya-chatbar input::placeholder{color:#68717e;font-weight:650}
 .kaguya-chat-send,.kaguya-voice-toggle{flex:none;height:34px;border-radius:10px;font-weight:950}.kaguya-chat-send{padding:0 12px;background:var(--accent);color:#111}.kaguya-voice-toggle{width:36px;background:#20252e;color:#b9c1cd;border:1px solid rgba(255,255,255,.06)}
 .kaguya-chat-send:disabled,.kaguya-chatbar input:disabled{opacity:.5}.kaguya-voice-toggle.off{opacity:.48;filter:saturate(.4)}
+.ai-status-row{display:flex;align-items:center;gap:7px;margin-top:3px;min-height:12px}.connection-health{display:inline-flex;align-items:center;gap:6px;margin:0;font-size:7px;font-weight:800;letter-spacing:0;color:#747d89;opacity:.9}
+.connection-health .conn{display:inline-flex;align-items:center;gap:3px;white-space:nowrap}
+.connection-health .conn:before{content:"";width:4px;height:4px;border-radius:50%;background:#68717d;box-shadow:0 0 0 1px rgba(104,113,125,.10)}
+.connection-health .conn.ok{color:#88d6a5}.connection-health .conn.ok:before{background:#55d487;box-shadow:0 0 8px rgba(85,212,135,.48)}
+.connection-health .conn.err{color:#e98691}.connection-health .conn.err:before{background:#ef5969;box-shadow:0 0 8px rgba(239,89,105,.42)}
+.connection-health .conn.checking{color:#7d8692}.connection-health .conn.checking:before{background:#7d8692;animation:connPulse 1.1s ease-in-out infinite}
+@keyframes connPulse{50%{opacity:.35;transform:scale(.8)}}
 .kaguya-chat-meta{margin:-8px 4px 14px;color:#596371;font-size:9px;line-height:1.45}.kaguya-chat-meta strong{color:#8b96a4}
 .switch input:disabled+.slider{opacity:.72;cursor:not-allowed}.switch input:checked:disabled+.slider{filter:saturate(.8) brightness(.95)}
 @media(max-width:420px){.kaguya-chatbar{gap:5px;padding:6px}.kaguya-chatbar input{font-size:11px;padding:8px 6px}.kaguya-chat-send{padding:0 10px}.kaguya-voice-toggle{width:34px}}
@@ -455,26 +478,134 @@ html[data-theme="lightning"] .level-bar div{background-image:linear-gradient(90d
   .theme-fx,.theme-fx:before,.theme-fx:after,.theme-fx i,.level-name,.level-bar div,.level-card{animation:none!important}
 }
 
+.study-row-plus-only{display:grid;grid-template-columns:60px minmax(76px,auto) 60px;align-items:center;justify-content:center;gap:18px}
+.study-row-plus-only .study-spacer{width:60px;height:60px;display:block}
+.test-drawer{margin:16px 2px 6px;border:1px solid rgba(255,255,255,.07);border-radius:11px;background:rgba(9,12,18,.38);overflow:hidden}
+.test-drawer summary{list-style:none;cursor:pointer;user-select:none;padding:7px 10px;font-size:8px;font-weight:950;letter-spacing:.15em;color:#687383;text-align:center}
+.test-drawer summary::-webkit-details-marker{display:none}
+.test-drawer summary:after{content:" ＋";color:#596574}.test-drawer[open] summary:after{content:" −"}
+.test-drawer-body{padding:0 7px 7px;border-top:1px solid rgba(255,255,255,.045)}
+.test-drawer .voice-test-panel,.test-drawer .chain-test-panel{margin:7px 0 0;background:rgba(9,12,18,.34)}
+
+
+/* V1.0 · PIN sync release + collapsible diagnostics */
+html,body{touch-action:manipulation;-webkit-text-size-adjust:100%}
+button,.kaguya-chatbar,.voice-test-panel{touch-action:manipulation}
+.kaguya-chatbar input{font-size:16px!important;line-height:1.25}
+.voice-test-panel{display:flex;align-items:center;gap:6px;margin:-7px 2px 12px;padding:7px 8px;border:1px solid rgba(255,255,255,.07);border-radius:12px;background:rgba(9,12,18,.56);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);overflow-x:auto;scrollbar-width:none}
+.voice-test-panel::-webkit-scrollbar{display:none}.voice-test-label{font-size:8px;font-weight:950;letter-spacing:.12em;color:#7f8a98;white-space:nowrap}.voice-test-btn{flex:none;padding:6px 9px;border-radius:9px;background:#1d222b;color:#8994a3;border:1px solid rgba(255,255,255,.07);font-size:9px;font-weight:950;letter-spacing:.04em;transition:.16s}.voice-test-btn.active{color:#071017;background:var(--accent);border-color:rgba(255,255,255,.35);box-shadow:0 0 16px var(--glow)}.voice-test-hint{font-size:8px;color:#5d6775;white-space:nowrap;margin-left:1px}
+.chain-test-panel{display:flex;align-items:center;gap:6px;margin:-7px 2px 12px;padding:7px 8px;border:1px solid rgba(255,255,255,.07);border-radius:12px;background:rgba(9,12,18,.48);overflow-x:auto;scrollbar-width:none}.chain-test-panel::-webkit-scrollbar{display:none}.chain-test-btn{flex:none;padding:6px 9px;border-radius:9px;background:#171b22;color:#9aa5b5;border:1px solid rgba(255,255,255,.07);font-size:9px;font-weight:950;letter-spacing:.035em}.chain-test-btn:disabled{opacity:.45}.chain-test-status{font-size:8px;color:#687483;white-space:nowrap;margin-left:2px}.chain-test-status.ok{color:#88d9af}.chain-test-status.err{color:#ff8f9b}.chain-test-status.run{color:#f1d889}
+
+.ai-coach{min-height:86px;padding:12px 13px;gap:13px}
+.ai-avatar{width:74px!important;height:74px!important;flex:0 0 74px!important;border-radius:20px}
+.ai-avatar.kaguya-mid{width:91px!important;height:91px!important;flex-basis:91px!important;filter:drop-shadow(0 0 13px rgba(170,206,255,.18))}
+.ai-avatar.kaguya-high{width:108px!important;height:108px!important;flex-basis:108px!important;transform:translateY(-2px);filter:drop-shadow(0 0 18px rgba(255,91,147,.30))}
+.ai-avatar .kaguya-img{object-position:center 38%;box-shadow:0 12px 30px rgba(0,0,0,.34),0 0 0 1px rgba(255,255,255,.035)}
+@media(max-width:420px){.app{padding-left:12px;padding-right:12px}.ai-coach{gap:10px;padding:10px}.ai-avatar{width:68px!important;height:68px!important;flex-basis:68px!important}.ai-avatar.kaguya-mid{width:84px!important;height:84px!important;flex-basis:84px!important}.ai-avatar.kaguya-high{width:98px!important;height:98px!important;flex-basis:98px!important}.kaguya-chatbar input{font-size:16px!important;padding:9px 6px}.voice-test-panel{margin-top:-6px}}
+
+/* final theme overrides: richer material language */
+.theme-fx{background-color:#070a10}
+.theme-fx:before,.theme-fx:after{opacity:.82}
+.theme-fx i{opacity:.42}
+
+.theme-fx[data-theme="stone"]{background:radial-gradient(circle at 48% -8%,#443a31 0,#211c18 25%,#111217 58%,#080a0e 100%)}
+.theme-fx[data-theme="stone"]:before{background:repeating-linear-gradient(126deg,transparent 0 24px,rgba(226,199,168,.045) 25px 27px,transparent 28px 53px),radial-gradient(circle at 22% 34%,rgba(181,146,109,.14),transparent 21%);filter:blur(.35px);animation:earthDrift 17s linear infinite}
+.theme-fx[data-theme="stone"]:after{background:radial-gradient(ellipse at 72% 14%,rgba(255,224,190,.08),transparent 23%),radial-gradient(ellipse at 34% 88%,rgba(94,70,49,.20),transparent 31%);filter:blur(15px);animation:softOrbit 20s ease-in-out infinite alternate}
+.theme-fx[data-theme="stone"] i{background:#d0b08e;box-shadow:0 0 7px rgba(208,176,142,.30)}
+
+.theme-fx[data-theme="wood"]{background:radial-gradient(circle at 28% -4%,#49351e 0,#251b12 32%,#11130f 63%,#080a0d 100%)}
+.theme-fx[data-theme="wood"]:before{background:repeating-radial-gradient(ellipse at 14% 33%,transparent 0 19px,rgba(212,153,86,.065) 21px 23px,transparent 25px 42px),linear-gradient(135deg,transparent,rgba(91,136,69,.075));animation:woodBreathe 12s ease-in-out infinite alternate}
+.theme-fx[data-theme="wood"]:after{background:radial-gradient(circle at 78% 17%,rgba(145,196,107,.18),transparent 23%),radial-gradient(circle at 22% 78%,rgba(198,137,69,.13),transparent 26%);filter:blur(14px);animation:softOrbit 18s ease-in-out infinite alternate}
+.theme-fx[data-theme="wood"] i{background:#bfdc91;box-shadow:0 0 8px rgba(157,206,111,.36);animation:leafFloat 9.5s ease-in-out infinite}
+
+/* Challenger = SILVER, not bronze/gold */
+.theme-fx[data-theme="coin"]{background:radial-gradient(circle at 48% -8%,#59636e 0,#2d343d 24%,#151a21 51%,#090c11 100%)}
+.theme-fx[data-theme="coin"]:before{background:linear-gradient(112deg,transparent 20%,rgba(197,211,226,.07) 33%,rgba(255,255,255,.40) 42%,rgba(172,189,207,.09) 49%,transparent 63%);filter:blur(1px);animation:steelSweep 5.8s ease-in-out infinite}
+.theme-fx[data-theme="coin"]:after{background:repeating-linear-gradient(0deg,transparent 0 34px,rgba(239,246,255,.026) 35px 36px),radial-gradient(circle at 70% 28%,rgba(227,239,250,.13),transparent 18%);opacity:.72}
+.theme-fx[data-theme="coin"] i{background:#f6fbff;box-shadow:0 0 8px #d7e2ed,0 0 17px rgba(208,223,239,.43);animation:diamondBlink 3.9s ease-in-out infinite}
+html[data-theme="coin"] .level-card{background:linear-gradient(145deg,rgba(51,59,69,.86),rgba(14,18,24,.93));border-color:rgba(222,235,247,.58);box-shadow:0 0 30px rgba(191,211,231,.17),inset 0 1px rgba(255,255,255,.13)}
+html[data-theme="coin"] .level-name{background:linear-gradient(90deg,#b9c5d1,#fff,#d8e3ed,#8d9aa8);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 15px rgba(222,238,252,.20);animation:premiumBarFlow 4.4s linear infinite}
+html[data-theme="coin"] .level-bar div{background-image:linear-gradient(90deg,#8795a3,#f8fcff,#b7c5d3,#ffffff,#7d8b99);background-size:230% 100%;animation:premiumBarFlow 3.4s linear infinite}
+
+.theme-fx[data-theme="crest"]{background:radial-gradient(circle at 50% -8%,#584719 0,#2c2413 25%,#17151a 56%,#090b10 100%)}
+.theme-fx[data-theme="crest"]:before{background:conic-gradient(from 0deg at 50% 8%,transparent 0 6%,rgba(255,224,133,.17) 8%,transparent 11% 21%,rgba(255,245,199,.08) 23%,transparent 27% 100%);filter:blur(4px);animation:royalRays 30s linear infinite}
+.theme-fx[data-theme="crest"]:after{background:radial-gradient(circle at 50% 20%,rgba(255,222,111,.15),transparent 18%),repeating-linear-gradient(45deg,transparent 0 38px,rgba(237,212,142,.025) 40px 41px);filter:blur(5px)}
+.theme-fx[data-theme="crest"] i{background:#ffe89d;box-shadow:0 0 9px #e9c65f;animation:royalSpark 4.2s ease-in-out infinite}
+
+.theme-fx[data-theme="lightning"]{background:radial-gradient(circle at 54% -12%,#123c76 0,#0e2143 34%,#0b1020 62%,#06080e 100%)}
+.theme-fx[data-theme="lightning"]:before{background:linear-gradient(112deg,transparent 25%,rgba(69,163,255,.10) 36%,rgba(212,246,255,.42) 43%,rgba(88,198,255,.07) 49%,transparent 58%);filter:blur(2px);animation:steelSweep 4.2s ease-in-out infinite}
+.theme-fx[data-theme="lightning"]:after{background:radial-gradient(circle at 25% 25%,rgba(72,169,255,.16),transparent 16%),radial-gradient(circle at 78% 60%,rgba(85,220,255,.13),transparent 21%);filter:blur(18px);animation:softOrbit 7s ease-in-out infinite alternate}
+.theme-fx[data-theme="lightning"] i{background:#d8f8ff;box-shadow:0 0 7px #7ed9ff,0 0 17px #368fff;animation:diamondBlink 2.4s ease-in-out infinite}
+
+.theme-fx[data-theme="diamond"]{background:radial-gradient(circle at 46% -8%,#1c5d79 0,#123444 27%,#0e1c27 55%,#070a10 100%)}
+.theme-fx[data-theme="diamond"]:before{background:linear-gradient(116deg,transparent 17%,rgba(101,225,255,.08) 29%,rgba(255,255,255,.49) 39%,rgba(177,242,255,.12) 47%,transparent 61%);filter:blur(1px);animation:diamondPrismSweep 5.2s ease-in-out infinite}
+.theme-fx[data-theme="diamond"]:after{background:conic-gradient(from 10deg at 64% 24%,transparent,rgba(101,223,255,.22),transparent 9%,rgba(255,255,255,.12),transparent 20%,rgba(141,121,255,.10),transparent 32%);filter:blur(12px);animation:diamondFacetTurn 24s linear infinite}
+.theme-fx[data-theme="diamond"] i{background:#f4feff;box-shadow:0 0 10px #fff,0 0 22px #7ce4ff;animation:diamondLuxuryBlink 2.5s ease-in-out infinite}
+
+/* Strong/WAVE: deeper ocean, moving surface light, foam and droplets */
+.theme-fx[data-theme="wave"]{background:radial-gradient(ellipse at 50% -18%,#136d94 0,#0a4568 20%,#082b4d 42%,#07162d 67%,#050914 100%)}
+.theme-fx[data-theme="wave"]:before{inset:8% -24% -18%;background:radial-gradient(ellipse at 18% 88%,rgba(55,207,255,.35),transparent 24%),radial-gradient(ellipse at 56% 103%,rgba(38,128,255,.36),transparent 31%),radial-gradient(ellipse at 89% 80%,rgba(93,230,255,.22),transparent 24%),repeating-radial-gradient(ellipse at 52% 115%,transparent 0 31px,rgba(213,249,255,.13) 33px 36px,transparent 38px 65px);filter:blur(10px);animation:oceanSwell 6.3s ease-in-out infinite alternate}
+.theme-fx[data-theme="wave"]:after{inset:-12% -15%;background:linear-gradient(112deg,transparent 24%,rgba(179,245,255,.05) 31%,rgba(230,254,255,.19) 37%,transparent 43%),repeating-linear-gradient(96deg,transparent 0 48px,rgba(101,214,255,.035) 50px 52px);filter:blur(3px);opacity:.78;animation:oceanFoamSlide 8.5s linear infinite}
+.theme-fx[data-theme="wave"] i{width:3px;height:5px;border-radius:60% 60% 70% 70%;background:#eaffff;box-shadow:0 0 9px #a4efff,0 0 23px #43bfff;animation:oceanDroplet 3.4s ease-in-out infinite}
+.theme-fx[data-theme="wave"] i:nth-child(3n){width:7px;height:2px;border-radius:60%;opacity:.7;background:#fff;box-shadow:0 0 12px #7fdcff}
+html[data-theme="wave"] .level-card{background:linear-gradient(145deg,rgba(8,54,79,.76),rgba(8,18,34,.91));border-color:rgba(129,225,255,.45);box-shadow:0 0 34px rgba(54,185,255,.19),inset 0 0 30px rgba(60,198,255,.055)}
+html[data-theme="wave"] .level-name{background:linear-gradient(90deg,#74d8ff,#eaffff,#52afff,#8cf3ff,#74d8ff);background-size:260% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 15px rgba(91,215,255,.28);animation:waveTitleFlow 4.1s ease-in-out infinite}
+html[data-theme="wave"] .level-bar div{background-image:linear-gradient(90deg,#0b78b3,#6ce9ff,#eaffff,#3fa9ff,#0b78b3);background-size:260% 100%;animation:premiumBarFlow 2.6s linear infinite}
+
+.theme-fx[data-theme="fire"]{background:radial-gradient(ellipse at 50% 108%,#a83412 0,#5a1b0e 24%,#2a0f0c 48%,#13090b 70%,#07080c 100%)}
+.theme-fx[data-theme="fire"]:before{inset:5% -18% -10%;background:radial-gradient(ellipse at 14% 100%,rgba(255,71,18,.44),transparent 26%),radial-gradient(ellipse at 49% 103%,rgba(255,163,49,.39),transparent 29%),radial-gradient(ellipse at 84% 100%,rgba(255,58,21,.38),transparent 26%);filter:blur(14px);animation:flameTongues 2.6s ease-in-out infinite alternate}
+.theme-fx[data-theme="fire"]:after{background:linear-gradient(180deg,transparent 30%,rgba(255,116,45,.06));filter:blur(3px);animation:heatDistortion 3.3s ease-in-out infinite alternate}
+.theme-fx[data-theme="fire"] i{background:#ffd08b;box-shadow:0 0 10px #ff8b36,0 0 20px #ff3b16;animation:luxuryEmber 3.2s ease-out infinite}
+
+.theme-fx[data-theme="crown"]{background:radial-gradient(circle at 50% -7%,#5a287a 0,#321744 28%,#1a1025 55%,#090910 100%)}
+.theme-fx[data-theme="crown"]:before{background:conic-gradient(from 0deg at 50% 6%,transparent 0 5%,rgba(255,228,139,.20) 7%,transparent 10% 18%,rgba(225,162,255,.16) 21%,transparent 24% 100%);filter:blur(5px);animation:royalRays 21s linear infinite}
+.theme-fx[data-theme="crown"]:after{background:radial-gradient(circle at 50% 17%,rgba(255,227,130,.21),transparent 16%),radial-gradient(circle at 19% 66%,rgba(184,81,241,.20),transparent 23%),radial-gradient(circle at 83% 66%,rgba(110,83,236,.19),transparent 24%);filter:blur(13px);animation:royalAura 6.8s ease-in-out infinite alternate}
+.theme-fx[data-theme="crown"] i{background:#fff0b4;box-shadow:0 0 10px #ffd768,0 0 22px #d797ff;animation:royalSpark 3.1s ease-in-out infinite}
+
+.theme-fx[data-theme="cosmic"]{background:radial-gradient(circle at 16% 14%,#5a3a99 0,transparent 27%),radial-gradient(circle at 84% 7%,#174d98 0,transparent 29%),radial-gradient(circle at 51% 76%,#442367 0,transparent 36%),linear-gradient(180deg,#09091b,#04050c)}
+.theme-fx[data-theme="cosmic"]:before{inset:-27%;background:radial-gradient(ellipse at 18% 34%,rgba(173,105,255,.29),transparent 21%),radial-gradient(ellipse at 72% 48%,rgba(72,168,255,.27),transparent 27%),radial-gradient(ellipse at 47% 10%,rgba(245,177,255,.21),transparent 19%),radial-gradient(ellipse at 50% 82%,rgba(69,88,235,.18),transparent 29%);filter:blur(24px);animation:galaxyBreath 10s ease-in-out infinite alternate}
+.theme-fx[data-theme="cosmic"]:after{inset:-8%;background-image:radial-gradient(circle,#fff 0 1px,transparent 1.5px),radial-gradient(circle,#9edfff 0 1.1px,transparent 1.8px),radial-gradient(circle,#efc3ff 0 1px,transparent 1.7px),radial-gradient(circle,#fff4c5 0 .9px,transparent 1.5px);background-size:27px 27px,51px 51px,83px 83px,127px 127px;opacity:.74;animation:deepStarDrift 30s linear infinite}
+.theme-fx[data-theme="cosmic"] i{background:#fff;box-shadow:0 0 10px #fff,0 0 24px #a99cff;animation:cosmicTwinkle 2.4s ease-in-out infinite}
+
 </style>
 </head>
-<body>
+<body class="auth-locked">
+<div class="auth-gate" id="authGate" aria-live="polite">
+  <div class="auth-card">
+    <div class="auth-brand">STACK ZERO</div>
+    <div class="auth-kicker">PRIVATE SYNC · V1</div>
+    <div class="auth-copy">PIN 하나로 PC · iPhone · iPad에서 같은 STACK과 카구야 MEMORY를 이어갑니다</div>
+    <div class="auth-section">
+      <div class="auth-section-title">새로 시작하기</div>
+      <div class="auth-section-desc">처음 한 번 사용할 PIN을 설정합니다</div>
+      <div class="auth-row"><input id="newPinInput" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="12" autocomplete="new-password" placeholder="6~12자리 PIN"><button id="createPinBtn" type="button">PIN 설정</button></div>
+    </div>
+    <div class="auth-section">
+      <div class="auth-section-title">로그인</div>
+      <div class="auth-section-desc">다른 기기에서 만들었던 PIN을 입력합니다</div>
+      <div class="auth-row"><input id="loginPinInput" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="12" autocomplete="current-password" placeholder="기존 PIN"><button id="loginPinBtn" type="button">로그인</button></div>
+      <div class="auth-status" id="authStatus">SYNC 서버 확인 중…</div>
+      <div class="auth-note">PIN이 유일한 로그인 수단입니다 · 잊으면 복구할 수 없으니 기억해두세요</div>
+    </div>
+  </div>
+</div>
 <div id="themeFX" class="theme-fx" data-theme="stone" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
 <div class="app">
 <h1>STACK ZERO</h1><div class="date" id="date"></div><div id="level"></div>
 <div id="aiCoach" class="ai-coach">
-  <div id="aiAvatar" class="ai-avatar"><img class="kaguya-img" src="assets/kaguya/stack_0_1.jpg" alt="카구야" draggable="false"></div>
+  <div id="aiAvatar" class="ai-avatar"><img class="kaguya-img" src="assets/kaguya/stack_0_1.png" alt="카구야" draggable="false"></div>
   <div class="ai-copy">
-    <div class="ai-label">KAGUYA · LIVE</div>
+    <div class="ai-label">KAGUYA</div>
     <div id="aiMessage" class="ai-message">카구야님이 입력중 •••</div>
-    <div id="aiRank" class="ai-rank"></div><div id="aiStatus" class="ai-status">연결 확인 중…</div>
+    <div id="aiRank" class="ai-rank"></div><div class="ai-status-row"><div id="aiStatus" class="ai-status">LIVE</div><div class="connection-health" id="connectionHealth" aria-live="polite"><span id="geminiConnection" class="conn checking">AI</span><span id="ttsConnection" class="conn checking">TTS</span></div></div>
   </div>
 </div>
 <div class="kaguya-chatbar" id="kaguyaChatBar">
   <input id="kaguyaChatInput" maxlength="280" autocomplete="off" placeholder="카구야에게 말하기…">
-  <button class="kaguya-voice-toggle" id="kaguyaVoiceToggle" type="button" title="일본어 음성">🔊</button>
+  <button class="kaguya-voice-toggle" id="kaguyaVoiceToggle" type="button" title="카구야 음성">🔊</button>
   <button class="kaguya-chat-send" id="kaguyaChatSend" type="button">전송</button>
 </div>
-<div class="kaguya-chat-meta">최근 대화는 기기에 계속 저장 · <strong>중요한 내용은 MEMORY로 따로 기억</strong></div>
+<div class="kaguya-chat-meta">PIN 계정으로 기기 간 동기화 · <strong>중요한 내용은 MEMORY로 따로 기억</strong></div>
 <div id="daily"></div>
 
 <div class="section">🏆 QUEST</div>
@@ -490,6 +621,32 @@ html[data-theme="lightning"] .level-bar div{background-image:linear-gradient(90d
 <button class="tool-btn" id="manageBtn" type="button">⚙️ QUEST 관리</button>
 <button class="tool-btn small" id="historyBtn" type="button">📋 기록지</button>
 </div>
+<details class="test-drawer" id="testDrawer">
+  <summary>TEST</summary>
+  <div class="test-drawer-body">
+    <div class="voice-test-panel" id="voiceTestPanel" aria-label="Azure 카구야 음성 선택">
+      <span class="voice-test-label">VOICE</span>
+      <button type="button" class="voice-test-btn" data-azure-voice="ja-JP-NanamiNeural">A · NANAMI</button>
+      <button type="button" class="voice-test-btn" data-azure-voice="ja-JP-AoiNeural">B · AOI</button>
+      <button type="button" class="voice-test-btn" data-azure-voice="ja-JP-MayuNeural">C · MAYU</button>
+      <button type="button" class="voice-test-btn" data-azure-voice="ja-JP-ShioriNeural">D · SHIORI</button>
+      <span class="voice-test-hint" id="voiceTestHint">기본 MAYU · Azure → Gemini 자동백업</span>
+    </div>
+    <div class="chain-test-panel" id="chainTestPanel" aria-label="카구야 연동 테스트">
+      <span class="voice-test-label">LINK</span>
+      <button type="button" class="chain-test-btn" id="chatFollowupTest">CHAT ↻</button>
+      <button type="button" class="chain-test-btn" id="mayuVoiceTest">MAYU ♪</button>
+      <button type="button" class="chain-test-btn" id="fullLinkTest">CHAT → VOICE</button>
+      <span class="chain-test-status" id="chainTestStatus">후속대화 / 음성 / 전체 연동</span>
+    </div>
+    <div class="sync-test-row">
+      <span class="voice-test-label">SYNC</span>
+      <span class="sync-test-status" id="syncTestStatus">PIN 동기화 확인 중…</span>
+      <button type="button" class="sync-test-btn" id="syncNowBtn">지금 동기화</button>
+      <button type="button" class="sync-test-btn" id="logoutPinBtn">로그아웃</button>
+    </div>
+  </div>
+</details>
 </div>
 
 <div class="overlay" id="overlay"><div class="modal">
@@ -522,15 +679,16 @@ html[data-theme="lightning"] .level-bar div{background-image:linear-gradient(90d
 </div></div>
 <div id="toast" class="toast"></div>
 
+<div class="build-version" id="buildVersion">STACK ZERO V1.0 · PIN SYNC</div>
 <script>
 (function(){
 "use strict";
-const KEY="STACK_ZERO_V37_0";
-const APP_VERSION="37.0";
+const KEY="STACK_ZERO_V1_RELEASE";
+const APP_VERSION="V1.0 · PIN SYNC";
 const LEVELS=[
 {min:0,max:100,name:"입문자",gem:"🪨",g1:"#65584c",g2:"#b9a58f",label:"STONE"},
 {min:100,max:200,name:"수련자",gem:"🪵",g1:"#5c3420",g2:"#c9925c",label:"WOOD"},
-{min:200,max:300,name:"도전자",gem:"🪙",g1:"#8b5b28",g2:"#e8c47a",label:"COIN"},
+{min:200,max:300,name:"도전자",gem:"🪙",g1:"#66717f",g2:"#eef4fb",label:"SILVER"},
 {min:300,max:400,name:"중위권",gem:"⚜️",g1:"#645028",g2:"#e7d29a",label:"CREST"},
 {min:400,max:500,name:"슈퍼루키",gem:"⚡️",g1:"#254e82",g2:"#82c8ff",label:"VOLT"},
 {min:500,max:700,name:"상위권",gem:"💎",g1:"#347ca8",g2:"#d6f4ff",label:"DIAMOND"},
@@ -573,17 +731,15 @@ sleep:[
 ]};
 function todayKey(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
 function fresh(){return {date:todayKey(),today:{study:0,exercise:0,sleep:0},total:{study:0,exercise:0,sleep:0},history:[],quests:JSON.parse(JSON.stringify(DEFAULT_QUESTS)),manualDone:{},celebratedQuests:{},celebratedLevels:[],rewards:[],pendingRewards:{},rewardHistory:[],recentAction:null,aiRecentMessages:[],aiLastMessage:""}}
-function load(){
-  try{
-    const x=JSON.parse(localStorage.getItem(KEY)||"null");
-    if(x&&x.date&&x.today&&x.total&&x.quests){
-      x.history=Array.isArray(x.history)?x.history:[];x.manualDone=x.manualDone||{};x.celebratedQuests=x.celebratedQuests||{};x.celebratedLevels=Array.isArray(x.celebratedLevels)?x.celebratedLevels:[];x.rewards=Array.isArray(x.rewards)?x.rewards:[];x.pendingRewards=x.pendingRewards||{};x.rewardHistory=Array.isArray(x.rewardHistory)?x.rewardHistory:[];x.recentAction=x.recentAction||null;x.aiRecentMessages=Array.isArray(x.aiRecentMessages)?x.aiRecentMessages:[];x.aiLastMessage=x.aiLastMessage||"";["study","exercise","sleep"].forEach(k=>{if(!Array.isArray(x.quests[k]))x.quests[k]=[]});return x;
-    }
-  }catch(e){}
-  return fresh();
+function normalizeState(x){
+  if(!(x&&x.date&&x.today&&x.total&&x.quests))return fresh();
+  x.history=Array.isArray(x.history)?x.history:[];x.manualDone=x.manualDone||{};x.celebratedQuests=x.celebratedQuests||{};x.celebratedLevels=Array.isArray(x.celebratedLevels)?x.celebratedLevels:[];x.rewards=Array.isArray(x.rewards)?x.rewards:[];x.pendingRewards=x.pendingRewards||{};x.rewardHistory=Array.isArray(x.rewardHistory)?x.rewardHistory:[];x.recentAction=x.recentAction||null;x.aiRecentMessages=Array.isArray(x.aiRecentMessages)?x.aiRecentMessages:[];x.aiLastMessage=x.aiLastMessage||"";["study","exercise","sleep"].forEach(k=>{if(!Array.isArray(x.quests[k]))x.quests[k]=[]});return x;
 }
-let state=load(),active="study",editId=null,coachReason="refresh"
-function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+function load(){try{return normalizeState(JSON.parse(localStorage.getItem(KEY)||"null"))}catch(e){return fresh()}}
+let state=load(),active="study",editId=null,coachReason="refresh";
+const CLOUD_SESSION_KEY="STACK_ZERO_V1_PIN_SESSION";
+let cloudToken=localStorage.getItem(CLOUD_SESSION_KEY)||"",cloudReady=false,cloudApplying=false,cloudDirty=false,cloudSyncTimer=null,cloudMutationSeq=0,cloudServerUpdatedAt="",cloudLastPull=0;
+function save(){state._modifiedAt=Date.now();localStorage.setItem(KEY,JSON.stringify(state));markCloudDirty()}
 function rollover(){
 const t=todayKey();if(state.date===t)return false
 state.history=state.history||[];state.history.unshift({date:state.date,study:state.today.study,exercise:state.today.exercise,sleep:state.today.sleep});state.history=state.history.slice(0,90)
@@ -603,7 +759,7 @@ function renderLevel(){
 const total=state.total.study,l=levelFor(total),idx=levelIndex(total),next=LEVELS[idx+1],base=l.min,end=l.max===Infinity?Math.max(total,base+1):l.max
 const pct=next?Math.min(100,((total-base)/(next.min-base))*100):100
 applyTheme(l)
-document.getElementById("level").innerHTML=`<section class="card level-card"><div class="level-top"><div class="gem">${l.gem}</div><div><div class="level-name">${l.name}</div><div class="level-range">STACK ${l.max===Infinity?l.min+"+":l.min+"~"+(l.max-1)} · ${l.label}</div></div><div class="level-total"><span>STUDY STACK</span><b>${total}</b></div></div><div class="level-bar"><div style="width:${pct}%"></div></div></section>`
+document.getElementById("level").innerHTML=`<section class="card level-card"><div class="level-top"><div class="gem">${l.gem}</div><div class="level-identity"><div class="level-name">${l.name}</div><div class="level-range">STACK ${l.max===Infinity?l.min+"+":l.min+"~"+(l.max-1)} · ${l.label}</div></div><div class="level-stack-label">STUDY STACK</div><div class="level-total"><b>${total}</b></div></div><div class="level-bar"><div style="width:${pct}%"></div></div></section>`
 }
 function burstLevelFX(){
   const box=document.querySelector(".celebrate-box");if(!box)return;
@@ -623,25 +779,26 @@ function setToday(type,value){
   if(type!=="study"&&old===1&&value===0){toast("오늘 기록은 이미 확정됐습니다");render();return;}
   const diff=value-old;if(diff===0)return;
   state.today[type]=value;state.total[type]=Math.max(0,Number(state.total[type]||0)+diff);
-  coachReason=type+"_done";state.recentAction={type,delta:diff,at:new Date().toISOString()};save();
+  coachReason=type+(diff>0?"_done":"_undo");state.recentAction={type,delta:diff,at:new Date().toISOString()};save();
+  if(type==="study")playStudyDeltaSfx(diff);
   if(diff>0)detectQuestClears(beforeTotal);if(type==="study"&&diff>0)checkLevelUp(beforeStudy,state.total.study);render();
 }
 function study(d){setToday("study",Number(state.today.study||0)+d)}
-function check(t,on){if(!on&&state.today[t]){toast("오늘 기록은 이미 확정됐습니다");render();return}setToday(t,on?1:0)}
+function check(t,on){if(!on&&state.today[t]){toast("오늘 기록은 이미 확정됐습니다");render();return}if(on)playUiSfx(t==="exercise"?"exercise":"sleep");setToday(t,on?1:0)}
 function render(){
   rollover();const d=new Date(),days=["일","월","화","수","목","금","토"];
   document.getElementById("date").textContent=`${d.getFullYear()}. ${String(d.getMonth()+1).padStart(2,"0")}. ${String(d.getDate()).padStart(2,"0")} ${days[d.getDay()]}`;
   renderLevel();
   document.getElementById("daily").innerHTML=`
 <section class="card"><div class="head"><div><div class="title">📚 공부</div><div class="desc">하루 0~14 STACK · 1시간 = 1 STACK</div></div><div class="total">TOTAL<b>${state.total.study}</b></div></div>
-<div class="study-row"><button class="round" id="minus" type="button">−</button><div class="today"><b>${state.today.study}</b><small>TODAY / 14</small></div><button class="round" id="plus" type="button">＋</button></div></section>
+<div class="study-row study-row-plus-only"><span class="study-spacer" aria-hidden="true"></span><div class="today"><b>${state.today.study}</b><small>TODAY / 14</small></div><button class="round" id="plus" type="button" aria-label="공부 1시간 추가">＋</button></div></section>
 <section class="card"><div class="head"><div><div class="title">🏃 운동</div><div class="desc">오늘 목표 달성 → 1 STACK · 체크 후 확정</div></div><div class="total">TOTAL<b>${state.total.exercise}</b></div></div>
 <div class="check-row"><span class="status ${state.today.exercise?'done':''}">오늘 ${state.today.exercise} STACK</span><label class="switch"><input id="exercise" type="checkbox" ${state.today.exercise?'checked disabled':''}><span class="slider"></span></label></div></section>
 <section class="card"><div class="head"><div><div class="title">😴 잠</div><div class="desc">수면 조건 달성 → 1 STACK · 체크 후 확정</div></div><div class="total">TOTAL<b>${state.total.sleep}</b></div></div>
 <div class="check-row"><span class="status ${state.today.sleep?'done':''}">오늘 ${state.today.sleep} STACK</span><label class="switch"><input id="sleep" type="checkbox" ${state.today.sleep?'checked disabled':''}><span class="slider"></span></label></div></section>`;
-  document.getElementById("minus").onclick=()=>study(-1);document.getElementById("plus").onclick=()=>study(1);
+  document.getElementById("plus").onclick=()=>study(1);
   const ex=document.getElementById("exercise"),sl=document.getElementById("sleep");if(!ex.disabled)ex.onchange=e=>check("exercise",e.target.checked);if(!sl.disabled)sl.onchange=e=>check("sleep",e.target.checked);
-  document.querySelectorAll(".quest-tab").forEach(b=>b.onclick=()=>{active=b.dataset.type;renderQuest()});
+  document.querySelectorAll(".quest-tab").forEach(b=>b.onclick=()=>{playUiSfx("quest");active=b.dataset.type;renderQuest()});
   renderQuest();renderRewards();
   const pending=coachReason;coachReason="";if(pending)queueAICoach(pending);
 }
@@ -659,7 +816,7 @@ function renderRewards(){
     </div>`).join("");
   el.querySelectorAll("[data-use-reward]").forEach(b=>b.onclick=()=>{
     const i=+b.dataset.useReward,r=state.rewards[i];if(!r)return;
-    if(!confirm("「"+r.name+"」 보상을 사용하시겠습니까?"))return;
+    playUiSfx("reward");if(!confirm("「"+r.name+"」 보상을 사용하시겠습니까?"))return;
     state.rewardHistory=state.rewardHistory||[];
     state.rewardHistory.unshift({date:todayKey(),name:r.name,quest:r.quest||"",type:r.type||""});
     state.rewards.splice(i,1);
@@ -695,40 +852,133 @@ function receiveReward(id){
   showCelebrate("보상을 받았습니다!","「"+p.reward+"」이 보상함에 안전하게 보관되었습니다 🎁","🎁");
 }function updateTabs(){document.querySelectorAll(".quest-tab").forEach(x=>x.classList.toggle("active",x.dataset.type===active))}
 
+
+let sfxAudioContext=null,sfxMasterGain=null,sfxCompressor=null,appAudioContext=null;
+function getAppAudioContext(){if(!appAudioContext){const AC=window.AudioContext||window.webkitAudioContext;if(AC)appAudioContext=new AC()}return appAudioContext}
+function getSfxContext(){if(!sfxAudioContext){const AC=window.AudioContext||window.webkitAudioContext;if(AC){sfxAudioContext=new AC();sfxCompressor=sfxAudioContext.createDynamicsCompressor();sfxCompressor.threshold.value=-14;sfxCompressor.knee.value=18;sfxCompressor.ratio.value=5;sfxCompressor.attack.value=.003;sfxCompressor.release.value=.20;sfxMasterGain=sfxAudioContext.createGain();sfxMasterGain.gain.value=1.85;sfxMasterGain.connect(sfxCompressor);sfxCompressor.connect(sfxAudioContext.destination)}}return sfxAudioContext}
+function primeSfx(){const ctx=getSfxContext();if(ctx&&ctx.state==="suspended")ctx.resume().catch(()=>{});return ctx}
+function sfxEnv(ctx,start,attack=.006,decay=.18,peak=.14){const g=ctx.createGain();g.gain.setValueAtTime(.0001,start);g.gain.linearRampToValueAtTime(Math.max(.0001,peak),start+attack);g.gain.exponentialRampToValueAtTime(.0001,start+attack+decay);g.connect(sfxMasterGain||ctx.destination);return g}
+function playTone(ctx,{freq=440,endFreq=0,type="sine",start,duration=.16,peak=.11,attack=.004,decay=.14,pan=0}){const osc=ctx.createOscillator();osc.type=type;osc.frequency.setValueAtTime(Math.max(20,freq),start);if(endFreq>0)osc.frequency.exponentialRampToValueAtTime(Math.max(20,endFreq),start+duration);const g=sfxEnv(ctx,start,attack,decay,peak);let node=osc;if(ctx.createStereoPanner){const p=ctx.createStereoPanner();p.pan.value=Math.max(-1,Math.min(1,pan));node.connect(p);p.connect(g)}else node.connect(g);osc.start(start);osc.stop(start+Math.max(duration,attack+decay+.03))}
+function playNoise(ctx,{start,duration=.09,peak=.035,hp=900,lp=0,pan=0}){const len=Math.max(1,Math.floor(ctx.sampleRate*duration)),buf=ctx.createBuffer(1,len,ctx.sampleRate),data=buf.getChannelData(0);for(let i=0;i<len;i++)data[i]=(Math.random()*2-1)*Math.pow(1-i/len,1.65);const src=ctx.createBufferSource();src.buffer=buf;let node=src;if(hp){const f=ctx.createBiquadFilter();f.type="highpass";f.frequency.value=hp;node.connect(f);node=f}if(lp){const f=ctx.createBiquadFilter();f.type="lowpass";f.frequency.value=lp;node.connect(f);node=f}if(ctx.createStereoPanner){const p=ctx.createStereoPanner();p.pan.value=Math.max(-1,Math.min(1,pan));node.connect(p);node=p}const g=sfxEnv(ctx,start,.002,duration,peak);node.connect(g);src.start(start);src.stop(start+duration+.03)}
+function soundThemeName(){return THEME_BY_LEVEL[Math.max(0,levelIndex(Number(state.total.study||0)))]||"stone"}
+function themeAccent(ctx,t,theme,intensity=.25){const k=Math.max(.08,Math.min(.7,intensity));switch(theme){
+case"stone":playTone(ctx,{freq:105,endFreq:82,type:"sine",start:t,duration:.07,peak:.10*k,decay:.08});playNoise(ctx,{start:t,duration:.045,peak:.045*k,hp:120,lp:780});break;
+case"wood":playTone(ctx,{freq:196,endFreq:168,type:"triangle",start:t,duration:.055,peak:.10*k,decay:.065});playTone(ctx,{freq:293,type:"sine",start:t+.035,peak:.045*k,decay:.08});break;
+case"coin":playTone(ctx,{freq:1047,type:"sine",start:t,peak:.085*k,decay:.14,pan:-.2});playTone(ctx,{freq:1568,type:"sine",start:t+.025,peak:.045*k,decay:.18,pan:.2});break;
+case"crest":playTone(ctx,{freq:523,type:"triangle",start:t,peak:.07*k,decay:.12});playTone(ctx,{freq:784,type:"sine",start:t+.045,peak:.055*k,decay:.16});break;
+case"lightning":playNoise(ctx,{start:t,duration:.035,peak:.055*k,hp:2600});playTone(ctx,{freq:1500,endFreq:650,type:"square",start:t+.006,duration:.055,peak:.045*k,decay:.06});break;
+case"diamond":playTone(ctx,{freq:1319,type:"sine",start:t,peak:.07*k,decay:.18,pan:-.25});playTone(ctx,{freq:1976,type:"sine",start:t+.035,peak:.045*k,decay:.22,pan:.25});break;
+case"wave":playTone(ctx,{freq:430,endFreq:300,type:"sine",start:t,duration:.14,peak:.065*k,decay:.13});playNoise(ctx,{start:t+.02,duration:.09,peak:.025*k,hp:420,lp:1700});break;
+case"fire":playNoise(ctx,{start:t,duration:.055,peak:.05*k,hp:1200});playTone(ctx,{freq:330,endFreq:520,type:"sawtooth",start:t+.01,duration:.065,peak:.04*k,decay:.07});break;
+case"crown":playTone(ctx,{freq:659,type:"triangle",start:t,peak:.065*k,decay:.15});playTone(ctx,{freq:988,type:"sine",start:t+.05,peak:.05*k,decay:.20});break;
+case"cosmic":playTone(ctx,{freq:92,endFreq:116,type:"sine",start:t,duration:.22,peak:.07*k,decay:.20});playTone(ctx,{freq:880,type:"sine",start:t+.04,peak:.035*k,decay:.20});break}}
+function playUiSfx(kind="tap"){const ctx=primeSfx();if(!ctx)return;const t=ctx.currentTime+.006,theme=soundThemeName();switch(kind){
+case"send":playTone(ctx,{freq:760,endFreq:1080,type:"sine",start:t,duration:.075,peak:.075,decay:.075,pan:-.08});playTone(ctx,{freq:1280,type:"triangle",start:t+.04,peak:.05,decay:.10,pan:.12});themeAccent(ctx,t+.02,theme,.16);break;
+case"exercise":playTone(ctx,{freq:155,endFreq:220,type:"triangle",start:t,duration:.10,peak:.105,decay:.10});playTone(ctx,{freq:420,type:"sine",start:t+.065,peak:.07,decay:.13});playNoise(ctx,{start:t+.015,duration:.055,peak:.018,hp:600,lp:1600});themeAccent(ctx,t+.08,theme,.14);break;
+case"sleep":playTone(ctx,{freq:420,endFreq:285,type:"sine",start:t,duration:.22,peak:.075,decay:.20,pan:-.18});playTone(ctx,{freq:560,endFreq:390,type:"sine",start:t+.045,duration:.20,peak:.045,decay:.20,pan:.18});themeAccent(ctx,t+.10,theme,.10);break;
+case"quest":playTone(ctx,{freq:494,type:"triangle",start:t,peak:.075,decay:.09});playTone(ctx,{freq:740,type:"sine",start:t+.05,peak:.065,decay:.14});playTone(ctx,{freq:988,type:"sine",start:t+.095,peak:.035,decay:.17});themeAccent(ctx,t+.06,theme,.14);break;
+case"reward":playTone(ctx,{freq:523,type:"triangle",start:t,peak:.095,decay:.14});playTone(ctx,{freq:784,type:"sine",start:t+.065,peak:.085,decay:.19});playTone(ctx,{freq:1175,type:"sine",start:t+.13,peak:.065,decay:.26});playNoise(ctx,{start:t+.12,duration:.10,peak:.017,hp:3300});themeAccent(ctx,t+.17,theme,.20);break;
+case"minus":playTone(ctx,{freq:350,endFreq:160,type:"triangle",start:t,duration:.14,peak:.095,decay:.13});playTone(ctx,{freq:175,type:"sine",start:t+.07,peak:.055,decay:.11});break;
+case"danger":playTone(ctx,{freq:220,endFreq:128,type:"sawtooth",start:t,duration:.13,peak:.07,decay:.11});playNoise(ctx,{start:t,duration:.055,peak:.018,hp:700,lp:1600});break;
+default:playTone(ctx,{freq:560,endFreq:720,type:"triangle",start:t,duration:.065,peak:.06,decay:.075});themeAccent(ctx,t+.03,theme,.10)}}
+function playMilestone7(ctx,t){playTone(ctx,{freq:118,endFreq:96,type:"sine",start:t,duration:.12,peak:.17,decay:.12});playNoise(ctx,{start:t+.015,duration:.09,peak:.040,hp:300,lp:1500});[523,659,784,1047].forEach((f,i)=>playTone(ctx,{freq:f,type:i<2?"triangle":"sine",start:t+.055+i*.07,peak:.125-i*.014,decay:.20+i*.035,pan:(i%2?1:-1)*.22}));playNoise(ctx,{start:t+.18,duration:.12,peak:.026,hp:3200})}
+function playHeart10(ctx,t){playTone(ctx,{freq:128,endFreq:105,type:"sine",start:t,duration:.11,peak:.19,decay:.11});playTone(ctx,{freq:190,endFreq:150,type:"triangle",start:t+.09,duration:.085,peak:.14,decay:.09});playTone(ctx,{freq:134,endFreq:108,type:"sine",start:t+.235,duration:.10,peak:.17,decay:.10});playTone(ctx,{freq:205,endFreq:166,type:"triangle",start:t+.325,duration:.085,peak:.13,decay:.09});[659,784,988,1175,1397,1760].forEach((f,i)=>playTone(ctx,{freq:f,type:"sine",start:t+.30+i*.052,peak:.105-i*.009,decay:.30+i*.035,pan:(i%2?1:-1)*(.12+i*.025)}));playNoise(ctx,{start:t+.34,duration:.22,peak:.038,hp:3300});playTone(ctx,{freq:262,endFreq:392,type:"triangle",start:t+.42,duration:.25,peak:.065,decay:.28})}
+function playRankStackSfx(theme){const ctx=primeSfx();if(!ctx)return;const t=ctx.currentTime+.008;switch(theme){
+case"stone":playTone(ctx,{freq:92,endFreq:70,type:"sine",start:t,duration:.11,peak:.18,decay:.11});playTone(ctx,{freq:154,endFreq:112,type:"triangle",start:t+.006,duration:.09,peak:.13,decay:.09});playNoise(ctx,{start:t,duration:.11,peak:.065,hp:90,lp:820});playNoise(ctx,{start:t+.045,duration:.07,peak:.025,hp:1200,lp:2600});break;
+case"wood":playTone(ctx,{freq:174,endFreq:145,type:"triangle",start:t,duration:.075,peak:.15,decay:.075});playTone(ctx,{freq:247,type:"triangle",start:t+.042,peak:.105,decay:.095});playTone(ctx,{freq:330,type:"sine",start:t+.085,peak:.065,decay:.14});playNoise(ctx,{start:t+.005,duration:.048,peak:.032,hp:420,lp:1900});break;
+case"coin":playTone(ctx,{freq:784,type:"triangle",start:t,peak:.11,decay:.13,pan:-.15});playTone(ctx,{freq:1175,type:"sine",start:t+.025,peak:.12,decay:.24,pan:.12});playTone(ctx,{freq:1760,type:"sine",start:t+.055,peak:.065,decay:.31,pan:.27});playTone(ctx,{freq:392,endFreq:330,type:"triangle",start:t,duration:.07,peak:.07,decay:.08});playNoise(ctx,{start:t+.025,duration:.045,peak:.018,hp:3900});break;
+case"crest":playTone(ctx,{freq:196,endFreq:174,type:"triangle",start:t,duration:.09,peak:.10,decay:.10});[392,587,784,1175].forEach((f,i)=>playTone(ctx,{freq:f,type:i<2?"triangle":"sine",start:t+.025+i*.052,peak:.105-i*.012,decay:.18+i*.035,pan:(i%2?1:-1)*.18}));break;
+case"lightning":playNoise(ctx,{start:t,duration:.065,peak:.070,hp:2100});playTone(ctx,{freq:1650,endFreq:380,type:"square",start:t+.005,duration:.085,peak:.075,decay:.08,pan:-.18});playTone(ctx,{freq:240,endFreq:180,type:"sine",start:t+.018,duration:.11,peak:.105,decay:.10});playTone(ctx,{freq:980,type:"sine",start:t+.072,peak:.075,decay:.13,pan:.22});playNoise(ctx,{start:t+.09,duration:.055,peak:.024,hp:4500});break;
+case"diamond":playTone(ctx,{freq:523,type:"triangle",start:t,peak:.06,decay:.12});[1047,1319,1568,2093].forEach((f,i)=>playTone(ctx,{freq:f,type:"sine",start:t+.018+i*.045,peak:.11-i*.014,decay:.27+i*.04,pan:(i%2?1:-1)*(.16+i*.04)}));playNoise(ctx,{start:t+.05,duration:.085,peak:.024,hp:4300});break;
+case"wave":playTone(ctx,{freq:185,endFreq:145,type:"sine",start:t,duration:.22,peak:.11,decay:.20});playTone(ctx,{freq:380,endFreq:260,type:"sine",start:t+.018,duration:.20,peak:.095,decay:.18,pan:-.2});playTone(ctx,{freq:570,endFreq:420,type:"sine",start:t+.065,duration:.18,peak:.06,decay:.17,pan:.2});playNoise(ctx,{start:t+.015,duration:.17,peak:.035,hp:320,lp:1800});playTone(ctx,{freq:840,type:"sine",start:t+.14,peak:.04,decay:.22});break;
+case"fire":playTone(ctx,{freq:135,endFreq:220,type:"sawtooth",start:t,duration:.13,peak:.11,decay:.12});playNoise(ctx,{start:t,duration:.12,peak:.058,hp:850});playTone(ctx,{freq:330,endFreq:620,type:"triangle",start:t+.025,duration:.11,peak:.095,decay:.10});playTone(ctx,{freq:760,type:"sine",start:t+.10,peak:.055,decay:.14});playNoise(ctx,{start:t+.095,duration:.07,peak:.023,hp:3400});break;
+case"crown":playTone(ctx,{freq:147,endFreq:130,type:"sine",start:t,duration:.16,peak:.10,decay:.15});[440,659,880,1320].forEach((f,i)=>playTone(ctx,{freq:f,type:i<2?"triangle":"sine",start:t+.018+i*.07,peak:.11-i*.012,decay:.23+i*.05,pan:(i%2?1:-1)*.18}));playNoise(ctx,{start:t+.17,duration:.08,peak:.018,hp:3900});break;
+case"cosmic":playTone(ctx,{freq:73,endFreq:103,type:"sine",start:t,duration:.38,peak:.12,decay:.36});playTone(ctx,{freq:220,endFreq:330,type:"sine",start:t+.02,duration:.27,peak:.055,decay:.27});[659,988,1480].forEach((f,i)=>playTone(ctx,{freq:f,type:"sine",start:t+.055+i*.085,peak:.075-i*.012,decay:.34+i*.06,pan:(i%2?1:-1)*.25}));playNoise(ctx,{start:t+.08,duration:.16,peak:.022,hp:3800});break}}
+function playStudyStackSfx(todayStack){const ctx=primeSfx();if(!ctx)return;const t=ctx.currentTime+.008,n=Number(todayStack),theme=soundThemeName();if(n===7){playMilestone7(ctx,t);return}if(n===10){playHeart10(ctx,t);return}playRankStackSfx(theme);/* extra reward punch: Study +1 should feel heavier than ordinary UI */playTone(ctx,{freq:78,endFreq:96,type:"sine",start:t,duration:.13,peak:.105,decay:.13});playTone(ctx,{freq:240,type:"triangle",start:t+.028,peak:.055,decay:.095});themeAccent(ctx,t+.075,theme,.34)}
+function playStudyDeltaSfx(delta){if(delta<0)playUiSfx("minus");else playStudyStackSfx(Number(state.today.study||0))}
+function playLevelUpSfx(levelIdx){const ctx=primeSfx();if(!ctx)return;const t=ctx.currentTime+.01,theme=THEME_BY_LEVEL[Math.max(0,Math.min(levelIdx,THEME_BY_LEVEL.length-1))]||"stone";playTone(ctx,{freq:92,endFreq:120,type:"sine",start:t,duration:.34,peak:.13,decay:.34});switch(theme){
+case"stone":playNoise(ctx,{start:t,duration:.30,peak:.075,hp:90,lp:1100});[130,195,260].forEach((f,i)=>playTone(ctx,{freq:f,type:"triangle",start:t+i*.12,peak:.12-i*.015,decay:.22}));break;
+case"wood":[174,220,294,392].forEach((f,i)=>playTone(ctx,{freq:f,type:"triangle",start:t+i*.10,peak:.11-i*.01,decay:.21}));playNoise(ctx,{start:t+.08,duration:.12,peak:.028,hp:400,lp:1800});break;
+case"coin":[523,784,1047,1568,2093].forEach((f,i)=>playTone(ctx,{freq:f,type:i?"sine":"triangle",start:t+i*.072,peak:.11-i*.011,decay:.28+i*.04,pan:(i%2?1:-1)*.22}));break;
+case"crest":[294,440,587,784,1175].forEach((f,i)=>playTone(ctx,{freq:f,type:i<2?"triangle":"sine",start:t+i*.085,peak:.105-i*.009,decay:.27+i*.04}));break;
+case"lightning":playNoise(ctx,{start:t,duration:.22,peak:.085,hp:1700});playTone(ctx,{freq:1800,endFreq:280,type:"square",start:t+.02,duration:.25,peak:.08,decay:.23});[440,660,990].forEach((f,i)=>playTone(ctx,{freq:f,type:"sine",start:t+.20+i*.08,peak:.075-i*.012,decay:.25}));break;
+case"diamond":[659,988,1319,1568,2093].forEach((f,i)=>playTone(ctx,{freq:f,type:"sine",start:t+i*.07,peak:.105-i*.011,decay:.34+i*.045,pan:(i%2?1:-1)*.26}));playNoise(ctx,{start:t+.17,duration:.16,peak:.025,hp:4200});break;
+case"wave":playTone(ctx,{freq:150,endFreq:270,type:"sine",start:t,duration:.50,peak:.12,decay:.45});playNoise(ctx,{start:t+.02,duration:.40,peak:.045,hp:260,lp:1900});[392,523,659,880].forEach((f,i)=>playTone(ctx,{freq:f,type:"sine",start:t+.16+i*.09,peak:.065-i*.007,decay:.31}));break;
+case"fire":playNoise(ctx,{start:t,duration:.38,peak:.082,hp:750});playTone(ctx,{freq:120,endFreq:520,type:"sawtooth",start:t,duration:.34,peak:.105,decay:.31});[440,587,784,1047].forEach((f,i)=>playTone(ctx,{freq:f,type:"triangle",start:t+.14+i*.075,peak:.065-i*.006,decay:.23}));break;
+case"crown":[220,330,440,659,880,1320].forEach((f,i)=>playTone(ctx,{freq:f,type:i<3?"triangle":"sine",start:t+i*.078,peak:.105-i*.008,decay:.36+i*.035,pan:(i%2?1:-1)*.16}));break;
+case"cosmic":playTone(ctx,{freq:60,endFreq:105,type:"sine",start:t,duration:.72,peak:.13,decay:.68});[330,494,740,1110,1660].forEach((f,i)=>playTone(ctx,{freq:f,type:"sine",start:t+.12+i*.105,peak:.075-i*.008,decay:.46+i*.045,pan:(i%2?1:-1)*.28}));playNoise(ctx,{start:t+.24,duration:.30,peak:.028,hp:3500});break}}
+
 function dailyAffinity(){
-  const study=Number(state.today.study||0),exercise=Number(state.today.exercise||0),sleep=Number(state.today.sleep||0);
-  return {study,exercise,sleep,intensity:study>=11?"very_high":study>=7?"high":study>=4?"warm":"normal",rankIndex:levelIndex(Number(state.total.study||0))}
+  const study=Math.max(0,Math.min(14,Number(state.today.study||0))),exercise=Number(state.today.exercise||0),sleep=Number(state.today.sleep||0);
+  const labels=["neutral","cold","reserved","curious","softening","teasing","comfortable","familiar","warm","fond","affection","open","high","very-high","max"];
+  return {study,exercise,sleep,stage:study,label:labels[study]||"max",intensity:study>=13?"max":study>=10?"very_high":study>=7?"high":study>=4?"warm":"reserved",rankIndex:levelIndex(Number(state.total.study||0))}
 }
 function normalizeLine(s){return String(s||"").replace(/[\s…,.!?♡♥✦☆~]/g,"").toLowerCase()}
 function chooseFresh(lines){const recent=(state.aiRecentMessages||[]).slice(0,30).map(normalizeLine),pool=lines.filter(x=>!recent.includes(normalizeLine(x)));const src=pool.length?pool:lines;return src[Math.floor(Math.random()*src.length)]}
+const STUDY_AFFINITY_FALLBACK={
+  1:["네. 기록됐어요.","확인했어요. 그럼 계속하시죠.","시작은 하셨네요.","한 건 한 거니까요. 넘어가죠."],
+  2:["또 하셨군요. 확인했어요.","네, 흐름은 끊지 않았네요.","이번 것도 기록해둘게요.","생각보다 바로 이어가시네요."],
+  3:["흠, 계속하긴 하네요.","조금은 집중이 붙은 것 같네요.","이번엔 꽤 조용히 해냈네요.","아직 더 하실 생각인가요?"],
+  4:["아직 흐름이 살아있네요. 괜찮아요.","조금씩 페이스가 잡히는 것 같네요.","이번엔 전보다 자연스럽게 이어갔네요.","흠, 이제 좀 공부하는 사람 같아졌네요."],
+  5:["또 왔네요. 은근 끈질기신데요?","생각보다 금방 포기하진 않네요.","흠, 이 정도면 살짝 기대해도 되려나.","계속 이어가는 건 꽤 마음에 드네요."],
+  6:["아직 집중하고 있었네요. 조금 놀랐어요.","페이스 괜찮아 보여요. 무리만 하지 마세요.","이제는 제가 굳이 재촉할 필요도 없겠네요.","흠, 오늘은 꽤 믿어봐도 되겠어요."],
+  7:["여기까지 끊기지 않았네요. 꽤 좋다.","이쯤 되니까 저도 좀 궁금해지네요. 어디까지 갈 건지.","오늘 집중하는 모습, 생각보다 괜찮네요.","계속 이렇게 나오면 제가 놀릴 틈이 없잖아요."],
+  8:["또 해냈네요. 괜히 기분이 조금 좋아지는데요.","오늘은 계속 눈이 가네요. 잘 이어가고 있어서.","흠, 이런 식이면 칭찬 안 하기도 어렵겠네요.","아직 힘 남았어요? 무리하는 건 싫으니까요."],
+  9:["또 왔네. 이제는 제가 은근 기다리게 되잖아요.","오늘 꽤 멋있어요. 너무 티 내긴 싫지만.","계속 해내는 거 보니까 저까지 기분 좋아지네요.","흠… 오늘은 좀 더 신경 쓰이네요. 좋은 쪽으로."],
+  10:["또 해냈네요. 지금은 조금 웃어도 되겠죠.","오늘 정말 마음에 드네요. 이런 모습.","계속 이렇게 하면 제가 괜히 더 좋아하게 되잖아요… 아니, 공부하는 모습 말이에요.","흠, 오늘은 가까이서 보고 싶을 정도로 잘하고 있네요."],
+  11:["또 왔네요. 사실 조금 기다리고 있었어요.","오늘 잘되는 게 왜 이렇게 제 일처럼 기쁘지.","이제는 무심한 척하기도 좀 어렵네요.","계속 해내는 거 보면 괜히 더 챙겨주고 싶어져요."],
+  12:["정말 계속 해내네요. 저, 꽤 자랑스러워요.","오늘은 그냥 솔직하게 말할게요. 보고 있으면 기분 좋아요.","또 해냈구나. 괜히 제가 더 신나네요.","이 정도면 조금 기대도 되죠? 오늘의 당신한테."],
+  13:["또 왔네요… 이제는 진짜 반가워서 웃음부터 나와요.","오늘 당신 보는 게 꽤 즐겁네요. 숨길 생각도 별로 없고.","이렇게 계속 해내면 제가 더 좋아할 수밖에 없잖아요.","흠… 지금은 칭찬보다 그냥 옆에서 계속 보고 싶네요."],
+  14:["또 해냈네요. 진짜 너무 좋다… 오늘의 당신.","여기까지 오는 걸 보고 있으니까 괜히 벅차네요. 정말 자랑스러워요.","이제는 숨길 것도 없네요. 이렇게 해내는 당신, 정말 좋아해요.","후후, 오늘은 제가 더 기쁜 것 같아요. 끝까지 같이 보고 싶네요."]
+};
+function studyAffinityFallbackLines(study){const n=Math.max(1,Math.min(14,Math.floor(Number(study||1))));return STUDY_AFFINITY_FALLBACK[n]||STUDY_AFFINITY_FALLBACK[1]}
 function aiCoachMessage(reason="refresh"){
-  const study=Number(state.today.study||0),rank=levelFor(Number(state.total.study||0));let lines=[];
-  if(reason==="study_done") lines=study>=11?["…또 올렸네요. 오늘은 정말 봐주기 힘들 정도로 잘하잖아요","잠깐, 오늘 대체 어디까지 할 생각이에요?","이 정도면 모른 척해주는 쪽이 더 어려운데요"]:["또 하나 끝냈네요","방금 한 시간, 제대로 확인했어요","계속하는군요. 좋아요, 보고 있을게요","하나 더 올라갔네요… 후후"];
-  else if(reason==="exercise_done") lines=["운동까지 끝냈군요. 오늘 꽤 욕심내는데요?","아, 그것도 했어요? …나쁘지 않네요","몸까지 챙겼군요. 그런 건 좋아요"];
-  else if(reason==="sleep_done") lines=["이제 잘 준비는 끝난 거죠? 내일 피곤하다고 투덜대기 없기예요","수면 기록까지 확인했어요. 오늘은 여기까지","잘 자는 것도 실력이라면… 오늘은 합격이에요"];
-  else if(reason==="level_up") lines=[`${rank.name}. 결국 여기까지 왔네요… 축하해요`,`${rank.gem} ${rank.name}이라. 후후, 꽤 근사한데요`,`새 단계네요. 이번만큼은 제가 먼저 축하할게요`];
-  else if(reason==="quest_achieved") lines=["끝냈네요. 그 표정, 조금 자랑스러워해도 돼요","QUEST 완료. 이번 건 인정할 수밖에 없겠네요","해냈군요… 보상은 당당하게 받아요"];
-  else if(reason==="reward_received") lines=["그건 제대로 번 보상이니까요. 기분 좋게 받아요","보상까지 챙겼네요. 좋아요","받았군요. 그 정도는 누릴 자격 있어요"];
-  else lines=study===0?["오늘은 아직 조용하네요","아직 시작 전인가요? …뭐, 보고는 있을게요","흠. 오늘 첫 STACK은 아직이군요"]:[`오늘 ${study} STACK이네요`,`지금까지 ${study}개. 생각보다 잘 가고 있네요`,`오늘도 하고 있군요. 그건 알고 있어요`];
+  const study=Number(state.today.study||0),rank=levelFor(Number(state.total.study||0)),rIdx=levelIndex(Number(state.total.study||0));let lines=[];
+  const pools={
+    study_low:["좋아, 하나 올렸네.","응. 오늘 첫 발은 뗐어요.","오, 했네. 그럼 다음은 천천히.","좋아요. 일단 시작한 건 확인.","흠, 오늘도 들어왔네요.","한 칸 올라갔네. 괜찮아요.","좋아. 말보다 이게 낫죠.","오케이, 기록됐어요.","응, 하나 더.","좋네요. 흐름은 이제부터 만들면 되고.","시작했구나. 그럼 됐어요.","좋아, 오늘 기록 하나 생겼네.","흠. 이런 건 꽤 마음에 들어요.","오, 조용히 해냈네.","좋아요. 다음 건 나중에 생각해요."],
+    study_mid:["아직 이어가고 있네.","오… 오늘 꽤 길게 붙잡고 있는데요.","응, 또 올라갔어요.","이쯤 되니까 슬슬 진심이네.","좋아. 집중이 아직 안 끊겼구나.","흠, 계속 가는 쪽이군요.","또 했네. 꽤 끈질긴데.","오, 아직 살아있네 집중력.","좋아요. 오늘 제법 묵직해졌어요.","응. 여기까지 왔으면 꽤 했죠.","계속 붙어있었구나.","이 정도면 오늘은 확실히 공부한 날이네.","흠… 말없이 계속하니까 더 눈에 띄는데.","좋아, 기록 또 하나.","오. 생각보다 오래 가네요."],
+    study_7:["일곱. 여기부터는 좀 다르게 보이는데.","오… 오늘 진짜 오래 했네.","여기까지 왔구나. 꽤 멋있어요.","응, 이건 인정. 많이 했네.","일곱 시간이라… 오늘 제대로 붙잡았네요.","좋아. 이쯤이면 스스로도 좀 뿌듯해해도 돼요.","후… 꽤 왔네. 아직 더 할 거예요?", "오늘 집중력, 생각보다 무섭네.","오, 여기까지 안 끊기고 왔어요.","이제는 그냥 ‘좀 했다’ 수준은 아니네요.","응. 오늘 정말 열심히 했구나.","여기서부터는 나도 조금 신나는데.","좋아, 일곱 번째. 이건 꽤 좋다.","흠… 오늘은 쉽게 안 놓네.","멋있어요. 이 말은 그냥 해둘게."],
+    study_high:["또 올라갔네. 오늘 끝까지 갈 생각이구나.","응… 아직도 하고 있었어요.","오늘 진짜 질기다. 좋은 의미로.","오, 여기서 또 하나.","좋아요. 이 정도 집중은 흔한 날 아니죠.","계속 가네. 슬슬 웃음 나와요.","흠… 오늘은 내가 뭐라고 할 게 없네.","응. 많이 했어요. 진짜로.","또 기록됐네. 오늘 꽤 강한데요.","좋아, 여전히 집중 중.","이쯤이면 체력도 집중력도 꽤 버텼네.","오… 아직 끝낼 마음 없나 봐요.","계속 해내니까 괜히 기분 좋네.","응, 오늘은 제대로 하는 날 맞아요.","또 하나. 아주 조용히 잘 가네."],
+    study_10:["와… 오늘 진짜 많이 했다.","잠깐, 여기까지 왔네. 좋다.","응. 오늘은 좀 많이 멋있어요.","후후… 이 정도면 내가 기분 좋아해도 되죠.","또 해냈네. 오늘 정말 강하네.","오… 지금은 그냥 축하해주고 싶다.","좋아요. 오늘은 진짜 제대로 했어요.","여기까지 오는 걸 직접 보니까 꽤 좋네.","응, 많이 했어요. 이제 숫자보다 그게 더 보여.","오늘 집중력 진짜 대단했어요.","또 올라갔구나. 나까지 신나네.","흠… 이쯤이면 웃는 거 숨기기 어렵네.","좋다. 오늘은 꽤 오래 기억날 것 같아요.","응. 진짜 잘했어요.","오늘은 그냥 인정. 아주 많이."],
+    exercise:["운동도 했네. 좋아요.","오, 몸도 챙겼구나.","운동까지 완료. 깔끔하네.","응, 이것도 기록.","좋아요. 오늘 몸도 움직였네요.","오. 공부만 한 건 아니구나.","운동 체크 들어왔어요.","흠, 이건 꽤 좋다.","좋아. 몸 쓰는 것도 빼먹지 않았네.","응, 운동 끝.","이것까지 했으면 오늘 꽤 알차네.","오케이. 운동도 완료.","좋네요. 하나 더 끝냈어요.","응. 이건 잘했네.","몸도 챙긴 거 마음에 들어요."],
+    sleep:["수면도 체크했네. 이제 좀 쉬어요.","좋아, 잠까지 챙겼어요.","응. 오늘 마무리도 기록.","이제 진짜 쉬면 되겠네.","수면 체크 완료. 잘 자요.","좋아요. 끝까지 챙겼네.","응, 이건 내일을 위한 거니까.","잘했어요. 이제 화면 좀 놓고.","오늘 기록 하나 더 닫혔네요.","오케이. 잠도 챙기기.","좋아. 이제 푹 쉬어요.","응. 오늘은 여기까지 해도 돼요.","수면까지 들어왔네. 깔끔해요.","잘 자요. 오늘 고생했어요.","좋아요. 내일은 내일 생각하고."],
+    quest:["퀘스트 끝. 보상 받아요.","오, 이건 달성했네.","좋아요. 하나 제대로 끝냈어요.","응, 조건 채웠어요.","완료. 이건 보상 받을 만하죠.","퀘스트 클리어. 괜찮은데요.","오. 이건 딱 끝냈네.","좋아, 달성 처리.","응. 여기까지 왔으면 받아야죠.","끝났어요. 보상 잊지 말고.","오, 하나 닫혔네.","좋아요. 이건 확실히 해냈어요."],
+    reward:["받았네. 잘 써요.","좋아요, 이제 당신 거예요.","응. 이건 편하게 받아도 돼요.","보상 수령 완료.","오, 챙겼네요.","좋아요. 번 건 써야죠.","응, 받아가요.","이건 당당하게 써도 돼요.","잘 받았네. 괜찮아요.","좋아. 보상까지 마무리.","응. 이건 아끼지 말고 즐겨요.","받았으면 됐어요. 다음은 나중에."],
+    refresh:["왔네요.","응, 보고 있었어요.","오늘은 뭐부터 할 거예요?", "흠. 조용하네.","오, 다시 왔구나.","응. 시작해볼까요.","오늘 컨디션은 어때요?", "좋아. 여기 있네요.","흠, 오늘은 어떤 날이려나.","왔으면 됐어요. 천천히 해요.","응. 오늘도 열어놨네요.","오. 지금부터 시작?", "좋아요. 뭐든 하나 해보죠.","흠… 오늘은 좀 기대해볼까.","응, 여기 있어요."]
+  };
+  if(reason==="study_done") lines=studyAffinityFallbackLines(study);
+  else if(reason==="exercise_done") lines=pools.exercise;
+  else if(reason==="sleep_done") lines=pools.sleep;
+  else if(reason==="level_up") lines=[`${rank.name}. 올라왔네요. 축하해요.`,`${rank.gem} ${rank.name} 도착. 좋아요.`,`새 단계네요. 이건 꽤 기분 좋다.`,`오, ${rank.name}. 결국 왔네.`,`좋아요. 등급 하나 올랐어요.`,`응, 이번 건 축하할 만하네.`,`여기까지 올라왔어요. 잘했네.`,`새 테마 열렸네요. 한번 봐요.`,`오… 분위기 바뀌었네. 축하해요.`,`좋아, ${rank.name}. 다음 구간 시작.`];
+  else if(reason==="quest_achieved") lines=pools.quest;
+  else if(reason==="reward_received") lines=pools.reward;
+  else lines=pools.refresh;
+  if(rIdx>=7&&reason==="refresh")lines=lines.concat(["오늘은 좀 조용하네요. 뭐, 같이 있으면 됐지.","응. 굳이 말 많이 안 해도 돼요.","왔구나. 그럼 됐어요.","흠, 오늘도 여기서 보네."]);
   return {rank,msg:chooseFresh(lines),affinity:dailyAffinity()};
 }
 
 const KAGUYA_STACK_ASSETS = [
-  {min:0,max:0,src:"assets/kaguya/stack_0_1.jpg",label:"0~1"},
-  {min:1,max:1,src:"assets/kaguya/stack_1_2.jpg",label:"1~2"},
-  {min:2,max:2,src:"assets/kaguya/stack_2_3.jpg",label:"2~3"},
-  {min:3,max:3,src:"assets/kaguya/stack_3_4.jpg",label:"3~4"},
-  {min:4,max:4,src:"assets/kaguya/stack_4_5.jpg",label:"4~5"},
-  {min:5,max:6,src:"assets/kaguya/stack_5_7.jpg",label:"5~7"},
-  {min:7,max:8,src:"assets/kaguya/stack_7_9.jpg",label:"7~9"},
-  {min:9,max:10,src:"assets/kaguya/stack_9_11.jpg",label:"9~11"},
-  {min:11,max:14,src:"assets/kaguya/stack_11_14.png",label:"11~14"}
+  {min:0,max:0,src:"assets/kaguya/stack_0_1.png",label:"0~1"},
+  {min:1,max:1,src:"assets/kaguya/stack_1_2.png",label:"1~2"},
+  {min:2,max:2,src:"assets/kaguya/stack_2_3.png",label:"2~3"},
+  {min:3,max:3,src:"assets/kaguya/stack_3_4.png",label:"3~4"},
+  {min:4,max:4,src:"assets/kaguya/stack_4_5.png",label:"4~5"},
+  {min:5,max:5,src:"assets/kaguya/stack_5_6.png",label:"5~6"},
+  {min:6,max:7,src:"assets/kaguya/stack_6_8.png",label:"6~8"},
+  {min:8,max:9,src:"assets/kaguya/stack_8_10.png",label:"8~10"},
+  {min:10,max:14,src:"assets/kaguya/stack_10_14.png",label:"10~14"}
 ];
 const KAGUYA_MOOD_ASSETS = {
-  angry:"assets/kaguya/mood_angry.jpg",
-  sulk:"assets/kaguya/mood_sulk.jpg",
-  question:"assets/kaguya/mood_question.jpg",
-  cry:"assets/kaguya/mood_cry.jpg"
+  angry:"assets/kaguya/mood_angry.png",
+  sulk:"assets/kaguya/mood_sulk.png",
+  question:"assets/kaguya/mood_question.png",
+  cry:"assets/kaguya/mood_cry.png",
+  happy:"assets/kaguya/mood_happy.png",
+  flustered:"assets/kaguya/mood_flustered.png",
+  smug:"assets/kaguya/mood_smug.png",
+  surprised:"assets/kaguya/mood_surprised.png",
+  worried:"assets/kaguya/mood_worried.png",
+  gentle:"assets/kaguya/mood_gentle.png"
 };
 
 function kaguyaStackAsset(studyToday){
@@ -737,10 +987,18 @@ function kaguyaStackAsset(studyToday){
 }
 function normalizeKaguyaMood(value){
   const m=String(value||"").toLowerCase().trim();
-  const alias={angry:"angry",mad:"angry",anger:"angry",빡침:"angry",
-    sulk:"sulk",sulky:"sulk",삐짐:"sulk",
+  const alias={
+    angry:"angry",mad:"angry",anger:"angry",빡침:"angry",화남:"angry",
+    sulk:"sulk",sulky:"sulk",삐짐:"sulk",pout:"sulk",
     question:"question",curious:"question",confused:"question",의문:"question",
-    cry:"cry",sad:"cry",crying:"cry",울음:"cry"};
+    cry:"cry",sad:"cry",crying:"cry",울음:"cry",
+    happy:"happy",joy:"happy",기쁨:"happy",
+    flustered:"flustered",embarrassed:"flustered",shy:"flustered",부끄러움:"flustered",당황:"flustered",
+    smug:"smug",teasing:"smug",놀림:"smug",자신만만:"smug",
+    surprised:"surprised",shock:"surprised",놀람:"surprised",
+    worried:"worried",concerned:"worried",걱정:"worried",serious:"worried",
+    gentle:"gentle",calm:"gentle",warm:"gentle",다정:"gentle"
+  };
   return alias[m]||"";
 }
 function inferKaguyaMood(text){
@@ -760,7 +1018,7 @@ function kaguyaHeartMarkup(){
   </div>`;
 }
 function kaguyaAuraMarkup(studyToday){
-  const n=Number(studyToday||0);if(n<4||n>=11)return "";
+  const n=Number(studyToday||0);if(n<4||n>=10)return "";
   const sets={4:["✦","·"],5:["✦","✧","·"],6:["✧","✦","♡","·"],7:["◇","✦","·","✧","◇"],8:["✦","❈","✧","·","✦","❈"],9:["✧","♢","✦","·","♢","✧","✦"],10:["☆","✦","♡","✧","☆","·","✦","♡","✧"]};
   const items=sets[n]||sets[10];return `<div class="kaguya-aura stage-${n}" aria-hidden="true">${items.map((ch,i)=>`<i style="--p:${i};--d:${(i*.23).toFixed(2)}s">${ch}</i>`).join("")}</div>`
 }
@@ -769,13 +1027,13 @@ function kaguyaImageMarkup(opts={}){
   const base=kaguyaStackAsset(studyToday);
   const mood=normalizeKaguyaMood(opts.mood);
   const src=(mood&&KAGUYA_MOOD_ASSETS[mood])?KAGUYA_MOOD_ASSETS[mood]:base.src;
-  return `<img class="kaguya-img" src="${src}" alt="카구야" draggable="false">${studyToday>=11?kaguyaHeartMarkup():kaguyaAuraMarkup(studyToday)}`;
+  return `<img class="kaguya-img" src="${src}" alt="카구야" draggable="false">${studyToday>=10?kaguyaHeartMarkup():kaguyaAuraMarkup(studyToday)}`;
 }
 function setKaguyaAvatar(avatar, opts={}){
   if(!avatar)return;
   const studyToday=Math.max(0,Math.min(14,Number(state.today.study||0))),coach=document.getElementById("aiCoach");
-  avatar.classList.toggle("kaguya-high",studyToday>=11);avatar.dataset.dayStack=String(studyToday);avatar.dataset.stackFace=kaguyaStackAsset(studyToday).label;
-  if(coach)coach.classList.toggle("kaguya-love",studyToday>=11);
+  avatar.classList.toggle("kaguya-mid",studyToday>=7&&studyToday<11);avatar.classList.toggle("kaguya-high",studyToday>=11);avatar.dataset.dayStack=String(studyToday);avatar.dataset.stackFace=kaguyaStackAsset(studyToday).label;
+  if(coach)coach.classList.toggle("kaguya-love",studyToday>=10);
   avatar.innerHTML=kaguyaImageMarkup(opts);
 }
 let kaguyaMoodTimer=null;
@@ -795,10 +1053,10 @@ function showTransientKaguyaMood(avatar,{mood="",text="",reason=""}={}){
   const resolved=normalizeKaguyaMood(mood)||inferKaguyaMood(text);
   if(!resolved||!KAGUYA_MOOD_ASSETS[resolved]){setKaguyaAvatar(avatar);return;}
   avatar.classList.remove("mood-return");avatar.classList.add("mood-flash");setKaguyaAvatar(avatar,{mood:resolved});
-  const ms=resolved==="angry"||resolved==="cry"?3900:3000;
+  const ms=reason==="chat"?9000:(resolved==="angry"||resolved==="cry"?4300:3400);
   kaguyaMoodTimer=setTimeout(()=>restoreKaguyaStackFace(avatar),ms);
 }
-const KAGUYA_DB_NAME="STACK_ZERO_KAGUYA_DB";
+const KAGUYA_DB_NAME="STACK_ZERO_KAGUYA_DB_V1_RELEASE";
 const KAGUYA_DB_VERSION=1;
 let kaguyaDBPromise=null;
 function openKaguyaDB(){
@@ -806,39 +1064,149 @@ function openKaguyaDB(){
   kaguyaDBPromise=new Promise((resolve,reject)=>{const req=indexedDB.open(KAGUYA_DB_NAME,KAGUYA_DB_VERSION);req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains("messages")){const st=db.createObjectStore("messages",{keyPath:"id",autoIncrement:true});st.createIndex("createdAt","createdAt")}if(!db.objectStoreNames.contains("memories")){const st=db.createObjectStore("memories",{keyPath:"key"});st.createIndex("updatedAt","updatedAt");st.createIndex("importance","importance")}};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)});return kaguyaDBPromise;
 }
 function idbTx(store,mode,fn){return openKaguyaDB().then(db=>new Promise((resolve,reject)=>{const tx=db.transaction(store,mode),st=tx.objectStore(store);let result;try{result=fn(st,tx)}catch(e){reject(e);return}tx.oncomplete=()=>resolve(result);tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error)}))}
-async function addChatMessage(role,text,meta={}){if(!text)return;await idbTx("messages","readwrite",st=>st.add({role,text:String(text).slice(0,1200),kind:meta.kind||"chat",createdAt:Date.now(),...meta})).catch(()=>{})}
+async function addChatMessage(role,text,meta={}){if(!text)return;await idbTx("messages","readwrite",st=>st.add({role,text:String(text).slice(0,1200),kind:meta.kind||"chat",createdAt:Date.now(),...meta})).catch(()=>{});markCloudDirty()}
 async function recentChat(limit=44){try{const db=await openKaguyaDB();const rows=await new Promise((resolve,reject)=>{const tx=db.transaction("messages","readonly"),idx=tx.objectStore("messages").index("createdAt"),out=[],req=idx.openCursor(null,"prev");req.onsuccess=()=>{const c=req.result;if(!c||out.length>=100){resolve(out);return}out.push({role:c.value.role,text:c.value.text,kind:c.value.kind,createdAt:c.value.createdAt});c.continue()};req.onerror=()=>reject(req.error)});const direct=rows.filter(x=>x.kind==="chat").slice(0,Math.max(8,limit-8)),events=rows.filter(x=>x.kind==="event").slice(0,8);return [...direct,...events].sort((a,b)=>a.createdAt-b.createdAt).slice(-limit)}catch(e){return []}}
 function memoryKey(text){return String(text||"").toLowerCase().replace(/[^0-9a-zA-Z가-힣]+/g," ").trim().slice(0,120)}
-async function saveMemory(item){const text=String(item?.text||"").trim();if(!text)return;const key=memoryKey(text);if(!key)return;const now=Date.now(),value={key,text:text.slice(0,500),category:String(item?.category||"general").slice(0,40),importance:Math.max(1,Math.min(5,Number(item?.importance||3))),createdAt:Number(item?.createdAt||now),updatedAt:now};await idbTx("memories","readwrite",st=>st.put(value)).catch(()=>{})}
+async function saveMemory(item){const text=String(item?.text||"").trim();if(!text)return;const key=memoryKey(text);if(!key)return;const now=Date.now(),value={key,text:text.slice(0,500),category:String(item?.category||"general").slice(0,40),importance:Math.max(1,Math.min(5,Number(item?.importance||3))),createdAt:Number(item?.createdAt||now),updatedAt:now};await idbTx("memories","readwrite",st=>st.put(value)).catch(()=>{});markCloudDirty()}
 async function saveMemoryCandidates(items){for(const x of Array.isArray(items)?items:[])await saveMemory(x)}
 function memoryTokens(text){return new Set(String(text||"").toLowerCase().split(/[^0-9a-zA-Z가-힣]+/).filter(x=>x.length>=2))}
 async function relevantMemories(query,limit=24){try{const db=await openKaguyaDB(),all=await new Promise((resolve,reject)=>{const tx=db.transaction("memories","readonly"),req=tx.objectStore("memories").getAll();req.onsuccess=()=>resolve(req.result||[]);req.onerror=()=>reject(req.error)}),q=memoryTokens(query),now=Date.now();return all.map(m=>{const mt=memoryTokens(m.text);let overlap=0;q.forEach(t=>{if(mt.has(t))overlap+=1});const recency=Math.max(0,1-(now-Number(m.updatedAt||0))/(1000*60*60*24*180));return {...m,_score:overlap*4+Number(m.importance||1)*1.4+recency}}).sort((a,b)=>b._score-a._score).slice(0,limit).map(({_score,...m})=>m)}catch(e){return []}}
 
+
+function setAuthStatus(text,kind=""){const el=document.getElementById("authStatus");if(!el)return;el.textContent=text;el.className="auth-status"+(kind?" "+kind:"")}
+function setSyncStatus(text,kind=""){const el=document.getElementById("syncTestStatus");if(!el)return;el.textContent=text;el.className="sync-test-status"+(kind?" "+kind:"")}
+function validPin(pin){return /^\d{6,12}$/.test(String(pin||""))}
+async function cloudFetch(url,opts={}){const headers={...(opts.headers||{})};if(cloudToken)headers.Authorization=`Bearer ${cloudToken}`;const r=await fetch(url,{cache:"no-store",...opts,headers});const d=await r.json().catch(()=>({}));if(!r.ok){const e=new Error(d.error||`HTTP ${r.status}`);e.status=r.status;e.data=d;throw e}return d}
+async function getAllStore(name){try{const db=await openKaguyaDB();return await new Promise((resolve,reject)=>{const tx=db.transaction(name,"readonly"),req=tx.objectStore(name).getAll();req.onsuccess=()=>resolve(req.result||[]);req.onerror=()=>reject(req.error)})}catch(e){return []}}
+async function replaceStore(name,rows){try{await idbTx(name,"readwrite",st=>{st.clear();for(const row of Array.isArray(rows)?rows:[])st.put(row)})}catch(e){console.warn("[STACK ZERO SYNC] IDB import",name,e)}}
+async function exportCloudBundle(){return {schema:1,savedAt:Date.now(),state:JSON.parse(JSON.stringify(state)),messages:await getAllStore("messages"),memories:await getAllStore("memories"),settings:{voiceEnabled:Boolean(voiceEnabled),azureVoice:selectedAzureVoice||"ja-JP-MayuNeural"}}}
+async function applyCloudBundle(bundle){if(!bundle||typeof bundle!=="object")return;cloudApplying=true;try{state=normalizeState(bundle.state||fresh());localStorage.setItem(KEY,JSON.stringify(state));await replaceStore("messages",bundle.messages||[]);await replaceStore("memories",bundle.memories||[]);if(bundle.settings){voiceEnabled=bundle.settings.voiceEnabled!==false;selectedAzureVoice=AZURE_VOICES.includes(bundle.settings.azureVoice)?bundle.settings.azureVoice:"ja-JP-MayuNeural";localStorage.setItem(VOICE_ENABLED_KEY,voiceEnabled?"1":"0");localStorage.setItem(AZURE_VOICE_KEY,selectedAzureVoice)}updateVoiceButton();render()}finally{cloudApplying=false}}
+function uniqueRows(rows,keyFn,max=400){const m=new Map();for(const r of rows||[]){const k=keyFn(r);if(!k)continue;const old=m.get(k);if(!old||Number(r.updatedAt||r.createdAt||0)>=Number(old.updatedAt||old.createdAt||0))m.set(k,r)}return [...m.values()].sort((a,b)=>Number(a.createdAt||a.updatedAt||0)-Number(b.createdAt||b.updatedAt||0)).slice(-max)}
+function mergeStateForSync(a,b){a=normalizeState(JSON.parse(JSON.stringify(a||fresh())));b=normalizeState(JSON.parse(JSON.stringify(b||fresh())));const newest=Number(a._modifiedAt||0)>=Number(b._modifiedAt||0)?a:b,older=newest===a?b:a,out=JSON.parse(JSON.stringify(newest));for(const k of ["study","exercise","sleep"])out.total[k]=Math.max(Number(a.total[k]||0),Number(b.total[k]||0));if(a.date===b.date){for(const k of ["study","exercise","sleep"])out.today[k]=Math.max(Number(a.today[k]||0),Number(b.today[k]||0))}const hm=new Map();for(const h of [...(a.history||[]),...(b.history||[])]){if(!h?.date)continue;const prev=hm.get(h.date)||{date:h.date,study:0,exercise:0,sleep:0};for(const k of ["study","exercise","sleep"])prev[k]=Math.max(Number(prev[k]||0),Number(h[k]||0));hm.set(h.date,prev)}out.history=[...hm.values()].sort((x,y)=>String(y.date).localeCompare(String(x.date))).slice(0,90);out.celebratedLevels=[...new Set([...(a.celebratedLevels||[]),...(b.celebratedLevels||[])])].sort((x,y)=>x-y);out.celebratedQuests={...(b.celebratedQuests||{}),...(a.celebratedQuests||{})};out.manualDone={...(b.manualDone||{}),...(a.manualDone||{})};out.pendingRewards={...(b.pendingRewards||{}),...(a.pendingRewards||{})};out.rewards=uniqueRows([...(a.rewards||[]),...(b.rewards||[])],x=>JSON.stringify([x?.id,x?.name,x?.reward,x?.receivedAt,x?.date]),250);out.rewardHistory=uniqueRows([...(a.rewardHistory||[]),...(b.rewardHistory||[])],x=>JSON.stringify([x?.id,x?.name,x?.reward,x?.usedAt,x?.date]),250);out.aiRecentMessages=[...new Set([...(newest.aiRecentMessages||[]),...(older.aiRecentMessages||[])])].slice(0,30);out._modifiedAt=Math.max(Number(a._modifiedAt||0),Number(b._modifiedAt||0),Date.now());return out}
+function mergeBundles(local,remote){local=local||{};remote=remote||{};const mm=new Map();for(const m of [...(remote.memories||[]),...(local.memories||[])]){if(!m?.key)continue;const prev=mm.get(m.key);if(!prev||Number(m.updatedAt||0)>=Number(prev.updatedAt||0))mm.set(m.key,m)}return {schema:1,savedAt:Date.now(),state:mergeStateForSync(local.state,remote.state),messages:uniqueRows([...(remote.messages||[]),...(local.messages||[])],x=>`${x?.role}|${x?.kind}|${x?.createdAt}|${x?.text}`,500),memories:[...mm.values()].sort((a,b)=>Number(a.updatedAt||0)-Number(b.updatedAt||0)).slice(-300),settings:local.settings||remote.settings||{}}}
+function markCloudDirty(){if(!cloudReady||cloudApplying||!cloudToken)return;cloudDirty=true;cloudMutationSeq++;clearTimeout(cloudSyncTimer);cloudSyncTimer=setTimeout(()=>pushCloudNow().catch(()=>{}),650)}
+async function pushCloudNow(){if(!cloudReady||cloudApplying||!cloudToken)return false;clearTimeout(cloudSyncTimer);const seq=cloudMutationSeq,localBundle=await exportCloudBundle();setSyncStatus("동기화 중…");try{let d;try{d=await cloudFetch("/api/sync",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({data:localBundle,baseUpdatedAt:cloudServerUpdatedAt||null})})}catch(e){if(e.status!==409||!e.data?.data)throw e;const merged=mergeBundles(localBundle,e.data.data);cloudServerUpdatedAt=e.data.updatedAt||"";await applyCloudBundle(merged);d=await cloudFetch("/api/sync",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({data:merged,baseUpdatedAt:cloudServerUpdatedAt||null})})}cloudServerUpdatedAt=d.updatedAt||cloudServerUpdatedAt;if(seq===cloudMutationSeq)cloudDirty=false;else{cloudDirty=true;cloudSyncTimer=setTimeout(()=>pushCloudNow().catch(()=>{}),500)}setSyncStatus("PIN SYNC · 저장됨","ok");return true}catch(e){cloudDirty=true;setSyncStatus("SYNC 실패 · 재시도 예정","err");clearTimeout(cloudSyncTimer);cloudSyncTimer=setTimeout(()=>pushCloudNow().catch(()=>{}),5000);return false}}
+async function pullCloudNow(force=false){if(!cloudReady||!cloudToken||cloudApplying||cloudDirty)return false;if(!force&&Date.now()-cloudLastPull<7000)return false;cloudLastPull=Date.now();try{const d=await cloudFetch("/api/sync");if(d.updatedAt&&d.updatedAt!==cloudServerUpdatedAt){cloudServerUpdatedAt=d.updatedAt;await applyCloudBundle(d.data||{});setSyncStatus("PIN SYNC · 다른 기기 기록 반영","ok")}else setSyncStatus("PIN SYNC · 최신","ok");return true}catch(e){if(e.status===401){cloudToken="";cloudReady=false;localStorage.removeItem(CLOUD_SESSION_KEY);showAuthGate("세션이 만료되었습니다 · PIN으로 다시 로그인해주세요","err")}else setSyncStatus("SYNC 연결 확인 필요","err");return false}}
+function showAuthGate(message="",kind=""){document.body.classList.add("auth-locked");const gate=document.getElementById("authGate");if(gate)gate.classList.remove("hidden");if(message)setAuthStatus(message,kind)}
+function hideAuthGate(){document.body.classList.remove("auth-locked");document.getElementById("authGate")?.classList.add("hidden")}
+function setAuthBusy(on){for(const id of ["createPinBtn","loginPinBtn"]){const b=document.getElementById(id);if(b)b.disabled=Boolean(on)}}
+async function createPinAccount(){const input=document.getElementById("newPinInput"),pin=String(input?.value||"").trim();if(!validPin(pin)){setAuthStatus("PIN은 숫자 6~12자리로 설정해주세요","err");return}setAuthBusy(true);setAuthStatus("새 PIN 계정 만드는 중…");try{state=fresh();localStorage.setItem(KEY,JSON.stringify(state));await replaceStore("messages",[]);await replaceStore("memories",[]);const bundle=await exportCloudBundle();const r=await fetch("/api/account",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"create",pin,data:bundle})}),d=await r.json().catch(()=>({}));if(!r.ok)throw Object.assign(new Error(d.error||`HTTP ${r.status}`),{status:r.status});cloudToken=d.token;cloudServerUpdatedAt=d.updatedAt||"";localStorage.setItem(CLOUD_SESSION_KEY,cloudToken);cloudReady=true;cloudDirty=false;hideAuthGate();setSyncStatus("PIN SYNC · 연결됨","ok");render();probeConnections();toast("새 PIN 계정으로 시작합니다 ✦")}catch(e){setAuthStatus(e.status===409?"이미 사용 중인 PIN입니다 · 다른 PIN을 골라주세요":`계정 생성 실패 · ${String(e.message||e).slice(0,90)}`,"err")}finally{setAuthBusy(false)}}
+async function loginPinAccount(){const input=document.getElementById("loginPinInput"),pin=String(input?.value||"").trim();if(!validPin(pin)){setAuthStatus("PIN은 숫자 6~12자리입니다","err");return}setAuthBusy(true);setAuthStatus("기록 불러오는 중…");try{const r=await fetch("/api/account",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"login",pin})}),d=await r.json().catch(()=>({}));if(!r.ok)throw Object.assign(new Error(d.error||`HTTP ${r.status}`),{status:r.status});cloudToken=d.token;cloudServerUpdatedAt=d.updatedAt||"";localStorage.setItem(CLOUD_SESSION_KEY,cloudToken);cloudReady=true;cloudDirty=false;await applyCloudBundle(d.data||{});hideAuthGate();setSyncStatus("PIN SYNC · 로그인됨","ok");probeConnections();toast("기록을 불러왔습니다 ✦")}catch(e){setAuthStatus(e.status===404?"PIN을 찾을 수 없습니다":`로그인 실패 · ${String(e.message||e).slice(0,90)}`,"err")}finally{setAuthBusy(false)}}
+async function autoPinLogin(){showAuthGate();try{const p=await fetch("/api/account?probe=1",{cache:"no-store"}),pd=await p.json().catch(()=>({}));if(!p.ok||!pd.configured){setAuthStatus("PIN SYNC DB 설정이 필요합니다 · README를 확인해주세요","err");return}if(!cloudToken){setAuthStatus("새로 시작하거나 기존 PIN으로 로그인하세요");return}setAuthStatus("자동 로그인 중…");cloudReady=true;const d=await cloudFetch("/api/sync");cloudServerUpdatedAt=d.updatedAt||"";await applyCloudBundle(d.data||{});cloudDirty=false;hideAuthGate();setSyncStatus("PIN SYNC · 최신","ok");probeConnections()}catch(e){cloudReady=false;cloudToken="";localStorage.removeItem(CLOUD_SESSION_KEY);setAuthStatus("PIN으로 다시 로그인해주세요","err")}}
+async function logoutPin(){if(cloudDirty)await pushCloudNow().catch(()=>{});cloudReady=false;cloudToken="";cloudDirty=false;cloudServerUpdatedAt="";localStorage.removeItem(CLOUD_SESSION_KEY);state=fresh();localStorage.setItem(KEY,JSON.stringify(state));await replaceStore("messages",[]);await replaceStore("memories",[]);render();showAuthGate("로그아웃했습니다")}
+
 let coachTimer=null,coachRequestId=0,coachAbortController=null,chatBusy=false;
-const COACH_TIMEOUT_MS=10000;
+const COACH_TIMEOUT_MS=18000;
 function queueAICoach(reason){clearTimeout(coachTimer);coachTimer=setTimeout(()=>renderAICoach(reason||"refresh"),220)}
-function coachContext(reason){const now=new Date(),r=levelFor(Number(state.total.study||0));return {stack:{study:Number(state.total.study||0),exercise:Number(state.total.exercise||0),sleep:Number(state.total.sleep||0)},today:{study:Number(state.today.study||0),exercise:Number(state.today.exercise||0),sleep:Number(state.today.sleep||0)},active,rank:r.name,rankIndex:levelIndex(Number(state.total.study||0)),reason:reason||"refresh",affinity:dailyAffinity(),recentAction:state.recentAction||null,nowLocal:`${todayKey()} ${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")}`,timezone:"Asia/Seoul"}}
+function coachContext(reason){const now=new Date(),r=levelFor(Number(state.total.study||0));return {stack:{study:Number(state.total.study||0),exercise:Number(state.total.exercise||0),sleep:Number(state.total.sleep||0)},today:{study:Number(state.today.study||0),exercise:Number(state.today.exercise||0),sleep:Number(state.today.sleep||0)},active,rank:r.name,rankIndex:levelIndex(Number(state.total.study||0)),reason:reason||"refresh",variationCue:Math.floor(Math.random()*10),affinity:dailyAffinity(),recentAction:state.recentAction||null,recentAssistantMessages:(state.aiRecentMessages||[]).slice(0,30),nowLocal:`${todayKey()} ${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")}`,timezone:"Asia/Seoul"}}
 function setCoachVisual({text,model,mood,reason,statusText,statusClass="ok"}){const avatar=document.getElementById("aiAvatar"),msg=document.getElementById("aiMessage"),rankEl=document.getElementById("aiRank"),status=document.getElementById("aiStatus");if(!avatar||!msg)return;const r=levelFor(Number(state.total.study||0));if(rankEl)rankEl.textContent=`${r.gem} ${r.name}`;msg.classList.remove("pop");void msg.offsetWidth;msg.classList.add("pop");msg.textContent=text||"…";avatar.classList.remove("kaguya-thinking");setKaguyaAvatar(avatar);showTransientKaguyaMood(avatar,{mood,text,reason});avatar.classList.remove("kaguya-react");void avatar.offsetWidth;avatar.classList.add("kaguya-react");setTimeout(()=>avatar.classList.remove("kaguya-react"),720);if(status){status.textContent=statusText||"LIVE";status.className="ai-status "+statusClass}}
 function setCoachThinking(){const avatar=document.getElementById("aiAvatar"),msg=document.getElementById("aiMessage"),status=document.getElementById("aiStatus");if(avatar){clearTimeout(kaguyaMoodTimer);setKaguyaAvatar(avatar);avatar.classList.add("kaguya-thinking")}if(msg)msg.textContent="카구야님이 입력중 •••";if(status){status.textContent="생각 중…";status.className="ai-status ai-loading"}}
-async function requestCoach(payload,timeoutMs=COACH_TIMEOUT_MS){const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeoutMs);try{const response=await fetch("/api/coach",{method:"POST",headers:{"Content-Type":"application/json"},signal:controller.signal,body:JSON.stringify(payload)});const data=await response.json().catch(()=>({}));if(!response.ok||!data.ok)throw new Error(data.error||`HTTP ${response.status}`);return data}finally{clearTimeout(timer)}}
+function setServiceConnection(service,stateValue,label="",detail=""){
+  const id=service==="tts"?"ttsConnection":"geminiConnection",el=document.getElementById(id);if(!el)return;
+  const stateName=stateValue===true?"ok":stateValue===false?"err":"checking";el.className="conn "+stateName;
+  const base=service==="tts"?"TTS":"AI";el.textContent=label||base;el.title=detail||`${base} ${stateName==="ok"?"연결됨":stateName==="err"?"연결 안됨":"확인 중"}`;
+}
+async function requestCoach(payload,timeoutMs=COACH_TIMEOUT_MS){
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeoutMs);
+  try{
+    const response=await fetch("/api/coach",{method:"POST",headers:{"Content-Type":"application/json"},signal:controller.signal,body:JSON.stringify(payload)});
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok||!data.ok){const e=new Error(data.error||`HTTP ${response.status}`);e.status=response.status;e.details=data;throw e}
+    const provider=data.provider==="groq"?"Groq":data.provider==="gemini"?"Gemini 백업":"AI";setServiceConnection("gemini",true,provider,`${provider} · ${data.model||"model"}`);if(data.ttsConfigured===false)setServiceConnection("tts",false,"TTS 설정없음");
+    return data;
+  }catch(e){const code=Number(e?.status||0)||0;setServiceConnection("gemini",false,code?`AI ${code}`:"AI 오류",String(e?.message||e));throw e}
+  finally{clearTimeout(timer)}
+}
 async function renderAICoach(reason){
   const requestId=++coachRequestId,x=aiCoachMessage(reason||"refresh");if(coachAbortController)coachAbortController.abort();setCoachThinking();
-  try{const [chat,memories]=await Promise.all([recentChat(36),relevantMemories(String(state.recentAction?.title||reason||""),18)]);const data=await requestCoach({mode:"event",...coachContext(reason),recentChat:chat,memories});if(requestId!==coachRequestId)return;const aiText=String(data.message||data.replyKo||"").trim();if(!aiText)throw new Error("empty reply");state.aiRecentMessages=[aiText,...(state.aiRecentMessages||[]).filter(v=>v!==aiText)].slice(0,30);state.aiLastMessage=aiText;save();await addChatMessage("assistant",aiText,{kind:"event",reason});setCoachVisual({text:aiText,model:data.model,mood:data.mood,reason});if(reason!=="refresh"&&data.voiceJa)playKaguyaVoice(data.voiceJa,data.mood).catch(()=>{})}
-  catch(err){if(requestId!==coachRequestId)return;setCoachVisual({text:x.msg,mood:"",reason,statusText:err?.name==="AbortError"?"응답이 늦어 로컬 반응으로 전환":"연결이 잠깐 끊겨 로컬 반응으로 전환",statusClass:"err"})}
+  try{const [chat,memories]=await Promise.all([recentChat(36),relevantMemories(String(state.recentAction?.title||reason||""),18)]);const data=await requestCoach({mode:"event",...coachContext(reason),recentChat:chat,memories});if(requestId!==coachRequestId)return;const aiText=String(data.message||data.replyKo||"").trim();if(!aiText)throw new Error("empty reply");state.aiRecentMessages=[aiText,...(state.aiRecentMessages||[]).filter(v=>v!==aiText)].slice(0,30);state.aiLastMessage=aiText;save();await addChatMessage("assistant",aiText,{kind:"event",reason});await revealReplySynced(data,aiText,reason)}
+  catch(err){if(requestId!==coachRequestId)return;const code=Number(err?.status||0)||0;const statusText=err?.name==="AbortError"?"AI 시간초과 · 로컬 반응":code?`AI ${code} · 로컬 반응`:"AI 오류 · 로컬 반응";setCoachVisual({text:x.msg,mood:"",reason,statusText,statusClass:"err"})}
 }
 
-const VOICE_ENABLED_KEY="STACK_ZERO_VOICE_ENABLED";let voiceEnabled=localStorage.getItem(VOICE_ENABLED_KEY)!=="0",currentAudio=null;
-function updateVoiceButton(){const b=document.getElementById("kaguyaVoiceToggle");if(!b)return;b.classList.toggle("off",!voiceEnabled);b.textContent=voiceEnabled?"🔊":"🔇";b.title=voiceEnabled?"일본어 음성 켜짐":"일본어 음성 꺼짐"}
-function pcm16Base64ToWavUrl(base64,sampleRate=24000){const raw=atob(base64),pcm=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)pcm[i]=raw.charCodeAt(i);const buf=new ArrayBuffer(44+pcm.length),v=new DataView(buf),write=(o,t)=>{for(let i=0;i<t.length;i++)v.setUint8(o+i,t.charCodeAt(i))};write(0,"RIFF");v.setUint32(4,36+pcm.length,true);write(8,"WAVE");write(12,"fmt ");v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,sampleRate,true);v.setUint32(28,sampleRate*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);write(36,"data");v.setUint32(40,pcm.length,true);new Uint8Array(buf,44).set(pcm);return URL.createObjectURL(new Blob([buf],{type:"audio/wav"}))}
-function browserJapaneseTTS(text){try{if(!("speechSynthesis" in window)||!text)return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text),voices=window.speechSynthesis.getVoices(),ja=voices.filter(v=>String(v.lang||"").toLowerCase().startsWith("ja")),preferred=ja.find(v=>/Leda|Nanami|Kyoko|Haruka|Google.*日本|Japanese/i.test(v.name))||ja.find(v=>v.localService)||ja[0];if(preferred)u.voice=preferred;u.lang="ja-JP";u.rate=.98;u.pitch=1.04;u.volume=.92;window.speechSynthesis.speak(u)}catch(e){}}
-async function playKaguyaVoice(text,mood="normal"){if(!voiceEnabled||!text)return;try{const data=await requestCoach({mode:"tts",text:String(text).slice(0,420),mood},12000);if(!data.audioBase64)throw new Error("no audio");if(currentAudio){try{currentAudio.pause()}catch(e){}}const url=pcm16Base64ToWavUrl(data.audioBase64,Number(data.sampleRate||24000));const a=new Audio(url);currentAudio=a;a.onended=()=>URL.revokeObjectURL(url);a.onerror=()=>{URL.revokeObjectURL(url);browserJapaneseTTS(text)};await a.play()}catch(e){browserJapaneseTTS(text)}}
+const VOICE_ENABLED_KEY="STACK_ZERO_V1_VOICE_ENABLED";
+const AZURE_VOICE_KEY="STACK_ZERO_40_8_AZURE_VOICE";
+const AZURE_COOLDOWN_KEY="STACK_ZERO_40_8_AZURE_COOLDOWN_UNTIL",AZURE_BACKOFF_KEY="STACK_ZERO_40_8_AZURE_BACKOFF_STEP";
+const GEMINI_TTS_COOLDOWN_KEY="STACK_ZERO_40_8_GEMINI_TTS_COOLDOWN_UNTIL",GEMINI_TTS_BACKOFF_KEY="STACK_ZERO_40_8_GEMINI_TTS_BACKOFF_STEP";
+const TTS_BACKOFF_STEPS=[60000,120000,300000,600000,1200000,1800000];
+const AZURE_VOICES=["ja-JP-NanamiNeural","ja-JP-AoiNeural","ja-JP-MayuNeural","ja-JP-ShioriNeural"];
+const AZURE_VOICE_LABEL={"ja-JP-NanamiNeural":"NANAMI","ja-JP-AoiNeural":"AOI","ja-JP-MayuNeural":"MAYU","ja-JP-ShioriNeural":"SHIORI"};
+let selectedAzureVoice=AZURE_VOICES.includes(localStorage.getItem(AZURE_VOICE_KEY)||"")?localStorage.getItem(AZURE_VOICE_KEY):"ja-JP-MayuNeural";
+let voiceEnabled=localStorage.getItem(VOICE_ENABLED_KEY)!=="0",currentAudio=null,voiceRunId=0,streamNextAt=0,streamSources=[],lastTtsError=null,voiceMediaElement=null,voiceObjectUrl=null,voicePrimed=false;
+const ttsProviderState={
+  azure:{until:Math.max(0,Number(localStorage.getItem(AZURE_COOLDOWN_KEY)||0)||0),step:Math.max(0,Math.min(TTS_BACKOFF_STEPS.length-1,Number(localStorage.getItem(AZURE_BACKOFF_KEY)||0)||0)),timer:null,untilKey:AZURE_COOLDOWN_KEY,stepKey:AZURE_BACKOFF_KEY,label:"Azure Speech"},
+  gemini:{until:Math.max(0,Number(localStorage.getItem(GEMINI_TTS_COOLDOWN_KEY)||0)||0),step:Math.max(0,Math.min(TTS_BACKOFF_STEPS.length-1,Number(localStorage.getItem(GEMINI_TTS_BACKOFF_KEY)||0)||0)),timer:null,untilKey:GEMINI_TTS_COOLDOWN_KEY,stepKey:GEMINI_TTS_BACKOFF_KEY,label:"Gemini TTS"}
+};
+function updateVoiceButton(){const b=document.getElementById("kaguyaVoiceToggle");if(b){b.classList.toggle("off",!voiceEnabled);b.textContent=voiceEnabled?"🔊":"🔇";b.title=voiceEnabled?`일본어 음성 켜짐 · Azure ${AZURE_VOICE_LABEL[selectedAzureVoice]} → Gemini TTS → 브라우저`:"카구야 음성 꺼짐"}document.querySelectorAll(".voice-test-btn").forEach(x=>x.classList.toggle("active",selectedAzureVoice===x.dataset.azureVoice));const hint=document.getElementById("voiceTestHint");if(hint)hint.textContent=`선택 ${AZURE_VOICE_LABEL[selectedAzureVoice]} · 일본어 · MAYU 미세튜닝 · 속도 +1%p / 피치 +1%p · Azure → Gemini 자동백업`}
+function providerCooldownLeft(name){const p=ttsProviderState[name];return p?Math.max(0,p.until-Date.now()):0}
+function clearProviderCooldown(name,resetBackoff=false){const p=ttsProviderState[name];if(!p)return;clearTimeout(p.timer);p.timer=null;p.until=0;localStorage.removeItem(p.untilKey);if(resetBackoff){p.step=0;localStorage.removeItem(p.stepKey)}}
+function setProviderCooldown(name,serverRetryAfterMs=0,{minimum=0,reason=""}={}){const p=ttsProviderState[name];if(!p)return;const planned=TTS_BACKOFF_STEPS[Math.min(p.step,TTS_BACKOFF_STEPS.length-1)],hint=Math.max(0,Number(serverRetryAfterMs||0)),safe=Math.min(30*60*1000,Math.max(minimum,planned,hint));p.step=Math.min(TTS_BACKOFF_STEPS.length-1,p.step+1);localStorage.setItem(p.stepKey,String(p.step));p.until=Date.now()+safe;localStorage.setItem(p.untilKey,String(p.until));clearTimeout(p.timer);p.timer=setTimeout(()=>clearProviderCooldown(name,false),Math.min(safe+100,2147483000));console.warn(`[STACK ZERO ${p.label} cooldown]`,{waitMs:safe,reason});return safe}
+function classifyProviderFailure(name,e){const status=Number(e?.status||0),retry=Number(e?.retryAfterMs||0)||0;if(status===429||status===408||status>=500||e?.code==="TIMEOUT")setProviderCooldown(name,retry,{minimum:status===429?60000:30000,reason:String(e?.message||e)})}
+function ttsRoute(label,detail="",ok=true){setServiceConnection("tts",ok,label,detail)}
+function getVoiceAudioContext(){return getAppAudioContext()}
+function getVoiceMediaElement(){if(!voiceMediaElement){const a=document.createElement("audio");a.preload="auto";a.playsInline=true;a.setAttribute("playsinline","");a.setAttribute("webkit-playsinline","");a.volume=1;a.style.display="none";document.body.appendChild(a);voiceMediaElement=a}return voiceMediaElement}
+function revokeVoiceObjectUrl(){if(voiceObjectUrl){try{URL.revokeObjectURL(voiceObjectUrl)}catch(e){}voiceObjectUrl=null}}
+function silentWavBlob(){const sampleRate=8000,samples=160,buf=new ArrayBuffer(44+samples*2),v=new DataView(buf);const w=(o,t)=>{for(let i=0;i<t.length;i++)v.setUint8(o+i,t.charCodeAt(i))};w(0,"RIFF");v.setUint32(4,36+samples*2,true);w(8,"WAVE");w(12,"fmt ");v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,sampleRate,true);v.setUint32(28,sampleRate*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);w(36,"data");v.setUint32(40,samples*2,true);return new Blob([buf],{type:"audio/wav"})}
+function primeKaguyaAudio(){if(!voiceEnabled)return null;try{const ctx=getAppAudioContext();if(ctx&&ctx.state==="suspended")ctx.resume().catch(()=>{});const a=getVoiceMediaElement();if(!voicePrimed){const u=URL.createObjectURL(silentWavBlob());a.src=u;a.volume=.001;const p=a.play();if(p&&p.then)p.then(()=>{voicePrimed=true;a.pause();a.currentTime=0;a.volume=1;try{URL.revokeObjectURL(u)}catch(e){}}).catch(()=>{a.volume=1;try{URL.revokeObjectURL(u)}catch(e){}})}return a}catch(e){return null}}
+function stopKaguyaVoicePlayback(){voiceRunId++;if(currentAudio){try{currentAudio.pause()}catch(e){}currentAudio=null}if(voiceMediaElement){try{voiceMediaElement.pause();voiceMediaElement.removeAttribute("src");voiceMediaElement.load()}catch(e){}}revokeVoiceObjectUrl();for(const src of streamSources.splice(0)){try{src.stop()}catch(e){}}streamNextAt=0;if("speechSynthesis" in window)try{window.speechSynthesis.cancel()}catch(e){}}
+function base64ToArrayBuffer(base64){const raw=atob(base64),bytes=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);return bytes.buffer}
+function pcm16Base64ToWavBlob(base64,sampleRate=24000){const raw=atob(base64),pcm=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)pcm[i]=raw.charCodeAt(i);const buf=new ArrayBuffer(44+pcm.length),v=new DataView(buf),u=new Uint8Array(buf);const w=(o,t)=>{for(let i=0;i<t.length;i++)u[o+i]=t.charCodeAt(i)};w(0,"RIFF");v.setUint32(4,36+pcm.length,true);w(8,"WAVE");w(12,"fmt ");v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,sampleRate,true);v.setUint32(28,sampleRate*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);w(36,"data");v.setUint32(40,pcm.length,true);u.set(pcm,44);return new Blob([buf],{type:"audio/wav"})}
+async function playVoiceBlob(blob,myRun,onFirst,volume=1){if(myRun!==voiceRunId||!blob)return false;const a=getVoiceMediaElement();revokeVoiceObjectUrl();voiceObjectUrl=URL.createObjectURL(blob);a.src=voiceObjectUrl;a.volume=Math.max(0,Math.min(1,volume));a.playbackRate=1;a.currentTime=0;let started=false;const mark=()=>{if(started||myRun!==voiceRunId)return;started=true;voicePrimed=true;if(typeof onFirst==="function")onFirst()};a.onplaying=mark;a.onplay=mark;a.onerror=null;currentAudio=a;try{const p=a.play();if(p&&p.then)await p;mark();return myRun===voiceRunId}catch(e){throw new Error(`media playback blocked: ${e?.message||e}`)}}
+async function scheduleEncodedAudio(base64,mimeType,myRun,onFirst){if(myRun!==voiceRunId||!base64)return false;const blob=new Blob([base64ToArrayBuffer(base64)],{type:mimeType||"audio/mpeg"});return await playVoiceBlob(blob,myRun,onFirst,1)}
+async function schedulePcmAudio(base64,sampleRate,myRun,onFirst){if(myRun!==voiceRunId||!base64)return false;return await playVoiceBlob(pcm16Base64ToWavBlob(base64,Number(sampleRate||24000)),myRun,onFirst,1)}
+async function postTtsJson(url,payload,timeoutMs=16000){const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeoutMs);try{const r=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},signal:controller.signal,body:JSON.stringify(payload)});const d=await r.json().catch(()=>({}));if(!r.ok||!d.ok){const e=new Error(d.error||`HTTP ${r.status}`);e.status=r.status;e.details=d;e.retryAfterMs=Number(d.retryAfterMs||d?.details?.retryAfterMs||0)||0;e.code=d.code||null;throw e}return d}catch(e){if(e?.name==="AbortError"){const x=new Error("TTS request timeout");x.status=504;x.code="TIMEOUT";throw x}throw e}finally{clearTimeout(timer)}}
+async function playAzureVoice(text,mood,voiceStyle,myRun,onFirst,force=false,voiceOverride=null){if(!force&&providerCooldownLeft("azure")>0)return false;const voice=AZURE_VOICES.includes(voiceOverride)?voiceOverride:selectedAzureVoice;try{const d=await postTtsJson("/api/azure-tts",{text:String(text).slice(0,700),mood,voiceStyle,voice},14000);if(myRun!==voiceRunId)return false;if(!d.audioBase64)throw new Error("Azure returned no audio");const ok=await scheduleEncodedAudio(d.audioBase64,d.mimeType||"audio/mpeg",myRun,onFirst);if(!ok)throw new Error("Azure playback unavailable");clearProviderCooldown("azure",true);ttsRoute(`AZURE · ${AZURE_VOICE_LABEL[voice]||"VOICE"}`,`Azure Neural TTS · ${voice}`,true);return true}catch(e){classifyProviderFailure("azure",e);lastTtsError={provider:"azure-speech",message:String(e?.message||e),status:Number(e?.status||0)||null,code:e?.code||null,details:e?.details||null};console.warn("[STACK ZERO Azure TTS]",lastTtsError);return false}}
+async function playGeminiTtsVoice(text,mood,voiceStyle,myRun,onFirst,force=false){if(!force&&providerCooldownLeft("gemini")>0)return false;try{const d=await postTtsJson("/api/gemini-tts",{text:String(text).slice(0,700),mood,voiceStyle},15000);if(myRun!==voiceRunId)return false;if(!d.audioBase64)throw new Error("Gemini TTS returned no audio");const ok=await schedulePcmAudio(d.audioBase64,Number(d.sampleRate||24000),myRun,onFirst);if(!ok)throw new Error("Gemini TTS playback unavailable");clearProviderCooldown("gemini",true);ttsRoute("GEMINI TTS",`Gemini ${d.model||"TTS"} · ${d.voice||"Sulafat"}`,true);return true}catch(e){classifyProviderFailure("gemini",e);lastTtsError={provider:"gemini-tts",message:String(e?.message||e),status:Number(e?.status||0)||null,code:e?.code||null,details:e?.details||null};console.warn("[STACK ZERO Gemini TTS]",lastTtsError);return false}}
+function browserJapaneseTTS(text,onStart){return new Promise(resolve=>{try{if(!voiceEnabled||!text||!("speechSynthesis" in window)||typeof SpeechSynthesisUtterance==="undefined"){resolve(false);return}const synth=window.speechSynthesis;try{synth.cancel()}catch(e){}const speak=()=>{const voices=synth.getVoices?synth.getVoices():[],ja=voices.filter(v=>String(v.lang||"").toLowerCase().startsWith("ja")),preferred=ja.find(v=>v.localService&&/Kyoko|Otoya|Nanami|Japanese|日本/i.test(String(v.name||"")))||ja.find(v=>v.localService)||ja[0]||null,u=new SpeechSynthesisUtterance(String(text).slice(0,700));if(preferred)u.voice=preferred;u.lang="ja-JP";u.rate=1.08;u.pitch=1.05;u.volume=1;let started=false,finished=false;const finish=ok=>{if(finished)return;finished=true;resolve(Boolean(ok))};u.onstart=()=>{started=true;ttsRoute("FREE TTS","브라우저 일본어 TTS · Azure와 Gemini TTS를 사용할 수 없어 최종 fallback",true);if(typeof onStart==="function")onStart()};u.onend=()=>finish(started);u.onerror=()=>{ttsRoute("TTS 오류","3단 TTS 모두 재생 실패",false);finish(false)};try{synth.speak(u)}catch(e){finish(false)};setTimeout(()=>{if(!started&&!finished){try{synth.resume()}catch(e){};setTimeout(()=>{if(!started&&!finished)finish(false)},850)}},420)};const initial=synth.getVoices?synth.getVoices():[];if(initial.length){speak();return}let done=false;const go=()=>{if(done)return;done=true;try{synth.removeEventListener&&synth.removeEventListener("voiceschanged",go)}catch(e){};speak()};try{synth.addEventListener&&synth.addEventListener("voiceschanged",go,{once:true})}catch(e){};setTimeout(go,260)}catch(e){resolve(false)}})}
+
+function levelVoiceBias(){const r=levelIndex(Number(state.total.study||0));if(r>=9)return "deeply trusted and very close; effortless familiarity and warm attachment";if(r>=7)return "high trust; comfortable and familiar cadence with subtle warmth";if(r>=5)return "clear fondness and trust; naturally softer and friendlier";if(r>=3)return "becoming comfortable; slightly less formal";return "poised, observant and slightly reserved"}
+function dailyVoiceBias(){const h=Math.max(0,Math.min(14,Number(state.today.study||0)));if(h>=14)return "deep affection is obvious; intimate, delighted and tender while still refined";if(h>=12)return "very affectionate and personally invested; warm, softly excited and a little bashful";if(h>=10)return "clear affection showing; bright, warm and occasionally subtly flustered";if(h>=8)return "fond and increasingly personal; softly playful and warm";if(h>=7)return "comfortable familiarity; relaxed warmth with restrained playfulness";if(h>=5)return "softening, lightly teasing and attentive";if(h>=3)return "still guarded but faintly curious and less rigid";if(h>=1)return "cool, formal and restrained; keep emotional distance";return "poised, observant and reserved"}
+async function playKaguyaVoiceReliable(text,mood="normal",voiceStyle="",onFirstAudio){if(!voiceEnabled||!text)return false;stopKaguyaVoicePlayback();primeKaguyaAudio();const myRun=voiceRunId;let announced=false;const announce=()=>{if(announced)return;announced=true;if(typeof onFirstAudio==="function")onFirstAudio()};const enriched=[String(voiceStyle||"").trim(),levelVoiceBias(),dailyVoiceBias()].filter(Boolean).join("; ");if(await playAzureVoice(text,mood,enriched,myRun,announce))return true;if(myRun!==voiceRunId)return false;if(await playGeminiTtsVoice(text,mood,enriched,myRun,announce))return true;if(myRun!==voiceRunId)return false;return await browserJapaneseTTS(text,announce)}
+async function selectAndTestAzureVoice(voice){if(!AZURE_VOICES.includes(voice))return;selectedAzureVoice=voice;localStorage.setItem(AZURE_VOICE_KEY,voice);updateVoiceButton();voiceEnabled=true;localStorage.setItem(VOICE_ENABLED_KEY,"1");primeKaguyaAudio();stopKaguyaVoicePlayback();primeKaguyaAudio();const myRun=voiceRunId;toast(`${AZURE_VOICE_LABEL[voice]} 선택 · 테스트 재생`);const sample="ふふっ、今日はちゃんと来たんですね。少しだけ安心しました。じゃあ、始めましょうか。";const ok=await playAzureVoice(sample,"gentle","warm, poised, lightly teasing",myRun,()=>{},true,voice);if(!ok)ttsRoute("AZURE TEST FAIL",String(lastTtsError?.message||"Azure 음성 테스트 실패"),false)}
 function setChatBusy(on){chatBusy=Boolean(on);const input=document.getElementById("kaguyaChatInput"),btn=document.getElementById("kaguyaChatSend");if(input)input.disabled=chatBusy;if(btn)btn.disabled=chatBusy}
+function revealReplySynced(data,reply,reason="chat"){const brain=data.provider==="groq"?"GROQ":data.provider==="gemini"?"GEMINI BACKUP":"AI";const statusText=`${brain} · LIVE${Array.isArray(data.memories)&&data.memories.length?` · MEMORY +${data.memories.length}`:""}`;const voiceText=String(data.voiceJa||"").trim()||reply;return new Promise(resolve=>{let revealed=false;const reveal=()=>{if(revealed)return;revealed=true;setCoachVisual({text:reply,model:data.model,mood:data.mood,reason,statusText});resolve()};if(!voiceEnabled||!voiceText||reason==="refresh"){reveal();return}const noLag=setTimeout(reveal,650);lastTtsError=null;playKaguyaVoiceReliable(voiceText,data.mood,data.voiceStyle,()=>{clearTimeout(noLag);reveal()}).then(ok=>{if(!ok)reveal()}).catch(err=>{console.warn("[STACK ZERO TTS chain]",err);reveal()})})}
+function revealChatReplySynced(data,reply){return revealReplySynced(data,reply,"chat")}
+
+
 async function sendKaguyaChat(){
-  if(chatBusy)return;const input=document.getElementById("kaguyaChatInput"),text=String(input?.value||"").trim();if(!text)return;input.value="";setChatBusy(true);setCoachThinking();await addChatMessage("user",text,{kind:"chat"});
+  if(chatBusy)return;const input=document.getElementById("kaguyaChatInput"),text=String(input?.value||"").trim();if(!text)return;stopKaguyaVoicePlayback();primeKaguyaAudio();input.value="";setChatBusy(true);setCoachThinking();await addChatMessage("user",text,{kind:"chat"});
   const explicitRemember=/기억해|기억해줘|잊지\s*마/.test(text);
-  try{const [chat,memories]=await Promise.all([recentChat(44),relevantMemories(text,24)]);const data=await requestCoach({mode:"chat",userMessage:text,...coachContext("chat"),recentChat:chat,memories},12000);const reply=String(data.message||data.replyKo||"").trim();if(!reply)throw new Error("empty reply");await addChatMessage("assistant",reply,{kind:"chat"});await saveMemoryCandidates(data.memories);if(explicitRemember&&(!Array.isArray(data.memories)||!data.memories.length))await saveMemory({text,category:"explicit",importance:5});state.aiRecentMessages=[reply,...(state.aiRecentMessages||[]).filter(v=>v!==reply)].slice(0,30);state.aiLastMessage=reply;save();setCoachVisual({text:reply,model:data.model,mood:data.mood,reason:"chat",statusText:`LIVE${Array.isArray(data.memories)&&data.memories.length?` · MEMORY +${data.memories.length}`:""}`});if(data.voiceJa)playKaguyaVoice(data.voiceJa,data.mood).catch(()=>{})}
-  catch(err){if(explicitRemember)await saveMemory({text,category:"explicit",importance:5});setCoachVisual({text:"…연결이 잠깐 이상하네요. 방금 말은 다시 한번만 해줄래요?",mood:"question",reason:"chat",statusText:"대화 연결 실패",statusClass:"err"})}
+  try{const [chat,memories]=await Promise.all([recentChat(44),relevantMemories(text,24)]);const data=await requestCoach({mode:"chat",userMessage:text,...coachContext("chat"),recentChat:chat,memories},18000);const reply=String(data.message||data.replyKo||"").trim();if(!reply)throw new Error("empty reply");await addChatMessage("assistant",reply,{kind:"chat"});await saveMemoryCandidates(data.memories);if(explicitRemember&&(!Array.isArray(data.memories)||!data.memories.length))await saveMemory({text,category:"explicit",importance:5});state.aiRecentMessages=[reply,...(state.aiRecentMessages||[]).filter(v=>v!==reply)].slice(0,30);state.aiLastMessage=reply;save();await revealChatReplySynced(data,reply)}
+  catch(err){if(explicitRemember)await saveMemory({text,category:"explicit",importance:5});const code=Number(err?.status||0)||0;setCoachVisual({text:"…연결이 잠깐 이상하네요. 방금 말은 다시 한번만 해줄래요?",mood:"question",reason:"chat",statusText:code?`AI ${code} · 대화 실패`:"AI 오류 · 대화 실패",statusClass:"err"})}
   finally{setChatBusy(false);input?.focus()}
+}
+
+
+function setChainTestStatus(text,stateName=""){
+  const el=document.getElementById("chainTestStatus");if(!el)return;el.textContent=text;el.className="chain-test-status"+(stateName?" "+stateName:"");
+}
+function setChainTestBusy(on){document.querySelectorAll(".chain-test-btn").forEach(b=>b.disabled=Boolean(on))}
+async function runChatFollowupTest(){
+  if(chatBusy)return;setChainTestBusy(true);setChainTestStatus("CHAT 후속 문맥 확인 중…","run");
+  try{
+    const base=coachContext("chat_test"),seed=`LUNA-${Math.floor(100+Math.random()*900)}`;
+    const first=await requestCoach({mode:"chat",userMessage:`연동 테스트야. 테스트 암호는 ${seed}야. 지금은 짧게 확인만 해줘.`,...base,recentChat:[],memories:[]},18000);
+    const r1=String(first.message||first.replyKo||"").trim();
+    const synthetic=[{role:"user",text:`연동 테스트야. 테스트 암호는 ${seed}야. 지금은 짧게 확인만 해줘.`,kind:"chat",createdAt:Date.now()-1000},{role:"assistant",text:r1,kind:"chat",createdAt:Date.now()}];
+    const second=await requestCoach({mode:"chat",userMessage:"방금 내가 말한 테스트 암호만 그대로 말해봐.",...coachContext("chat_test_followup"),recentChat:synthetic,memories:[]},18000);
+    const r2=String(second.message||second.replyKo||"");
+    const ok=r2.includes(seed);setChainTestStatus(ok?`CHAT ↻ 정상 · ${first.provider||"AI"} → 후속 문맥 유지`:`CHAT ↻ 확인 필요 · 후속 답변에 암호 없음`,ok?"ok":"err");
+  }catch(e){setChainTestStatus(`CHAT ↻ 실패 · ${String(e?.message||e).slice(0,80)}`,"err")}finally{setChainTestBusy(false)}
+}
+async function runMayuVoiceTest(){
+  setChainTestBusy(true);setChainTestStatus("MAYU 음성 확인 중…","run");
+  try{selectedAzureVoice="ja-JP-MayuNeural";localStorage.setItem(AZURE_VOICE_KEY,selectedAzureVoice);voiceEnabled=true;localStorage.setItem(VOICE_ENABLED_KEY,"1");updateVoiceButton();primeKaguyaAudio();stopKaguyaVoicePlayback();primeKaguyaAudio();const myRun=voiceRunId;const ok=await playAzureVoice("ふふっ、いい感じですね。この声なら、もう少し自然に話せそうです。","gentle","warm, poised, subtle smile",myRun,()=>{},true,"ja-JP-MayuNeural");setChainTestStatus(ok?"MAYU ♪ 정상 · Azure 직접 재생":"MAYU ♪ 실패 · TTS 상태 확인",ok?"ok":"err")}catch(e){setChainTestStatus(`MAYU ♪ 실패 · ${String(e?.message||e).slice(0,80)}`,"err")}finally{setChainTestBusy(false)}
+}
+async function runFullLinkTest(){
+  if(chatBusy)return;setChainTestBusy(true);setChainTestStatus("CHAT → 일본어 VOICE 전체 확인 중…","run");
+  try{
+    const data=await requestCoach({mode:"chat",userMessage:"연동 테스트야. 화면에는 한국어로 아주 짧게 인사하고, 음성용 일본어도 같은 뜻으로 만들어줘.",...coachContext("full_link_test"),recentChat:[],memories:[]},18000);
+    const reply=String(data.message||data.replyKo||"").trim(),voiceJa=String(data.voiceJa||"").trim();
+    if(!reply||!voiceJa||/[가-힣]/.test(voiceJa))throw new Error("replyKo / voiceJa 분리 실패");
+    setCoachVisual({text:reply,model:data.model,mood:data.mood,reason:"chat",statusText:`TEST · ${(data.provider||"AI").toUpperCase()} → MAYU`});
+    selectedAzureVoice="ja-JP-MayuNeural";localStorage.setItem(AZURE_VOICE_KEY,selectedAzureVoice);voiceEnabled=true;localStorage.setItem(VOICE_ENABLED_KEY,"1");updateVoiceButton();
+    const ok=await playKaguyaVoiceReliable(voiceJa,data.mood,data.voiceStyle,()=>{});
+    setChainTestStatus(ok?"CHAT → VOICE 정상 · 한국어 화면 / 일본어 음성":"CHAT은 정상 · 음성 체인 확인 필요",ok?"ok":"err");
+  }catch(e){setChainTestStatus(`전체 연동 실패 · ${String(e?.message||e).slice(0,80)}`,"err")}finally{setChainTestBusy(false)}
 }
 
 
@@ -865,12 +1233,12 @@ function renderQuest(reason){
       ${pending?`<div class="quest-actions"><button class="mini clear" data-receive="${q.id}" type="button">🎁 받기</button></div>`:""}
     </div>`;
   }).join("");
-  el.querySelectorAll("[data-achieve]").forEach(b=>b.onclick=()=>{
+  el.querySelectorAll("[data-achieve]").forEach(b=>b.onclick=()=>{playUiSfx("quest");
     const q=(state.quests[active]||[]).find(x=>x.id===b.dataset.achieve);if(!q)return;
     state.pendingRewards[q.id]={quest:q.reward,reward:q.reward,type:active,cert:q.cert||""};
     save();renderQuest();toast("보상 상자가 빛납니다 ✨");
   });
-  el.querySelectorAll("[data-receive]").forEach(b=>b.onclick=()=>receiveReward(b.dataset.receive));
+  el.querySelectorAll("[data-receive]").forEach(b=>b.onclick=()=>{playUiSfx("reward");receiveReward(b.dataset.receive)});
 }
 function questCelebrate(id){
   let q=null,type=null;for(const t of ["study","exercise","sleep"]){q=(state.quests[t]||[]).find(x=>x.id===id);if(q){type=t;break}}
@@ -1085,25 +1453,48 @@ const oldIdx=levelIndex(beforeStudy),newIdx=levelIndex(afterStudy)
 if(newIdx<=oldIdx)return
 const l=LEVELS[newIdx];if(state.celebratedLevels.includes(newIdx))return
 state.celebratedLevels.push(newIdx);coachReason="level_up";state.recentAction={type:"level_up",rank:l.name,rankIndex:newIdx,at:new Date().toISOString()};save();
-showCelebrate(l.gem+" "+l.name+" 달성",LEVEL_UP_LINES[newIdx]||("이제 "+l.name+" 단계예요. 후후, 축하해요"),l.gem);burstLevelFX()
+showCelebrate(l.gem+" "+l.name+" 달성",LEVEL_UP_LINES[newIdx]||("이제 "+l.name+" 단계예요. 후후, 축하해요"),l.gem);burstLevelFX();playLevelUpSfx(newIdx)
 }
 function escapeHtml(s){return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
 
-document.getElementById("manageBtn").onclick=openManager
-document.getElementById("closeManager").onclick=()=>document.getElementById("overlay").style.display="none"
-document.getElementById("addBtn").onclick=()=>openEditor(null)
-document.getElementById("cancelEditor").onclick=()=>document.getElementById("editorOverlay").style.display="none"
-document.getElementById("saveQuest").onclick=saveEditor
+function unlockAppAudio(){primeSfx();primeKaguyaAudio()}
+document.addEventListener("pointerdown",unlockAppAudio,{passive:true});
+document.addEventListener("keydown",unlockAppAudio,{passive:true});
+
+document.getElementById("manageBtn").onclick=()=>{playUiSfx("quest");openManager()}
+document.getElementById("closeManager").onclick=()=>{playUiSfx();document.getElementById("overlay").style.display="none"}
+document.getElementById("addBtn").onclick=()=>{playUiSfx("quest");openEditor(null)}
+document.getElementById("cancelEditor").onclick=()=>{playUiSfx();document.getElementById("editorOverlay").style.display="none"}
+document.getElementById("saveQuest").onclick=()=>{playUiSfx("quest");saveEditor()}
 document.getElementById("qMode").onchange=updateEditorMode
-document.getElementById("historyBtn").onclick=openHistory
-document.getElementById("closeHistory").onclick=()=>document.getElementById("historyOverlay").style.display="none"
-document.getElementById("celebrateClose").onclick=()=>document.getElementById("celebrate").style.display="none"
-document.getElementById("kaguyaChatSend").onclick=sendKaguyaChat
-document.getElementById("kaguyaChatInput").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendKaguyaChat()}})
-document.getElementById("kaguyaVoiceToggle").onclick=()=>{voiceEnabled=!voiceEnabled;localStorage.setItem(VOICE_ENABLED_KEY,voiceEnabled?"1":"0");if(!voiceEnabled&&currentAudio){try{currentAudio.pause()}catch(e){}}if(!voiceEnabled&&"speechSynthesis" in window)window.speechSynthesis.cancel();updateVoiceButton();toast(voiceEnabled?"일본어 음성 ON":"일본어 음성 OFF")}
-updateVoiceButton();openKaguyaDB().catch(()=>{});
-render()
-setInterval(()=>{if(rollover())render()},10000)
+document.getElementById("historyBtn").onclick=()=>{playUiSfx();openHistory()}
+document.getElementById("closeHistory").onclick=()=>{playUiSfx();document.getElementById("historyOverlay").style.display="none"}
+document.getElementById("celebrateClose").onclick=()=>{playUiSfx("reward");document.getElementById("celebrate").style.display="none"}
+document.getElementById("kaguyaChatSend").onclick=()=>{playUiSfx("send");sendKaguyaChat()}
+document.getElementById("kaguyaChatInput").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();playUiSfx("send");sendKaguyaChat()}})
+document.getElementById("kaguyaVoiceToggle").onclick=()=>{playUiSfx();voiceEnabled=!voiceEnabled;localStorage.setItem(VOICE_ENABLED_KEY,voiceEnabled?"1":"0");if(!voiceEnabled)stopKaguyaVoicePlayback();else primeKaguyaAudio();updateVoiceButton();toast(voiceEnabled?"카구야 음성 ON":"카구야 음성 OFF")}
+document.querySelectorAll(".voice-test-btn").forEach(b=>b.onclick=()=>{playUiSfx("tap");selectAndTestAzureVoice(b.dataset.azureVoice)})
+document.getElementById("chatFollowupTest").onclick=()=>{playUiSfx("tap");runChatFollowupTest()}
+document.getElementById("mayuVoiceTest").onclick=()=>{playUiSfx("tap");runMayuVoiceTest()}
+document.getElementById("fullLinkTest").onclick=()=>{playUiSfx("send");runFullLinkTest()}
+document.getElementById("createPinBtn").onclick=()=>{playUiSfx("tap");createPinAccount()}
+document.getElementById("loginPinBtn").onclick=()=>{playUiSfx("tap");loginPinAccount()}
+document.getElementById("newPinInput").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();createPinAccount()}})
+document.getElementById("loginPinInput").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();loginPinAccount()}})
+document.getElementById("syncNowBtn").onclick=()=>{playUiSfx("tap");cloudDirty?pushCloudNow():pullCloudNow(true)}
+document.getElementById("logoutPinBtn").onclick=()=>{playUiSfx("tap");logoutPin()}
+document.addEventListener("click",e=>{const t=e.target&&e.target.closest?e.target.closest("button"):null;if(!t)return;const id=t.id||"";if(["plus","kaguyaChatSend","kaguyaVoiceToggle","manageBtn","addBtn","saveQuest","historyBtn","closeHistory","closeManager","cancelEditor","celebrateClose","chatFollowupTest","mayuVoiceTest","fullLinkTest","createPinBtn","loginPinBtn","syncNowBtn","logoutPinBtn"].includes(id))return;if(t.matches(".quest-tab,[data-achieve],[data-receive],.quest-empty-action,.tool-btn,.mini,.reward-use,.form-actions button")){playUiSfx(t.classList.contains("danger")?"danger":t.matches("[data-receive],.reward-use")?"reward":t.matches(".quest-tab,[data-achieve],.quest-empty-action")?"quest":"tap")}});
+async function probeConnections(){
+  try{
+    const r=await fetch("/api/coach?probe=1",{cache:"no-store"}),d=await r.json().catch(()=>({}));
+    if(r.ok&&d.ok){const brain=d.activeProvider==="groq"?"Groq":"Gemini 백업";const detail=d.activeProvider==="groq"?`Groq ${d.model||"openai/gpt-oss-120b"} 준비 · 실패 시 Gemini`:`Groq 키 없음 · Gemini ${d.model||"fallback"} 사용`;setServiceConnection("gemini",true,brain,detail+" · build "+String(d.build||APP_VERSION));const chain=[];if(d.azureConfigured)chain.push("Azure");if(d.geminiTtsConfigured)chain.push("Gemini TTS");chain.push("Browser");setServiceConnection("tts",d.azureConfigured||d.geminiTtsConfigured?true:null,d.azureConfigured?"AZURE READY":d.geminiTtsConfigured?"GEMINI TTS":"TTS CHECK",chain.join(" → "))}
+    else{setServiceConnection("gemini",false,r.status?"AI "+r.status:"AI 오류",String(d.error||"probe failed"));setServiceConnection("tts",null,"TTS CHECK","Azure → Gemini TTS → Browser")}
+  }catch(e){setServiceConnection("gemini",false,"AI 오류",String(e?.message||e));setServiceConnection("tts",null,"TTS CHECK","Azure → Gemini TTS → Browser")}
+}
+updateVoiceButton();openKaguyaDB().catch(()=>{});render();autoPinLogin();
+setInterval(()=>{if(rollover())render();if(cloudReady&&!cloudDirty)pullCloudNow(false)},10000);
+window.addEventListener("focus",()=>{if(cloudReady&&!cloudDirty)pullCloudNow(true)});
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&cloudReady&&!cloudDirty)pullCloudNow(true)});
 })();
 </script>
 </body>

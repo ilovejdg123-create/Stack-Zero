@@ -1,0 +1,14 @@
+STACK ZERO V1.0 · PIN SYNC
+
+- 새로 시작하기: PIN 설정
+- 로그인: 기존 PIN 입력
+- PC / iPhone / iPad 동일 기록 동기화
+- STACK / QUEST / 보상 / 기록지 동기화
+- 카구야 최근대화 / 장기 MEMORY 동기화
+- 자동 로그인
+- 포커스 복귀 + 주기적 동기화
+- 동시 수정 충돌 시 기본 병합
+- PIN 원문 DB 저장 안 함
+- Mayu 기본 보이스 유지
+- UI 버튼 효과음 볼륨 상향
+- 기존 Groq → Gemini / Azure → Gemini TTS → Browser 백업 유지
