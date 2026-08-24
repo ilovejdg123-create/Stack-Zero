@@ -1,0 +1,7 @@
+STACK ZERO v40.1 TEST
+- Existing data keys preserved.
+- TEST +/-1 and +/-50 controls enabled.
+- Rich/louder theme SFX.
+- TTS chain: ElevenLabs -> Gemini TTS -> Browser.
+- Human-first conversation prompt + structural repetition guard.
+- Vercel-ready.
