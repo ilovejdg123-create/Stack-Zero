@@ -1,7 +1,0 @@
-STACK ZERO 40.4
-- Groq primary brain / Gemini fallback retained
-- ElevenLabs removed from active TTS chain
-- Azure Speech Korean Neural TTS added
-- JiMin / SeoHyeon / YuJin buttons select and immediately test the voice
-- Normal Kaguya replies use Korean reply text for TTS
-- TTS fallback: Azure -> Gemini TTS -> browser Korean TTS

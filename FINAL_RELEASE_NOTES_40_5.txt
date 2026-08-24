@@ -1,0 +1,10 @@
+STACK ZERO v40.5 TEST
+
+1. Screen text remains Korean, voice playback now uses the model's Japanese voiceJa line
+2. Azure voice set changed to Japanese female voices: Nanami / Aoi / Mayu / Shiori
+3. Nanami is default, tuned slightly faster and higher (normal +7% rate, +4% pitch)
+4. Gemini TTS fallback and browser fallback now speak Japanese
+5. Groq persona prompt was rewritten to prioritize natural context-aware dialogue
+6. Groq reasoning_effort raised from low to medium
+7. Repetitive/canned Groq replies are automatically regenerated once
+8. Groq remains primary; Gemini remains brain fallback
