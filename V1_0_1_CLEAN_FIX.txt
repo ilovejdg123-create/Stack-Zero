@@ -1,0 +1,4 @@
+STACK ZERO V1.0.1 CLEAN BUILD
+- vercel.json functions config removed
+- api/coach.js present
+- PIN sync/Supabase retained
