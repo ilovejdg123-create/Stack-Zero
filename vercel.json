@@ -1,7 +1,0 @@
-{
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "functions": {
-    "api/coach.js": { "maxDuration": 30 },
-    "api/tts-stream.js": { "maxDuration": 30 }
-  }
-}
