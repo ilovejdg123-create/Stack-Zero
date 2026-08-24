@@ -1,0 +1,22 @@
+STACK ZERO V40.7 FINAL TEST
+
+1. Exact 1–14 affection ladder
+   - Today study stack 1 starts cold/formal
+   - Warmth, teasing, personal attention and emotional openness rise gradually every stage
+   - Stack 14 is extreme affection without forcing a confession into every line
+   - Applies to both CHAT and study/event reactions
+   - Tone mismatch can trigger one regeneration
+
+2. Study-stack fallback
+   - Local fallback now has exact stage-specific pools for 1–14
+   - No routine '오늘 N시간 공부했네' counter narration
+
+3. Mayu micro tune
+   - Default Azure voice remains ja-JP-MayuNeural
+   - +1 percentage-point rate and +1 percentage-point pitch from V40.6
+   - Normal Mayu is rate +8%, pitch +7%
+
+4. Existing diagnostics retained
+   - CHAT ↻
+   - MAYU ♪
+   - CHAT → VOICE

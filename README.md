@@ -1,37 +1,34 @@
-# STACK ZERO v40.6 TEST — GROQ + JAPANESE AZURE VOICE
+# STACK ZERO v40.7 FINAL TEST — AFFECTION LADDER + MAYU MICRO TUNE
 
 ## Brain
 - Primary: Groq `openai/gpt-oss-120b`
-- Stronger conversational Kaguya prompt
-- Groq reasoning effort: `medium`
-- Anti-canned-response check: a highly repetitive/cliche Groq answer is regenerated once
 - Fallback: Gemini
+- Korean screen reply (`replyKo`) / Japanese spoken reply (`voiceJa`)
+- Anti-canned-response regeneration remains enabled
 
-## Screen / Voice split
-- Screen chat: Korean (`replyKo`)
-- Spoken line: natural Japanese with the same meaning (`voiceJa`)
+## 1 → 14 daily study affinity
+- Today's study STACK now controls Kaguya's conversational distance in both chat and event reactions
+- 1: cold/formal → 4: softening → 7: familiar → 10: affection showing → 14: extreme affection
+- Each of the 14 stages has its own language/relationship guidance
+- Server rejects obvious tone mismatches (too romantic at low stack / too businesslike at high stack) and regenerates once
+- Local fallback reactions also use exact 1–14 stage pools
 
 ## Voice
-- Primary: Azure Speech Japanese Neural TTS
-- Default: `ja-JP-MayuNeural`
-- Test/select: Nanami / Aoi / Mayu / Shiori
-- Baseline tuning: slightly faster and higher; Mayu receives an extra +2 percentage-point pitch lift (normal Mayu: rate +7%, pitch +6%)
-- Mayu is the default voice; Nanami remains selectable and uses Azure `chat` style when available
-- Fallback: Gemini TTS (Japanese) → browser Japanese TTS
+- Default: Azure `ja-JP-MayuNeural`
+- V40.7 Mayu micro-tune: +1 percentage point rate and +1 percentage point pitch versus V40.6
+- Normal Mayu: rate +8%, pitch +7%
+- Affinity stage is also passed into voice-style guidance
+- Fallback: Gemini TTS → browser Japanese TTS
+
+## Diagnostics
+- `CHAT ↻` context follow-up test
+- `MAYU ♪` direct Azure test
+- `CHAT → VOICE` full brain → Korean/Japanese split → TTS test
 
 ## Vercel environment variables
 - `GROQ_API_KEY`
 - `GEMINI_API_KEY`
 - `AZURE_SPEECH_KEY`
-- `AZURE_SPEECH_REGION` (example: `koreacentral`)
-- optional `AZURE_SPEECH_VOICE` (must be one of the supported Japanese voices above)
+- `AZURE_SPEECH_REGION`
 
-Never put API keys in `index.html` or client-side JavaScript
-
-
-## V40.6 final tune
-- Study +1 event prompt no longer reads out `오늘 N시간` on every click; numeric mentions are reserved for meaningful milestones
-- Added varied reaction modes and server-side rejection/regeneration for formulaic study-stack replies
-- Default Azure Japanese voice is `ja-JP-MayuNeural`; Mayu receives a subtle +2 percentage-point pitch lift on top of mood prosody
-- Added non-destructive CHAT follow-up, MAYU voice, and CHAT→VOICE diagnostic buttons
-- Screen reply remains Korean (`replyKo`), spoken reply remains Japanese (`voiceJa`)
+Never put API keys in client-side files

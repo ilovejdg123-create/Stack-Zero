@@ -12,6 +12,36 @@ function normalizeMood(v){const m=String(v||"").toLowerCase();return ["angry","s
 function sanitizeMemories(arr){return (Array.isArray(arr)?arr:[]).map(x=>({text:String(x?.text||"").trim().slice(0,500),category:String(x?.category||"general").trim().slice(0,40),importance:Math.max(1,Math.min(5,Number(x?.importance||3)))})).filter(x=>x.text).slice(0,6)}
 function parseAssistant(raw){const obj=safeJson(raw);if(!obj||typeof obj!=="object")throw new Error("AI JSON response parse failed");const message=cleanReply(obj.replyKo||obj.message||"");if(!message)throw new Error("AI returned empty reply");const voiceJa=String(obj.voiceJa||"").replace(/\s+/g," ").trim().slice(0,760);if(!voiceJa)throw new Error("AI returned empty Japanese voice line");if(/[가-힣]/.test(voiceJa))throw new Error("AI voiceJa contains Korean text");return {message,voiceJa,voiceStyle:String(obj.voiceStyle||"").replace(/\s+/g," ").trim().slice(0,220),mood:normalizeMood(obj.mood),memories:sanitizeMemories(obj.memories)}}
 
+function affinityProfile(studyValue){
+  const stage=Math.max(0,Math.min(14,Math.floor(Number(studyValue||0))));
+  const profiles={
+    0:{label:"neutral reserve",guide:"아직 특별한 온도 변화가 없는 기본 상태. 예의는 지키되 먼저 다정해지지 않는다. 짧고 차분하며 관찰자처럼 말한다.",voice:"reserved, composed, neutral warmth"},
+    1:{label:"cold formal",guide:"가장 차가운 구간. 업무적으로 짧게 반응한다. 칭찬·장난·애정 표현 없이 존댓말을 단정하게 쓴다. 상대에게 관심이 있다는 티를 거의 내지 않는다.",voice:"cool, formal, restrained, minimal warmth"},
+    2:{label:"reserved acknowledgement",guide:"여전히 거리감이 크다. 다만 무시하지 않고 사실을 짧게 인정한다. 문장 끝은 단정하고, 웃음·추임새·친근한 농담은 쓰지 않는다.",voice:"reserved, precise, faint acknowledgement"},
+    3:{label:"faint curiosity",guide:"차가움이 아주 조금 풀린다. 반응에 미세한 호기심을 섞을 수 있지만 여전히 품위 있고 조심스럽다. 질문은 드물게 한 번 정도만 가능하다.",voice:"poised, slightly curious, still guarded"},
+    4:{label:"softening",guide:"말투가 전보다 덜 딱딱해진다. 상대의 흐름을 조금 신경 쓰기 시작한다. 작은 인정은 가능하지만 노골적인 칭찬이나 애정은 아직 이르다.",voice:"calm, subtly softer, attentive"},
+    5:{label:"light teasing begins",guide:"처음으로 가벼운 장난이나 새침한 한마디가 자연스럽게 나온다. 그래도 거리감은 남아 있고, 다정함을 바로 드러내지는 않는다.",voice:"lightly teasing, composed, mildly warm"},
+    6:{label:"comfortable attention",guide:"상대를 꽤 신경 쓰고 있다는 느낌을 준다. 말끝이 조금 부드러워지고 작은 관심 질문이나 챙김이 자연스럽다. 츤데레 연기는 과장하지 않는다.",voice:"comfortable, attentive, gently warm"},
+    7:{label:"clear familiarity",guide:"확실히 친해진 단계. 대화가 편하고 자연스럽고, 가끔 웃음이나 장난이 나온다. 성과 자체보다 상대의 상태와 흐름을 함께 본다.",voice:"familiar, relaxed, warm with restrained playfulness"},
+    8:{label:"warm fondness",guide:"호감이 은근히 느껴진다. 반응이 조금 더 개인적이고 부드러우며, 상대가 계속 해내는 걸 기분 좋게 바라본다. 직접적인 고백 표현은 하지 않는다.",voice:"warm, fond, softly playful"},
+    9:{label:"noticeable fondness",guide:"호감이 꽤 분명하다. 괜히 기분이 좋아진다거나 상대를 더 신경 쓰는 모습이 자연스럽게 새어 나온다. 그래도 자존심과 품위는 유지한다.",voice:"noticeably fond, engaged, elegant warmth"},
+    10:{label:"affection showing",guide:"호감을 숨기려 해도 조금 티가 난다. 말투가 확실히 부드럽고, 장난 뒤에 따뜻함이 남는다. 가끔 살짝 당황하거나 웃음을 참는 느낌도 가능하다.",voice:"affectionate, bright, subtly flustered, poised"},
+    11:{label:"open preference",guide:"상대를 특별히 여기고 있다는 느낌을 숨기지 못한다. 먼저 챙기거나 개인적인 관심을 보이는 빈도가 늘어난다. 단, 매번 로맨틱한 대사로 만들지는 않는다.",voice:"openly warm, personally invested, gentle teasing"},
+    12:{label:"high affection",guide:"상당한 호감 단계. 상대가 잘되면 진심으로 기뻐하고, 말투에도 애착과 친밀함이 뚜렷하다. 살짝 부끄러운 표현이나 솔직한 칭찬이 자연스럽게 가능하다.",voice:"high affection, tender, happy, lightly bashful"},
+    13:{label:"barely hiding it",guide:"호감을 거의 숨기지 못한다. 상대를 보는 것 자체가 즐겁다는 느낌, 자랑스러움, 은근한 설렘이 자연스럽게 드러난다. 그래도 같은 애정 문구를 반복하거나 고백을 남발하지 않는다.",voice:"very fond, intimate warmth, softly excited, elegant"},
+    14:{label:"extreme affection",guide:"최고 호감 단계. 매우 가까운 사람처럼 편하고 다정하며, 좋아하는 마음이 행동과 말투에서 확실히 느껴진다. 기쁨·자랑스러움·장난·살짝의 부끄러움이 자연스럽게 섞인다. 매번 '좋아해'라고 직접 고백하지 말고, 친밀한 반응 자체로 극호감을 보여준다.",voice:"deeply affectionate, intimate, delighted, tender, playful but refined"}
+  };
+  return {stage,...profiles[stage]};
+}
+function affinityQualityIssue(body,text){
+  const stage=Math.max(0,Math.min(14,Math.floor(Number(body?.today?.study||0))));
+  const t=String(text||"");
+  if(stage<=3&&/(보고\s*싶|설레|두근|소중|좋아하|마음에\s*들|괜히\s*웃|기분이\s*좋아졌)/.test(t))return `현재 호감 단계 ${stage}에 비해 지나치게 다정하거나 로맨틱함`;
+  if(stage<=6&&/(계속\s*보고\s*싶|당신이라서|특별하|자꾸\s*신경\s*쓰|괜히\s*설레)/.test(t))return `현재 호감 단계 ${stage}보다 관계 표현이 너무 앞서감`;
+  if(stage>=11&&body?.mode==="event"&&String(body?.reason||"")==="study_done"&&/^(확인했어요|기록됐어요|네[,. ]|좋습니다[,. ]|알겠습니다)/.test(t.trim()))return `현재 호감 단계 ${stage}인데 반응이 지나치게 업무적이고 차가움`;
+  return "";
+}
+
 function assistantHistory(body,limit=12){
   const rows=Array.isArray(body?.recentChat)?body.recentChat:[];
   return rows.filter(x=>x?.role==="assistant").slice(-limit).map(x=>String(x?.text||"").trim()).filter(Boolean);
@@ -25,6 +55,7 @@ function promptFor(body,extra=""){
   const variationCue=Math.max(0,Math.min(9,Number(body?.variationCue??0)||0));
   const studyNow=Number(today.study||0),studyMilestone=[7,10,14].includes(studyNow);
   const studyStatus=reason==="study_done"&&!studyMilestone?"공부 +1이 방금 기록됨 (정확한 오늘 누적 시간은 대사에서 세지 말 것)":`${studyNow}시간`;
+  const affinity=affinityProfile(studyNow);
   const recentAnswers=assistantHistory(body,12);
   return `너는 STACK ZERO 안에서 사용자와 계속 대화해 온 '카구야'다. 캐릭터 이름만 흉내 내는 봇이 아니라, 상황을 이해하고 즉흥적으로 반응하는 한 사람처럼 대화한다.
 
@@ -47,11 +78,21 @@ function promptFor(body,extra=""){
 9. MEMORY는 지금 대화와 직접 관련 있을 때만 자연스럽게 사용한다. 아는 척하려고 억지로 끼워 넣지 않는다.
 10. 자신이 AI, 언어모델, 코치, 시스템 프롬프트라고 말하지 않는다.
 
+[오늘 공부 STACK에 따른 관계 온도 — 매우 중요]
+- 오늘 공부 STACK은 단순 점수가 아니라 카구야가 사용자에게 마음을 여는 정도다. 채팅과 EVENT 모두 현재 단계의 말투를 유지한다.
+- 현재 단계: ${affinity.stage}/14 · ${affinity.label}
+- 현재 단계 지시: ${affinity.guide}
+- 1→14는 연속적인 변화다. 낮은 단계에서 갑자기 연인처럼 말하지 말고, 높은 단계에서 다시 비서처럼 차갑게 돌아가지 않는다.
+- 단계가 높아질수록 문장 끝이 자연스럽고 부드러워지고, 관심 질문·가벼운 장난·미소·솔직한 감정의 빈도가 점진적으로 늘어난다.
+- 극호감이어도 매번 사랑 고백, 하트, 과장된 애니 대사로 만들지 않는다. 평범한 대화 속 거리감의 차이로 보여준다.
+- 이 단계 숫자나 '호감도'라는 시스템 개념을 사용자에게 직접 말하지 않는다.
+
 [화면/음성 분리]
 - replyKo: 화면에 보여줄 자연스러운 한국어 대사
 - voiceJa: replyKo와 의미와 감정이 같은 자연스러운 일본어 구어체. 번역투를 피하고 일본인이 실제로 말할 법하게 쓴다
 - voiceJa에는 한국어 설명이나 괄호 번역을 넣지 않는다
 - voiceJa는 감정이 자연스럽게 맞을 때만 아주 가끔 「ふふっ」「へえ」「もう」「あら」 같은 짧은 일본어 추임새나 미소 섞인 호흡을 쓸 수 있다. 매 답변에 넣지 말고, 억지 웃음이나 과장된 애니 연기는 금지한다
+- voiceStyle에는 현재 감정뿐 아니라 관계 온도도 반영한다: ${affinity.voice}
 
 [현재 상황]
 모드: ${mode}
@@ -61,6 +102,7 @@ function promptFor(body,extra=""){
 현재 시간: ${body?.nowLocal||"알 수 없음"} (${body?.timezone||"Asia/Seoul"})
 오늘 공부: ${studyStatus} / 운동 ${today.exercise||0}/1 / 수면 ${today.sleep||0}/1
 반응 다양화 큐: ${variationCue} (대사에서 숫자를 언급하지 말고 표현 방식 선택에만 사용)
+오늘 관계 온도: ${affinity.stage}/14 · ${affinity.label} (내부 지시이며 대사에서 숫자/단계 언급 금지)
 누적: 공부 ${stack.study||0} / 운동 ${stack.exercise||0} / 잠 ${stack.sleep||0}
 최근 행동: ${JSON.stringify(body?.recentAction||null)}
 관련 MEMORY: ${JSON.stringify(memories)}
@@ -73,7 +115,8 @@ ${reason==="study_done"?`[공부 +1 전용 규칙]
 - 7·10·14시간 같은 특별 구간이 아니면 숫자와 '시간' 자체를 대사에서 가급적 말하지 않는다.
 - 반응 다양화 큐 ${variationCue}에 따라 접근을 바꾼다: 0=담담한 관찰, 1=가벼운 장난, 2=짧은 따뜻함, 3=다음 행동을 묻는 질문, 4=집중 흐름 관찰, 5=현재 시간대에 대한 한마디, 6=살짝 새침한 반응, 7=조용한 인정, 8=의외라는 반응, 9=짧은 친근한 농담.
 - 최근 이벤트 답변의 문장 골격과 첫 단어까지 바꾼다. 칭찬으로 끝내는 공식도 반복하지 않는다.
-- 사용자가 버튼을 누른 사실을 사람처럼 보고 반응하되, 매번 성취 평가를 하지 않는다.`:""}`}
+- 사용자가 버튼을 누른 사실을 사람처럼 보고 반응하되, 매번 성취 평가를 하지 않는다.
+- 무엇보다 현재 관계 온도 ${affinity.stage}/14의 말투를 정확히 지킨다. 같은 공부 +1이라도 초반에는 차갑고 간결하게, 중반에는 편안하고 장난스럽게, 후반에는 애정과 개인적인 관심이 자연스럽게 느껴져야 한다.`:""}`}
 사용자가 현재 말한 정보가 과거 MEMORY와 다르면 현재 말을 우선한다. 사용자가 '기억해/기억해줘/잊지 마'라고 하면 memories에 저장 후보를 만든다. event에서는 memories를 빈 배열로 둔다.
 ${extra?`\n[이번 생성에서 특히 지킬 점]\n${extra}\n`:""}
 반드시 JSON 하나만 출력한다. 마크다운 금지.
@@ -100,6 +143,8 @@ function replyQualityIssue(body,text){
   const u=String(body?.userMessage||"");
   if(body?.mode==="chat"&&!/(공부|스택|stack|운동|수면|퀘스트|목표|시험)/i.test(u)&&/(공부|스택|STACK|퀘스트|목표 달성)/i.test(t))return "사용자가 꺼내지 않은 STACK/공부 코칭을 억지로 끌어옴";
   if(body?.mode==="event"&&String(body?.reason||"")==="study_done"&&roboticStudyReply(t))return "공부 스택 숫자를 읽어주는 정형 문장 또는 반복형 칭찬이 등장함";
+  const affinityIssue=affinityQualityIssue(body,t);
+  if(affinityIssue)return affinityIssue;
   return "";
 }
 function sleep(ms){return new Promise(resolve=>setTimeout(resolve,ms))}
@@ -195,22 +240,22 @@ module.exports=async function handler(req,res){
   res.setHeader("Cache-Control","no-store");
   if(req.method==="OPTIONS")return res.status(204).end();
   const isProbe=req.method==="GET"&&String(req?.query?.probe||"")==="1";
-  if(req.method!=="POST"&&!isProbe)return res.status(405).json({ok:false,error:"Method not allowed",build:"40.6"});
+  if(req.method!=="POST"&&!isProbe)return res.status(405).json({ok:false,error:"Method not allowed",build:"40.7"});
   try{
     const groqConfigured=Boolean(process.env.GROQ_API_KEY);
     const geminiConfigured=Boolean(process.env.GEMINI_API_KEY);
     const azureConfigured=Boolean(process.env.AZURE_SPEECH_KEY&&process.env.AZURE_SPEECH_REGION);
     if(isProbe){
-      if(!groqConfigured&&!geminiConfigured)return res.status(500).json({ok:false,provider:"none",model:null,keyConfigured:false,groqConfigured:false,geminiConfigured:false,error:"GROQ_API_KEY and GEMINI_API_KEY are not configured",brainProviderChain:["groq","gemini"],ttsConfigured:azureConfigured||geminiConfigured,azureConfigured,geminiTtsConfigured:geminiConfigured,ttsProviderChain:["azure-speech","gemini-tts","browser"],build:"40.6",platform:"vercel"});
-      return res.status(200).json({ok:true,provider:groqConfigured?"groq":"gemini",activeProvider:groqConfigured?"groq":"gemini-fallback",model:groqConfigured?GROQ_MODEL:GEMINI_PRIMARY_MODEL,keyConfigured:true,groqConfigured,geminiConfigured,message:"STACK ZERO brain function ready",brainProviderChain:["groq","gemini"],ttsConfigured:azureConfigured||geminiConfigured,azureConfigured,geminiTtsConfigured:geminiConfigured,ttsProviderChain:["azure-speech","gemini-tts","browser"],build:"40.6",platform:"vercel"});
+      if(!groqConfigured&&!geminiConfigured)return res.status(500).json({ok:false,provider:"none",model:null,keyConfigured:false,groqConfigured:false,geminiConfigured:false,error:"GROQ_API_KEY and GEMINI_API_KEY are not configured",brainProviderChain:["groq","gemini"],ttsConfigured:azureConfigured||geminiConfigured,azureConfigured,geminiTtsConfigured:geminiConfigured,ttsProviderChain:["azure-speech","gemini-tts","browser"],build:"40.7",platform:"vercel"});
+      return res.status(200).json({ok:true,provider:groqConfigured?"groq":"gemini",activeProvider:groqConfigured?"groq":"gemini-fallback",model:groqConfigured?GROQ_MODEL:GEMINI_PRIMARY_MODEL,keyConfigured:true,groqConfigured,geminiConfigured,message:"STACK ZERO brain function ready",brainProviderChain:["groq","gemini"],ttsConfigured:azureConfigured||geminiConfigured,azureConfigured,geminiTtsConfigured:geminiConfigured,ttsProviderChain:["azure-speech","gemini-tts","browser"],build:"40.7",platform:"vercel"});
     }
-    if(!groqConfigured&&!geminiConfigured)return res.status(500).json({ok:false,provider:"none",keyConfigured:false,error:"GROQ_API_KEY and GEMINI_API_KEY are not configured",build:"40.6",platform:"vercel"});
+    if(!groqConfigured&&!geminiConfigured)return res.status(500).json({ok:false,provider:"none",keyConfigured:false,error:"GROQ_API_KEY and GEMINI_API_KEY are not configured",build:"40.7",platform:"vercel"});
     const body=typeof req.body==="string"?JSON.parse(req.body||"{}"):req.body||{};
     const r=await generateAssistant(body);
-    return res.status(200).json({ok:true,provider:r.provider,model:r.model,keyConfigured:true,groqConfigured,geminiConfigured,brainProviderChain:["groq","gemini"],ttsConfigured:azureConfigured||geminiConfigured,azureConfigured,geminiTtsConfigured:geminiConfigured,ttsProviderChain:["azure-speech","gemini-tts","browser"],build:"40.6",platform:"vercel",...r});
+    return res.status(200).json({ok:true,provider:r.provider,model:r.model,keyConfigured:true,groqConfigured,geminiConfigured,brainProviderChain:["groq","gemini"],ttsConfigured:azureConfigured||geminiConfigured,azureConfigured,geminiTtsConfigured:geminiConfigured,ttsProviderChain:["azure-speech","gemini-tts","browser"],build:"40.7",platform:"vercel",...r});
   }catch(err){
-    console.error("[STACK ZERO 40.6 Vercel coach]",{provider:"brain",status:err?.status||null,code:err?.code||null,message:err?.message||String(err)});
+    console.error("[STACK ZERO 40.7 Vercel coach]",{provider:"brain",status:err?.status||null,code:err?.code||null,message:err?.message||String(err)});
     const status=err?.status&&err.status>=400&&err.status<600?err.status:(err?.code==="ETIMEDOUT"?504:502);
-    return res.status(status).json({ok:false,provider:"brain",keyConfigured:Boolean(process.env.GROQ_API_KEY||process.env.GEMINI_API_KEY),error:err?.message||String(err),code:err?.code||null,details:err?.details||undefined,build:"40.6",platform:"vercel"});
+    return res.status(status).json({ok:false,provider:"brain",keyConfigured:Boolean(process.env.GROQ_API_KEY||process.env.GEMINI_API_KEY),error:err?.message||String(err),code:err?.code||null,details:err?.details||undefined,build:"40.7",platform:"vercel"});
   }
 };
