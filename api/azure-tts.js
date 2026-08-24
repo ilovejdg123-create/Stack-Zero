@@ -4,7 +4,7 @@ function escapeXml(v){return String(v||"").replace(/&/g,"&amp;").replace(/</g,"&
 function normalizeMood(v){const m=String(v||"").toLowerCase();return ["angry","sulk","question","cry","normal","happy","flustered","smug","surprised","worried","gentle"].includes(m)?m:"normal"}
 function prosody(mood){
   const m=normalizeMood(mood);
-  // Baseline is a little faster/higher; Mayu gets a subtle extra rate + pitch lift in V40.8.
+  // Baseline is a little faster/higher; Mayu gets a subtle extra rate + pitch lift in V1.
   const map={
     angry:{rate:"+9%",pitch:"+4%"},sulk:{rate:"+2%",pitch:"+3%"},question:{rate:"+9%",pitch:"+6%"},cry:{rate:"-1%",pitch:"+1%"},
     happy:{rate:"+12%",pitch:"+7%"},flustered:{rate:"+10%",pitch:"+7%"},smug:{rate:"+5%",pitch:"+4%"},surprised:{rate:"+13%",pitch:"+8%"},
@@ -18,16 +18,16 @@ function retryAfterMs(value){const raw=String(value||"").trim();if(!raw)return 0
 module.exports=async function handler(req,res){
   res.setHeader("Cache-Control","no-store");
   if(req.method==="OPTIONS")return res.status(204).end();
-  if(req.method!=="POST")return res.status(405).json({ok:false,error:"Method not allowed",build:"40.8",platform:"vercel"});
+  if(req.method!=="POST")return res.status(405).json({ok:false,error:"Method not allowed",build:"1.0",platform:"vercel"});
   const key=process.env.AZURE_SPEECH_KEY,region=String(process.env.AZURE_SPEECH_REGION||"").trim();
-  if(!key||!region)return res.status(500).json({ok:false,error:"AZURE_SPEECH_KEY or AZURE_SPEECH_REGION is not configured",code:"AZURE_TTS_NOT_CONFIGURED",build:"40.8",platform:"vercel"});
+  if(!key||!region)return res.status(500).json({ok:false,error:"AZURE_SPEECH_KEY or AZURE_SPEECH_REGION is not configured",code:"AZURE_TTS_NOT_CONFIGURED",build:"1.0",platform:"vercel"});
   try{
     const body=typeof req.body==="string"?JSON.parse(req.body||"{}"):req.body||{};
     const text=String(body.text||"").trim().slice(0,700);
-    if(!text)return res.status(400).json({ok:false,error:"text is required",build:"40.8",platform:"vercel"});
+    if(!text)return res.status(400).json({ok:false,error:"text is required",build:"1.0",platform:"vercel"});
     const requested=String(body.voice||DEFAULT_VOICE).trim(),voice=ALLOWED_VOICES.has(requested)?requested:(ALLOWED_VOICES.has(DEFAULT_VOICE)?DEFAULT_VOICE:"ja-JP-MayuNeural");
     const p=prosody(body.mood),isMayu=voice==="ja-JP-MayuNeural";
-    // V40.8: one tiny step faster/higher than V40.6. Normal Mayu becomes rate +8%, pitch +7%.
+    // V1: tuned Mayu baseline retained from the final test. Normal Mayu becomes rate +8%, pitch +7%.
     const rate=isMayu?addPercent(p.rate,1):p.rate,pitch=isMayu?addPercent(p.pitch,3):p.pitch;
     const spoken=`<prosody rate="${rate}" pitch="${pitch}">${escapeXml(text)}</prosody>`;
     // Nanami supports the conversational "chat" style; other standard Japanese voices do not advertise styles.
@@ -41,10 +41,10 @@ module.exports=async function handler(req,res){
     if(!r.ok){const raw=await r.text().catch(()=>"");const e=new Error(raw.slice(0,260)||`Azure TTS HTTP ${r.status}`);e.status=r.status;e.code="AZURE_TTS_HTTP_ERROR";e.retryAfterMs=retryAfterMs(r.headers?.get?.("retry-after"));throw e}
     const bytes=Buffer.from(await r.arrayBuffer());
     if(!bytes.length){const e=new Error("Azure TTS returned no audio");e.status=502;e.code="NO_AUDIO";throw e}
-    return res.status(200).json({ok:true,provider:"azure-speech",model:"Azure Japanese Neural TTS",voice,audioBase64:bytes.toString("base64"),mimeType:r.headers.get("content-type")||"audio/mpeg",build:"40.8",platform:"vercel"});
+    return res.status(200).json({ok:true,provider:"azure-speech",model:"Azure Japanese Neural TTS",voice,audioBase64:bytes.toString("base64"),mimeType:r.headers.get("content-type")||"audio/mpeg",build:"1.0",platform:"vercel"});
   }catch(err){
     if(err?.name==="AbortError"){err=new Error("Azure TTS timeout");err.status=504;err.code="TIMEOUT"}
     const status=err?.status&&err.status>=400&&err.status<600?err.status:502;
-    return res.status(status).json({ok:false,provider:"azure-speech",error:err?.message||String(err),code:err?.code||null,retryAfterMs:Number(err?.retryAfterMs||0)||0,build:"40.8",platform:"vercel"});
+    return res.status(status).json({ok:false,provider:"azure-speech",error:err?.message||String(err),code:err?.code||null,retryAfterMs:Number(err?.retryAfterMs||0)||0,build:"1.0",platform:"vercel"});
   }
 };

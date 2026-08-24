@@ -240,22 +240,22 @@ module.exports=async function handler(req,res){
   res.setHeader("Cache-Control","no-store");
   if(req.method==="OPTIONS")return res.status(204).end();
   const isProbe=req.method==="GET"&&String(req?.query?.probe||"")==="1";
-  if(req.method!=="POST"&&!isProbe)return res.status(405).json({ok:false,error:"Method not allowed",build:"40.8"});
+  if(req.method!=="POST"&&!isProbe)return res.status(405).json({ok:false,error:"Method not allowed",build:"1.0"});
   try{
     const groqConfigured=Boolean(process.env.GROQ_API_KEY);
     const geminiConfigured=Boolean(process.env.GEMINI_API_KEY);
     const azureConfigured=Boolean(process.env.AZURE_SPEECH_KEY&&process.env.AZURE_SPEECH_REGION);
     if(isProbe){
-      if(!groqConfigured&&!geminiConfigured)return res.status(500).json({ok:false,provider:"none",model:null,keyConfigured:false,groqConfigured:false,geminiConfigured:false,error:"GROQ_API_KEY and GEMINI_API_KEY are not configured",brainProviderChain:["groq","gemini"],ttsConfigured:azureConfigured||geminiConfigured,azureConfigured,geminiTtsConfigured:geminiConfigured,ttsProviderChain:["azure-speech","gemini-tts","browser"],build:"40.8",platform:"vercel"});
-      return res.status(200).json({ok:true,provider:groqConfigured?"groq":"gemini",activeProvider:groqConfigured?"groq":"gemini-fallback",model:groqConfigured?GROQ_MODEL:GEMINI_PRIMARY_MODEL,keyConfigured:true,groqConfigured,geminiConfigured,message:"STACK ZERO brain function ready",brainProviderChain:["groq","gemini"],ttsConfigured:azureConfigured||geminiConfigured,azureConfigured,geminiTtsConfigured:geminiConfigured,ttsProviderChain:["azure-speech","gemini-tts","browser"],build:"40.8",platform:"vercel"});
+      if(!groqConfigured&&!geminiConfigured)return res.status(500).json({ok:false,provider:"none",model:null,keyConfigured:false,groqConfigured:false,geminiConfigured:false,error:"GROQ_API_KEY and GEMINI_API_KEY are not configured",brainProviderChain:["groq","gemini"],ttsConfigured:azureConfigured||geminiConfigured,azureConfigured,geminiTtsConfigured:geminiConfigured,ttsProviderChain:["azure-speech","gemini-tts","browser"],build:"1.0",platform:"vercel"});
+      return res.status(200).json({ok:true,provider:groqConfigured?"groq":"gemini",activeProvider:groqConfigured?"groq":"gemini-fallback",model:groqConfigured?GROQ_MODEL:GEMINI_PRIMARY_MODEL,keyConfigured:true,groqConfigured,geminiConfigured,message:"STACK ZERO brain function ready",brainProviderChain:["groq","gemini"],ttsConfigured:azureConfigured||geminiConfigured,azureConfigured,geminiTtsConfigured:geminiConfigured,ttsProviderChain:["azure-speech","gemini-tts","browser"],build:"1.0",platform:"vercel"});
     }
-    if(!groqConfigured&&!geminiConfigured)return res.status(500).json({ok:false,provider:"none",keyConfigured:false,error:"GROQ_API_KEY and GEMINI_API_KEY are not configured",build:"40.8",platform:"vercel"});
+    if(!groqConfigured&&!geminiConfigured)return res.status(500).json({ok:false,provider:"none",keyConfigured:false,error:"GROQ_API_KEY and GEMINI_API_KEY are not configured",build:"1.0",platform:"vercel"});
     const body=typeof req.body==="string"?JSON.parse(req.body||"{}"):req.body||{};
     const r=await generateAssistant(body);
-    return res.status(200).json({ok:true,provider:r.provider,model:r.model,keyConfigured:true,groqConfigured,geminiConfigured,brainProviderChain:["groq","gemini"],ttsConfigured:azureConfigured||geminiConfigured,azureConfigured,geminiTtsConfigured:geminiConfigured,ttsProviderChain:["azure-speech","gemini-tts","browser"],build:"40.8",platform:"vercel",...r});
+    return res.status(200).json({ok:true,provider:r.provider,model:r.model,keyConfigured:true,groqConfigured,geminiConfigured,brainProviderChain:["groq","gemini"],ttsConfigured:azureConfigured||geminiConfigured,azureConfigured,geminiTtsConfigured:geminiConfigured,ttsProviderChain:["azure-speech","gemini-tts","browser"],build:"1.0",platform:"vercel",...r});
   }catch(err){
-    console.error("[STACK ZERO 40.8 Vercel coach]",{provider:"brain",status:err?.status||null,code:err?.code||null,message:err?.message||String(err)});
+    console.error("[STACK ZERO V1 Vercel coach]",{provider:"brain",status:err?.status||null,code:err?.code||null,message:err?.message||String(err)});
     const status=err?.status&&err.status>=400&&err.status<600?err.status:(err?.code==="ETIMEDOUT"?504:502);
-    return res.status(status).json({ok:false,provider:"brain",keyConfigured:Boolean(process.env.GROQ_API_KEY||process.env.GEMINI_API_KEY),error:err?.message||String(err),code:err?.code||null,details:err?.details||undefined,build:"40.8",platform:"vercel"});
+    return res.status(status).json({ok:false,provider:"brain",keyConfigured:Boolean(process.env.GROQ_API_KEY||process.env.GEMINI_API_KEY),error:err?.message||String(err),code:err?.code||null,details:err?.details||undefined,build:"1.0",platform:"vercel"});
   }
 };

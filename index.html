@@ -59,6 +59,19 @@ h1{margin:0;font-size:32px;letter-spacing:-1.5px}
 @keyframes pop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
 .build-version{position:fixed;right:8px;bottom:6px;z-index:120;color:rgba(198,205,216,.48);font-size:9px;font-weight:800;letter-spacing:.45px;line-height:1;pointer-events:none;user-select:none;text-shadow:0 1px 5px rgba(0,0,0,.75)}
 @media(max-width:420px){.build-version{right:6px;bottom:5px;font-size:8px;opacity:.88}}
+
+/* V1 · PIN cloud account gate */
+body.auth-locked{overflow:hidden}
+body.auth-locked .app{visibility:hidden;pointer-events:none}
+.auth-gate{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(circle at 50% 22%,rgba(255,255,255,.055),transparent 32%),rgba(5,7,10,.94);backdrop-filter:blur(12px)}
+.auth-gate.hidden{display:none}
+.auth-card{width:min(430px,100%);background:linear-gradient(145deg,#171a22,#0e1016);border:1px solid #2b303a;border-radius:26px;padding:25px 20px 20px;box-shadow:0 26px 80px rgba(0,0,0,.55)}
+.auth-brand{font-size:29px;font-weight:950;letter-spacing:-1.3px}.auth-kicker{font-size:10px;letter-spacing:.18em;color:#8a929f;font-weight:900;margin-top:4px}.auth-copy{color:#8c94a0;font-size:12px;line-height:1.5;margin:13px 0 20px}
+.auth-section{padding:15px 0}.auth-section+.auth-section{border-top:1px solid #292e37}.auth-section-title{font-size:15px;font-weight:950;margin-bottom:5px}.auth-section-desc{font-size:11px;color:#777f8c;margin-bottom:10px}
+.auth-row{display:flex;gap:8px}.auth-row input{min-width:0;flex:1;border:1px solid #303641;background:#20242d;color:#fff;border-radius:13px;padding:13px 14px;font-weight:900;letter-spacing:.14em;outline:none}.auth-row input:focus{border-color:#747d8b;box-shadow:0 0 0 3px rgba(255,255,255,.04)}
+.auth-row button{flex:0 0 auto;border-radius:13px;padding:12px 15px;background:#f4f6f8;color:#111;font-weight:950}.auth-row button:disabled{opacity:.45;cursor:wait}.auth-status{min-height:18px;margin-top:11px;font-size:11px;color:#8b94a0}.auth-status.ok{color:#9ee7bd}.auth-status.err{color:#ff929e}.auth-note{font-size:10px;color:#626a75;line-height:1.45;margin-top:8px}
+.sync-test-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.06)}.sync-test-status{flex:1;min-width:130px;font-size:9px;color:#777f8c}.sync-test-status.ok{color:#9ee7bd}.sync-test-status.err{color:#ff929e}.sync-test-btn{padding:6px 9px;border-radius:8px;background:#242933;color:#c9ced6;font-size:9px;font-weight:900}
+
 .toast{position:fixed;left:50%;bottom:25px;transform:translateX(-50%);background:var(--accent);color:#111;border-radius:99px;padding:11px 17px;font-size:13px;font-weight:900;display:none;z-index:200;white-space:nowrap}
 
 /* V9 premium mobile UX */
@@ -475,7 +488,7 @@ html[data-theme="lightning"] .level-bar div{background-image:linear-gradient(90d
 .test-drawer .voice-test-panel,.test-drawer .chain-test-panel{margin:7px 0 0;background:rgba(9,12,18,.34)}
 
 
-/* V40.8 FINAL · clean release + collapsible diagnostics */
+/* V1.0 · PIN sync release + collapsible diagnostics */
 html,body{touch-action:manipulation;-webkit-text-size-adjust:100%}
 button,.kaguya-chatbar,.voice-test-panel{touch-action:manipulation}
 .kaguya-chatbar input{font-size:16px!important;line-height:1.25}
@@ -556,7 +569,26 @@ html[data-theme="wave"] .level-bar div{background-image:linear-gradient(90deg,#0
 
 </style>
 </head>
-<body>
+<body class="auth-locked">
+<div class="auth-gate" id="authGate" aria-live="polite">
+  <div class="auth-card">
+    <div class="auth-brand">STACK ZERO</div>
+    <div class="auth-kicker">PRIVATE SYNC · V1</div>
+    <div class="auth-copy">PIN 하나로 PC · iPhone · iPad에서 같은 STACK과 카구야 MEMORY를 이어갑니다</div>
+    <div class="auth-section">
+      <div class="auth-section-title">새로 시작하기</div>
+      <div class="auth-section-desc">처음 한 번 사용할 PIN을 설정합니다</div>
+      <div class="auth-row"><input id="newPinInput" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="12" autocomplete="new-password" placeholder="6~12자리 PIN"><button id="createPinBtn" type="button">PIN 설정</button></div>
+    </div>
+    <div class="auth-section">
+      <div class="auth-section-title">로그인</div>
+      <div class="auth-section-desc">다른 기기에서 만들었던 PIN을 입력합니다</div>
+      <div class="auth-row"><input id="loginPinInput" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="12" autocomplete="current-password" placeholder="기존 PIN"><button id="loginPinBtn" type="button">로그인</button></div>
+      <div class="auth-status" id="authStatus">SYNC 서버 확인 중…</div>
+      <div class="auth-note">PIN이 유일한 로그인 수단입니다 · 잊으면 복구할 수 없으니 기억해두세요</div>
+    </div>
+  </div>
+</div>
 <div id="themeFX" class="theme-fx" data-theme="stone" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
 <div class="app">
 <h1>STACK ZERO</h1><div class="date" id="date"></div><div id="level"></div>
@@ -573,7 +605,7 @@ html[data-theme="wave"] .level-bar div{background-image:linear-gradient(90deg,#0
   <button class="kaguya-voice-toggle" id="kaguyaVoiceToggle" type="button" title="카구야 음성">🔊</button>
   <button class="kaguya-chat-send" id="kaguyaChatSend" type="button">전송</button>
 </div>
-<div class="kaguya-chat-meta">최근 대화는 기기에 계속 저장 · <strong>중요한 내용은 MEMORY로 따로 기억</strong></div>
+<div class="kaguya-chat-meta">PIN 계정으로 기기 간 동기화 · <strong>중요한 내용은 MEMORY로 따로 기억</strong></div>
 <div id="daily"></div>
 
 <div class="section">🏆 QUEST</div>
@@ -606,6 +638,12 @@ html[data-theme="wave"] .level-bar div{background-image:linear-gradient(90deg,#0
       <button type="button" class="chain-test-btn" id="mayuVoiceTest">MAYU ♪</button>
       <button type="button" class="chain-test-btn" id="fullLinkTest">CHAT → VOICE</button>
       <span class="chain-test-status" id="chainTestStatus">후속대화 / 음성 / 전체 연동</span>
+    </div>
+    <div class="sync-test-row">
+      <span class="voice-test-label">SYNC</span>
+      <span class="sync-test-status" id="syncTestStatus">PIN 동기화 확인 중…</span>
+      <button type="button" class="sync-test-btn" id="syncNowBtn">지금 동기화</button>
+      <button type="button" class="sync-test-btn" id="logoutPinBtn">로그아웃</button>
     </div>
   </div>
 </details>
@@ -641,12 +679,12 @@ html[data-theme="wave"] .level-bar div{background-image:linear-gradient(90deg,#0
 </div></div>
 <div id="toast" class="toast"></div>
 
-<div class="build-version" id="buildVersion">STACK ZERO v40.8 · FINAL</div>
+<div class="build-version" id="buildVersion">STACK ZERO V1.0 · PIN SYNC</div>
 <script>
 (function(){
 "use strict";
-const KEY="STACK_ZERO_FINAL_40_8_RELEASE";
-const APP_VERSION="40.8 · FINAL";
+const KEY="STACK_ZERO_V1_RELEASE";
+const APP_VERSION="V1.0 · PIN SYNC";
 const LEVELS=[
 {min:0,max:100,name:"입문자",gem:"🪨",g1:"#65584c",g2:"#b9a58f",label:"STONE"},
 {min:100,max:200,name:"수련자",gem:"🪵",g1:"#5c3420",g2:"#c9925c",label:"WOOD"},
@@ -693,17 +731,15 @@ sleep:[
 ]};
 function todayKey(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
 function fresh(){return {date:todayKey(),today:{study:0,exercise:0,sleep:0},total:{study:0,exercise:0,sleep:0},history:[],quests:JSON.parse(JSON.stringify(DEFAULT_QUESTS)),manualDone:{},celebratedQuests:{},celebratedLevels:[],rewards:[],pendingRewards:{},rewardHistory:[],recentAction:null,aiRecentMessages:[],aiLastMessage:""}}
-function load(){
-  try{
-    const x=JSON.parse(localStorage.getItem(KEY)||"null");
-    if(x&&x.date&&x.today&&x.total&&x.quests){
-      x.history=Array.isArray(x.history)?x.history:[];x.manualDone=x.manualDone||{};x.celebratedQuests=x.celebratedQuests||{};x.celebratedLevels=Array.isArray(x.celebratedLevels)?x.celebratedLevels:[];x.rewards=Array.isArray(x.rewards)?x.rewards:[];x.pendingRewards=x.pendingRewards||{};x.rewardHistory=Array.isArray(x.rewardHistory)?x.rewardHistory:[];x.recentAction=x.recentAction||null;x.aiRecentMessages=Array.isArray(x.aiRecentMessages)?x.aiRecentMessages:[];x.aiLastMessage=x.aiLastMessage||"";["study","exercise","sleep"].forEach(k=>{if(!Array.isArray(x.quests[k]))x.quests[k]=[]});return x;
-    }
-  }catch(e){}
-  return fresh();
+function normalizeState(x){
+  if(!(x&&x.date&&x.today&&x.total&&x.quests))return fresh();
+  x.history=Array.isArray(x.history)?x.history:[];x.manualDone=x.manualDone||{};x.celebratedQuests=x.celebratedQuests||{};x.celebratedLevels=Array.isArray(x.celebratedLevels)?x.celebratedLevels:[];x.rewards=Array.isArray(x.rewards)?x.rewards:[];x.pendingRewards=x.pendingRewards||{};x.rewardHistory=Array.isArray(x.rewardHistory)?x.rewardHistory:[];x.recentAction=x.recentAction||null;x.aiRecentMessages=Array.isArray(x.aiRecentMessages)?x.aiRecentMessages:[];x.aiLastMessage=x.aiLastMessage||"";["study","exercise","sleep"].forEach(k=>{if(!Array.isArray(x.quests[k]))x.quests[k]=[]});return x;
 }
-let state=load(),active="study",editId=null,coachReason="refresh"
-function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+function load(){try{return normalizeState(JSON.parse(localStorage.getItem(KEY)||"null"))}catch(e){return fresh()}}
+let state=load(),active="study",editId=null,coachReason="refresh";
+const CLOUD_SESSION_KEY="STACK_ZERO_V1_PIN_SESSION";
+let cloudToken=localStorage.getItem(CLOUD_SESSION_KEY)||"",cloudReady=false,cloudApplying=false,cloudDirty=false,cloudSyncTimer=null,cloudMutationSeq=0,cloudServerUpdatedAt="",cloudLastPull=0;
+function save(){state._modifiedAt=Date.now();localStorage.setItem(KEY,JSON.stringify(state));markCloudDirty()}
 function rollover(){
 const t=todayKey();if(state.date===t)return false
 state.history=state.history||[];state.history.unshift({date:state.date,study:state.today.study,exercise:state.today.exercise,sleep:state.today.sleep});state.history=state.history.slice(0,90)
@@ -819,7 +855,7 @@ function receiveReward(id){
 
 let sfxAudioContext=null,sfxMasterGain=null,sfxCompressor=null,appAudioContext=null;
 function getAppAudioContext(){if(!appAudioContext){const AC=window.AudioContext||window.webkitAudioContext;if(AC)appAudioContext=new AC()}return appAudioContext}
-function getSfxContext(){if(!sfxAudioContext){const AC=window.AudioContext||window.webkitAudioContext;if(AC){sfxAudioContext=new AC();sfxCompressor=sfxAudioContext.createDynamicsCompressor();sfxCompressor.threshold.value=-14;sfxCompressor.knee.value=18;sfxCompressor.ratio.value=5;sfxCompressor.attack.value=.003;sfxCompressor.release.value=.20;sfxMasterGain=sfxAudioContext.createGain();sfxMasterGain.gain.value=1.52;sfxMasterGain.connect(sfxCompressor);sfxCompressor.connect(sfxAudioContext.destination)}}return sfxAudioContext}
+function getSfxContext(){if(!sfxAudioContext){const AC=window.AudioContext||window.webkitAudioContext;if(AC){sfxAudioContext=new AC();sfxCompressor=sfxAudioContext.createDynamicsCompressor();sfxCompressor.threshold.value=-14;sfxCompressor.knee.value=18;sfxCompressor.ratio.value=5;sfxCompressor.attack.value=.003;sfxCompressor.release.value=.20;sfxMasterGain=sfxAudioContext.createGain();sfxMasterGain.gain.value=1.85;sfxMasterGain.connect(sfxCompressor);sfxCompressor.connect(sfxAudioContext.destination)}}return sfxAudioContext}
 function primeSfx(){const ctx=getSfxContext();if(ctx&&ctx.state==="suspended")ctx.resume().catch(()=>{});return ctx}
 function sfxEnv(ctx,start,attack=.006,decay=.18,peak=.14){const g=ctx.createGain();g.gain.setValueAtTime(.0001,start);g.gain.linearRampToValueAtTime(Math.max(.0001,peak),start+attack);g.gain.exponentialRampToValueAtTime(.0001,start+attack+decay);g.connect(sfxMasterGain||ctx.destination);return g}
 function playTone(ctx,{freq=440,endFreq=0,type="sine",start,duration=.16,peak=.11,attack=.004,decay=.14,pan=0}){const osc=ctx.createOscillator();osc.type=type;osc.frequency.setValueAtTime(Math.max(20,freq),start);if(endFreq>0)osc.frequency.exponentialRampToValueAtTime(Math.max(20,endFreq),start+duration);const g=sfxEnv(ctx,start,attack,decay,peak);let node=osc;if(ctx.createStereoPanner){const p=ctx.createStereoPanner();p.pan.value=Math.max(-1,Math.min(1,pan));node.connect(p);p.connect(g)}else node.connect(g);osc.start(start);osc.stop(start+Math.max(duration,attack+decay+.03))}
@@ -1020,7 +1056,7 @@ function showTransientKaguyaMood(avatar,{mood="",text="",reason=""}={}){
   const ms=reason==="chat"?9000:(resolved==="angry"||resolved==="cry"?4300:3400);
   kaguyaMoodTimer=setTimeout(()=>restoreKaguyaStackFace(avatar),ms);
 }
-const KAGUYA_DB_NAME="STACK_ZERO_KAGUYA_DB_FINAL_40_8_RELEASE";
+const KAGUYA_DB_NAME="STACK_ZERO_KAGUYA_DB_V1_RELEASE";
 const KAGUYA_DB_VERSION=1;
 let kaguyaDBPromise=null;
 function openKaguyaDB(){
@@ -1028,13 +1064,36 @@ function openKaguyaDB(){
   kaguyaDBPromise=new Promise((resolve,reject)=>{const req=indexedDB.open(KAGUYA_DB_NAME,KAGUYA_DB_VERSION);req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains("messages")){const st=db.createObjectStore("messages",{keyPath:"id",autoIncrement:true});st.createIndex("createdAt","createdAt")}if(!db.objectStoreNames.contains("memories")){const st=db.createObjectStore("memories",{keyPath:"key"});st.createIndex("updatedAt","updatedAt");st.createIndex("importance","importance")}};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)});return kaguyaDBPromise;
 }
 function idbTx(store,mode,fn){return openKaguyaDB().then(db=>new Promise((resolve,reject)=>{const tx=db.transaction(store,mode),st=tx.objectStore(store);let result;try{result=fn(st,tx)}catch(e){reject(e);return}tx.oncomplete=()=>resolve(result);tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error)}))}
-async function addChatMessage(role,text,meta={}){if(!text)return;await idbTx("messages","readwrite",st=>st.add({role,text:String(text).slice(0,1200),kind:meta.kind||"chat",createdAt:Date.now(),...meta})).catch(()=>{})}
+async function addChatMessage(role,text,meta={}){if(!text)return;await idbTx("messages","readwrite",st=>st.add({role,text:String(text).slice(0,1200),kind:meta.kind||"chat",createdAt:Date.now(),...meta})).catch(()=>{});markCloudDirty()}
 async function recentChat(limit=44){try{const db=await openKaguyaDB();const rows=await new Promise((resolve,reject)=>{const tx=db.transaction("messages","readonly"),idx=tx.objectStore("messages").index("createdAt"),out=[],req=idx.openCursor(null,"prev");req.onsuccess=()=>{const c=req.result;if(!c||out.length>=100){resolve(out);return}out.push({role:c.value.role,text:c.value.text,kind:c.value.kind,createdAt:c.value.createdAt});c.continue()};req.onerror=()=>reject(req.error)});const direct=rows.filter(x=>x.kind==="chat").slice(0,Math.max(8,limit-8)),events=rows.filter(x=>x.kind==="event").slice(0,8);return [...direct,...events].sort((a,b)=>a.createdAt-b.createdAt).slice(-limit)}catch(e){return []}}
 function memoryKey(text){return String(text||"").toLowerCase().replace(/[^0-9a-zA-Z가-힣]+/g," ").trim().slice(0,120)}
-async function saveMemory(item){const text=String(item?.text||"").trim();if(!text)return;const key=memoryKey(text);if(!key)return;const now=Date.now(),value={key,text:text.slice(0,500),category:String(item?.category||"general").slice(0,40),importance:Math.max(1,Math.min(5,Number(item?.importance||3))),createdAt:Number(item?.createdAt||now),updatedAt:now};await idbTx("memories","readwrite",st=>st.put(value)).catch(()=>{})}
+async function saveMemory(item){const text=String(item?.text||"").trim();if(!text)return;const key=memoryKey(text);if(!key)return;const now=Date.now(),value={key,text:text.slice(0,500),category:String(item?.category||"general").slice(0,40),importance:Math.max(1,Math.min(5,Number(item?.importance||3))),createdAt:Number(item?.createdAt||now),updatedAt:now};await idbTx("memories","readwrite",st=>st.put(value)).catch(()=>{});markCloudDirty()}
 async function saveMemoryCandidates(items){for(const x of Array.isArray(items)?items:[])await saveMemory(x)}
 function memoryTokens(text){return new Set(String(text||"").toLowerCase().split(/[^0-9a-zA-Z가-힣]+/).filter(x=>x.length>=2))}
 async function relevantMemories(query,limit=24){try{const db=await openKaguyaDB(),all=await new Promise((resolve,reject)=>{const tx=db.transaction("memories","readonly"),req=tx.objectStore("memories").getAll();req.onsuccess=()=>resolve(req.result||[]);req.onerror=()=>reject(req.error)}),q=memoryTokens(query),now=Date.now();return all.map(m=>{const mt=memoryTokens(m.text);let overlap=0;q.forEach(t=>{if(mt.has(t))overlap+=1});const recency=Math.max(0,1-(now-Number(m.updatedAt||0))/(1000*60*60*24*180));return {...m,_score:overlap*4+Number(m.importance||1)*1.4+recency}}).sort((a,b)=>b._score-a._score).slice(0,limit).map(({_score,...m})=>m)}catch(e){return []}}
+
+
+function setAuthStatus(text,kind=""){const el=document.getElementById("authStatus");if(!el)return;el.textContent=text;el.className="auth-status"+(kind?" "+kind:"")}
+function setSyncStatus(text,kind=""){const el=document.getElementById("syncTestStatus");if(!el)return;el.textContent=text;el.className="sync-test-status"+(kind?" "+kind:"")}
+function validPin(pin){return /^\d{6,12}$/.test(String(pin||""))}
+async function cloudFetch(url,opts={}){const headers={...(opts.headers||{})};if(cloudToken)headers.Authorization=`Bearer ${cloudToken}`;const r=await fetch(url,{cache:"no-store",...opts,headers});const d=await r.json().catch(()=>({}));if(!r.ok){const e=new Error(d.error||`HTTP ${r.status}`);e.status=r.status;e.data=d;throw e}return d}
+async function getAllStore(name){try{const db=await openKaguyaDB();return await new Promise((resolve,reject)=>{const tx=db.transaction(name,"readonly"),req=tx.objectStore(name).getAll();req.onsuccess=()=>resolve(req.result||[]);req.onerror=()=>reject(req.error)})}catch(e){return []}}
+async function replaceStore(name,rows){try{await idbTx(name,"readwrite",st=>{st.clear();for(const row of Array.isArray(rows)?rows:[])st.put(row)})}catch(e){console.warn("[STACK ZERO SYNC] IDB import",name,e)}}
+async function exportCloudBundle(){return {schema:1,savedAt:Date.now(),state:JSON.parse(JSON.stringify(state)),messages:await getAllStore("messages"),memories:await getAllStore("memories"),settings:{voiceEnabled:Boolean(voiceEnabled),azureVoice:selectedAzureVoice||"ja-JP-MayuNeural"}}}
+async function applyCloudBundle(bundle){if(!bundle||typeof bundle!=="object")return;cloudApplying=true;try{state=normalizeState(bundle.state||fresh());localStorage.setItem(KEY,JSON.stringify(state));await replaceStore("messages",bundle.messages||[]);await replaceStore("memories",bundle.memories||[]);if(bundle.settings){voiceEnabled=bundle.settings.voiceEnabled!==false;selectedAzureVoice=AZURE_VOICES.includes(bundle.settings.azureVoice)?bundle.settings.azureVoice:"ja-JP-MayuNeural";localStorage.setItem(VOICE_ENABLED_KEY,voiceEnabled?"1":"0");localStorage.setItem(AZURE_VOICE_KEY,selectedAzureVoice)}updateVoiceButton();render()}finally{cloudApplying=false}}
+function uniqueRows(rows,keyFn,max=400){const m=new Map();for(const r of rows||[]){const k=keyFn(r);if(!k)continue;const old=m.get(k);if(!old||Number(r.updatedAt||r.createdAt||0)>=Number(old.updatedAt||old.createdAt||0))m.set(k,r)}return [...m.values()].sort((a,b)=>Number(a.createdAt||a.updatedAt||0)-Number(b.createdAt||b.updatedAt||0)).slice(-max)}
+function mergeStateForSync(a,b){a=normalizeState(JSON.parse(JSON.stringify(a||fresh())));b=normalizeState(JSON.parse(JSON.stringify(b||fresh())));const newest=Number(a._modifiedAt||0)>=Number(b._modifiedAt||0)?a:b,older=newest===a?b:a,out=JSON.parse(JSON.stringify(newest));for(const k of ["study","exercise","sleep"])out.total[k]=Math.max(Number(a.total[k]||0),Number(b.total[k]||0));if(a.date===b.date){for(const k of ["study","exercise","sleep"])out.today[k]=Math.max(Number(a.today[k]||0),Number(b.today[k]||0))}const hm=new Map();for(const h of [...(a.history||[]),...(b.history||[])]){if(!h?.date)continue;const prev=hm.get(h.date)||{date:h.date,study:0,exercise:0,sleep:0};for(const k of ["study","exercise","sleep"])prev[k]=Math.max(Number(prev[k]||0),Number(h[k]||0));hm.set(h.date,prev)}out.history=[...hm.values()].sort((x,y)=>String(y.date).localeCompare(String(x.date))).slice(0,90);out.celebratedLevels=[...new Set([...(a.celebratedLevels||[]),...(b.celebratedLevels||[])])].sort((x,y)=>x-y);out.celebratedQuests={...(b.celebratedQuests||{}),...(a.celebratedQuests||{})};out.manualDone={...(b.manualDone||{}),...(a.manualDone||{})};out.pendingRewards={...(b.pendingRewards||{}),...(a.pendingRewards||{})};out.rewards=uniqueRows([...(a.rewards||[]),...(b.rewards||[])],x=>JSON.stringify([x?.id,x?.name,x?.reward,x?.receivedAt,x?.date]),250);out.rewardHistory=uniqueRows([...(a.rewardHistory||[]),...(b.rewardHistory||[])],x=>JSON.stringify([x?.id,x?.name,x?.reward,x?.usedAt,x?.date]),250);out.aiRecentMessages=[...new Set([...(newest.aiRecentMessages||[]),...(older.aiRecentMessages||[])])].slice(0,30);out._modifiedAt=Math.max(Number(a._modifiedAt||0),Number(b._modifiedAt||0),Date.now());return out}
+function mergeBundles(local,remote){local=local||{};remote=remote||{};const mm=new Map();for(const m of [...(remote.memories||[]),...(local.memories||[])]){if(!m?.key)continue;const prev=mm.get(m.key);if(!prev||Number(m.updatedAt||0)>=Number(prev.updatedAt||0))mm.set(m.key,m)}return {schema:1,savedAt:Date.now(),state:mergeStateForSync(local.state,remote.state),messages:uniqueRows([...(remote.messages||[]),...(local.messages||[])],x=>`${x?.role}|${x?.kind}|${x?.createdAt}|${x?.text}`,500),memories:[...mm.values()].sort((a,b)=>Number(a.updatedAt||0)-Number(b.updatedAt||0)).slice(-300),settings:local.settings||remote.settings||{}}}
+function markCloudDirty(){if(!cloudReady||cloudApplying||!cloudToken)return;cloudDirty=true;cloudMutationSeq++;clearTimeout(cloudSyncTimer);cloudSyncTimer=setTimeout(()=>pushCloudNow().catch(()=>{}),650)}
+async function pushCloudNow(){if(!cloudReady||cloudApplying||!cloudToken)return false;clearTimeout(cloudSyncTimer);const seq=cloudMutationSeq,localBundle=await exportCloudBundle();setSyncStatus("동기화 중…");try{let d;try{d=await cloudFetch("/api/sync",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({data:localBundle,baseUpdatedAt:cloudServerUpdatedAt||null})})}catch(e){if(e.status!==409||!e.data?.data)throw e;const merged=mergeBundles(localBundle,e.data.data);cloudServerUpdatedAt=e.data.updatedAt||"";await applyCloudBundle(merged);d=await cloudFetch("/api/sync",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({data:merged,baseUpdatedAt:cloudServerUpdatedAt||null})})}cloudServerUpdatedAt=d.updatedAt||cloudServerUpdatedAt;if(seq===cloudMutationSeq)cloudDirty=false;else{cloudDirty=true;cloudSyncTimer=setTimeout(()=>pushCloudNow().catch(()=>{}),500)}setSyncStatus("PIN SYNC · 저장됨","ok");return true}catch(e){cloudDirty=true;setSyncStatus("SYNC 실패 · 재시도 예정","err");clearTimeout(cloudSyncTimer);cloudSyncTimer=setTimeout(()=>pushCloudNow().catch(()=>{}),5000);return false}}
+async function pullCloudNow(force=false){if(!cloudReady||!cloudToken||cloudApplying||cloudDirty)return false;if(!force&&Date.now()-cloudLastPull<7000)return false;cloudLastPull=Date.now();try{const d=await cloudFetch("/api/sync");if(d.updatedAt&&d.updatedAt!==cloudServerUpdatedAt){cloudServerUpdatedAt=d.updatedAt;await applyCloudBundle(d.data||{});setSyncStatus("PIN SYNC · 다른 기기 기록 반영","ok")}else setSyncStatus("PIN SYNC · 최신","ok");return true}catch(e){if(e.status===401){cloudToken="";cloudReady=false;localStorage.removeItem(CLOUD_SESSION_KEY);showAuthGate("세션이 만료되었습니다 · PIN으로 다시 로그인해주세요","err")}else setSyncStatus("SYNC 연결 확인 필요","err");return false}}
+function showAuthGate(message="",kind=""){document.body.classList.add("auth-locked");const gate=document.getElementById("authGate");if(gate)gate.classList.remove("hidden");if(message)setAuthStatus(message,kind)}
+function hideAuthGate(){document.body.classList.remove("auth-locked");document.getElementById("authGate")?.classList.add("hidden")}
+function setAuthBusy(on){for(const id of ["createPinBtn","loginPinBtn"]){const b=document.getElementById(id);if(b)b.disabled=Boolean(on)}}
+async function createPinAccount(){const input=document.getElementById("newPinInput"),pin=String(input?.value||"").trim();if(!validPin(pin)){setAuthStatus("PIN은 숫자 6~12자리로 설정해주세요","err");return}setAuthBusy(true);setAuthStatus("새 PIN 계정 만드는 중…");try{state=fresh();localStorage.setItem(KEY,JSON.stringify(state));await replaceStore("messages",[]);await replaceStore("memories",[]);const bundle=await exportCloudBundle();const r=await fetch("/api/account",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"create",pin,data:bundle})}),d=await r.json().catch(()=>({}));if(!r.ok)throw Object.assign(new Error(d.error||`HTTP ${r.status}`),{status:r.status});cloudToken=d.token;cloudServerUpdatedAt=d.updatedAt||"";localStorage.setItem(CLOUD_SESSION_KEY,cloudToken);cloudReady=true;cloudDirty=false;hideAuthGate();setSyncStatus("PIN SYNC · 연결됨","ok");render();probeConnections();toast("새 PIN 계정으로 시작합니다 ✦")}catch(e){setAuthStatus(e.status===409?"이미 사용 중인 PIN입니다 · 다른 PIN을 골라주세요":`계정 생성 실패 · ${String(e.message||e).slice(0,90)}`,"err")}finally{setAuthBusy(false)}}
+async function loginPinAccount(){const input=document.getElementById("loginPinInput"),pin=String(input?.value||"").trim();if(!validPin(pin)){setAuthStatus("PIN은 숫자 6~12자리입니다","err");return}setAuthBusy(true);setAuthStatus("기록 불러오는 중…");try{const r=await fetch("/api/account",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"login",pin})}),d=await r.json().catch(()=>({}));if(!r.ok)throw Object.assign(new Error(d.error||`HTTP ${r.status}`),{status:r.status});cloudToken=d.token;cloudServerUpdatedAt=d.updatedAt||"";localStorage.setItem(CLOUD_SESSION_KEY,cloudToken);cloudReady=true;cloudDirty=false;await applyCloudBundle(d.data||{});hideAuthGate();setSyncStatus("PIN SYNC · 로그인됨","ok");probeConnections();toast("기록을 불러왔습니다 ✦")}catch(e){setAuthStatus(e.status===404?"PIN을 찾을 수 없습니다":`로그인 실패 · ${String(e.message||e).slice(0,90)}`,"err")}finally{setAuthBusy(false)}}
+async function autoPinLogin(){showAuthGate();try{const p=await fetch("/api/account?probe=1",{cache:"no-store"}),pd=await p.json().catch(()=>({}));if(!p.ok||!pd.configured){setAuthStatus("PIN SYNC DB 설정이 필요합니다 · README를 확인해주세요","err");return}if(!cloudToken){setAuthStatus("새로 시작하거나 기존 PIN으로 로그인하세요");return}setAuthStatus("자동 로그인 중…");cloudReady=true;const d=await cloudFetch("/api/sync");cloudServerUpdatedAt=d.updatedAt||"";await applyCloudBundle(d.data||{});cloudDirty=false;hideAuthGate();setSyncStatus("PIN SYNC · 최신","ok");probeConnections()}catch(e){cloudReady=false;cloudToken="";localStorage.removeItem(CLOUD_SESSION_KEY);setAuthStatus("PIN으로 다시 로그인해주세요","err")}}
+async function logoutPin(){if(cloudDirty)await pushCloudNow().catch(()=>{});cloudReady=false;cloudToken="";cloudDirty=false;cloudServerUpdatedAt="";localStorage.removeItem(CLOUD_SESSION_KEY);state=fresh();localStorage.setItem(KEY,JSON.stringify(state));await replaceStore("messages",[]);await replaceStore("memories",[]);render();showAuthGate("로그아웃했습니다")}
 
 let coachTimer=null,coachRequestId=0,coachAbortController=null,chatBusy=false;
 const COACH_TIMEOUT_MS=18000;
@@ -1064,7 +1123,7 @@ async function renderAICoach(reason){
   catch(err){if(requestId!==coachRequestId)return;const code=Number(err?.status||0)||0;const statusText=err?.name==="AbortError"?"AI 시간초과 · 로컬 반응":code?`AI ${code} · 로컬 반응`:"AI 오류 · 로컬 반응";setCoachVisual({text:x.msg,mood:"",reason,statusText,statusClass:"err"})}
 }
 
-const VOICE_ENABLED_KEY="STACK_ZERO_FINAL_40_8_VOICE_ENABLED";
+const VOICE_ENABLED_KEY="STACK_ZERO_V1_VOICE_ENABLED";
 const AZURE_VOICE_KEY="STACK_ZERO_40_8_AZURE_VOICE";
 const AZURE_COOLDOWN_KEY="STACK_ZERO_40_8_AZURE_COOLDOWN_UNTIL",AZURE_BACKOFF_KEY="STACK_ZERO_40_8_AZURE_BACKOFF_STEP";
 const GEMINI_TTS_COOLDOWN_KEY="STACK_ZERO_40_8_GEMINI_TTS_COOLDOWN_UNTIL",GEMINI_TTS_BACKOFF_KEY="STACK_ZERO_40_8_GEMINI_TTS_BACKOFF_STEP";
@@ -1418,7 +1477,13 @@ document.querySelectorAll(".voice-test-btn").forEach(b=>b.onclick=()=>{playUiSfx
 document.getElementById("chatFollowupTest").onclick=()=>{playUiSfx("tap");runChatFollowupTest()}
 document.getElementById("mayuVoiceTest").onclick=()=>{playUiSfx("tap");runMayuVoiceTest()}
 document.getElementById("fullLinkTest").onclick=()=>{playUiSfx("send");runFullLinkTest()}
-document.addEventListener("click",e=>{const t=e.target&&e.target.closest?e.target.closest("button"):null;if(!t)return;const id=t.id||"";if(["plus","kaguyaChatSend","kaguyaVoiceToggle","manageBtn","addBtn","saveQuest","historyBtn","closeHistory","closeManager","cancelEditor","celebrateClose","chatFollowupTest","mayuVoiceTest","fullLinkTest"].includes(id))return;if(t.matches(".quest-tab,[data-achieve],[data-receive],.quest-empty-action,.tool-btn,.mini,.reward-use,.form-actions button")){playUiSfx(t.classList.contains("danger")?"danger":t.matches("[data-receive],.reward-use")?"reward":t.matches(".quest-tab,[data-achieve],.quest-empty-action")?"quest":"tap")}});
+document.getElementById("createPinBtn").onclick=()=>{playUiSfx("tap");createPinAccount()}
+document.getElementById("loginPinBtn").onclick=()=>{playUiSfx("tap");loginPinAccount()}
+document.getElementById("newPinInput").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();createPinAccount()}})
+document.getElementById("loginPinInput").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();loginPinAccount()}})
+document.getElementById("syncNowBtn").onclick=()=>{playUiSfx("tap");cloudDirty?pushCloudNow():pullCloudNow(true)}
+document.getElementById("logoutPinBtn").onclick=()=>{playUiSfx("tap");logoutPin()}
+document.addEventListener("click",e=>{const t=e.target&&e.target.closest?e.target.closest("button"):null;if(!t)return;const id=t.id||"";if(["plus","kaguyaChatSend","kaguyaVoiceToggle","manageBtn","addBtn","saveQuest","historyBtn","closeHistory","closeManager","cancelEditor","celebrateClose","chatFollowupTest","mayuVoiceTest","fullLinkTest","createPinBtn","loginPinBtn","syncNowBtn","logoutPinBtn"].includes(id))return;if(t.matches(".quest-tab,[data-achieve],[data-receive],.quest-empty-action,.tool-btn,.mini,.reward-use,.form-actions button")){playUiSfx(t.classList.contains("danger")?"danger":t.matches("[data-receive],.reward-use")?"reward":t.matches(".quest-tab,[data-achieve],.quest-empty-action")?"quest":"tap")}});
 async function probeConnections(){
   try{
     const r=await fetch("/api/coach?probe=1",{cache:"no-store"}),d=await r.json().catch(()=>({}));
@@ -1426,9 +1491,10 @@ async function probeConnections(){
     else{setServiceConnection("gemini",false,r.status?"AI "+r.status:"AI 오류",String(d.error||"probe failed"));setServiceConnection("tts",null,"TTS CHECK","Azure → Gemini TTS → Browser")}
   }catch(e){setServiceConnection("gemini",false,"AI 오류",String(e?.message||e));setServiceConnection("tts",null,"TTS CHECK","Azure → Gemini TTS → Browser")}
 }
-updateVoiceButton();openKaguyaDB().catch(()=>{});probeConnections();
-render()
-setInterval(()=>{if(rollover())render()},10000)
+updateVoiceButton();openKaguyaDB().catch(()=>{});render();autoPinLogin();
+setInterval(()=>{if(rollover())render();if(cloudReady&&!cloudDirty)pullCloudNow(false)},10000);
+window.addEventListener("focus",()=>{if(cloudReady&&!cloudDirty)pullCloudNow(true)});
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&cloudReady&&!cloudDirty)pullCloudNow(true)});
 })();
 </script>
 </body>
