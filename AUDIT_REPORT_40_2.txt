@@ -1,0 +1,21 @@
+STACK ZERO v40.2 TEST · VERCEL — AUDIT
+
+PASS
+- Inline browser JavaScript: node --check
+- api/coach.js: node --check
+- api/gemini-tts.js: node --check
+- api/tts-stream.js: node --check
+- Vercel coach probe mock: build 40.2, Gemini + ElevenLabs config detection
+- ElevenLabs mock TTS: configured Voice ID propagated to request and response
+- Gemini chat mock: simplified three-rule prompt present; old persona blocks absent
+- Gemini TTS mock: audio response parsed successfully (3.1 primary)
+- Kaguya assets: 19 files
+- TEST controls preserved: Study -1/+1 and -50/+50
+- TTS test selector present: ELEVEN/GEMINI/FREE, re-click returns AUTO
+- AUTO route remains ElevenLabs -> Gemini TTS -> Browser TTS
+- Mobile zoom prevention present: max-scale/user-scalable + 16px chat input
+- Kaguya scaling thresholds: base enlarged, 7+ mid, 11+ high
+- Challenger palette is silver; WAVE premium override present
+
+NOTE
+Actual external ElevenLabs/Gemini audio playback cannot be verified without invoking the deployed APIs in a real browser. The test selector is intentionally included so each engine can be isolated after deployment.
