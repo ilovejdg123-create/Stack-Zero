@@ -1,0 +1,14 @@
+STACK ZERO V1.0.1 CLEAN FIX · HEALTH BRIDGE
+
+추가/변경
+- 운동 카드: 오늘 총 이동거리 / 걸음 수 / 활동 칼로리
+- 하루 목표 km 직접 수정 (0.5~100km)
+- 거리 진행바: 0% 회색 → 노랑 → 주황 → 빨강
+- 100% 달성: 금빛 불꽃 효과
+- 목표 달성 시 운동 +1 STACK 자동 확정, 하루 1회 중복 방지
+- 기존 수동 운동 체크 유지
+- 날짜가 넘어갈 때 거리/칼로리를 기록지 데이터에 보존
+- TEST > HEALTH > 연결 키 추가
+- /api/health 추가: iPhone 단축어 전용 건강 데이터 POST
+- HEALTH 키는 PIN/Supabase Secret과 분리된 운동 전송 전용 키
+- 기존 Supabase 테이블을 그대로 사용 (추가 SQL 없음)
